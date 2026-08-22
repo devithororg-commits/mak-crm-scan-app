@@ -3,6 +3,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 interface Props {
   data: CreativeData
@@ -45,7 +46,7 @@ export default function CarouselSlideCard({ data, slideIndex }: Props) {
           }
         >
           <p className="mb-2 font-medium uppercase tracking-wider text-slate-400" style={t.label}>
-            {data.eyebrow || data.companyName}
+            <HighlightText text={data.eyebrow || data.companyName} data={data} />
           </p>
           <h2 className="mb-3 font-bold leading-tight" style={t.title}>{slide.title}</h2>
           {slide.subtitle && <p className="mb-4 text-slate-500" style={t.subtitle}>{slide.subtitle}</p>}

@@ -28,6 +28,11 @@ import NeighbourhoodGuideCard from './NeighbourhoodGuideCard'
 import InvestmentRoiCard from './InvestmentRoiCard'
 import ProjectLaunchCard from './ProjectLaunchCard'
 import QuoteCard from './QuoteCard'
+import ReraTrustCard from './ReraTrustCard'
+import RentalYieldCard from './RentalYieldCard'
+import PropertyCompareCard from './PropertyCompareCard'
+import HomeTipsCard from './HomeTipsCard'
+import TeamShowcaseCard from './TeamShowcaseCard'
 import ProgressCard from './ProgressCard'
 import ReportStoryCard from './ReportStoryCard'
 import StatsDashboard from './StatsDashboard'
@@ -62,6 +67,11 @@ const TEMPLATE_MAP: Record<TemplateId, ComponentType<{ data: CreativeData; slide
   'investment-roi': InvestmentRoiCard,
   'project-launch': ProjectLaunchCard,
   'quote-card': QuoteCard,
+  'rera-trust': ReraTrustCard,
+  'rental-yield': RentalYieldCard,
+  'property-compare': PropertyCompareCard,
+  'home-tips': HomeTipsCard,
+  'team-showcase': TeamShowcaseCard,
 }
 
 interface Props {

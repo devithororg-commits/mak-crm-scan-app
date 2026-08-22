@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { applyCategoryPreset } from '../data/presets'
-import { defaultCreativeData, type CarouselSlide, type ContentCategory, type CreativeData, type EditorTab } from '../types/creative'
+import { defaultCreativeData, type CarouselSlide, type ContentCategory, type CreativeData, type EditorTab, type EditSection } from '../types/creative'
 import { clearPersistedData, loadPersistedData, savePersistedData } from '../utils/persistence'
 
 const MAX_HISTORY = 40
@@ -11,6 +11,8 @@ interface CreativeContextValue {
   update: <K extends keyof CreativeData>(key: K, value: CreativeData[K]) => void
   activeTab: EditorTab
   setActiveTab: (tab: EditorTab) => void
+  editSection: EditSection
+  setEditSection: (section: EditSection) => void
   applyPreset: (category: ContentCategory) => void
   resetAll: () => void
   savedAt: string | null
@@ -29,7 +31,8 @@ const CreativeContext = createContext<CreativeContextValue | null>(null)
 
 export function CreativeProvider({ children }: { children: ReactNode }) {
   const [data, setDataState] = useState<CreativeData>(() => loadPersistedData())
-  const [activeTab, setActiveTab] = useState<EditorTab>('content')
+  const [activeTab, setActiveTab] = useState<EditorTab>('templates')
+  const [editSection, setEditSection] = useState<EditSection>('content')
   const [savedAt, setSavedAt] = useState<string | null>(null)
   const history = useRef<CreativeData[]>([loadPersistedData()])
   const historyIndex = useRef(0)
@@ -73,7 +76,8 @@ export function CreativeProvider({ children }: { children: ReactNode }) {
 
   const applyPreset = useCallback((category: ContentCategory) => {
     setData(applyCategoryPreset(category))
-    setActiveTab('content')
+    setActiveTab('edit')
+    setEditSection('content')
   }, [setData])
 
   const resetAll = useCallback(() => {
@@ -150,7 +154,7 @@ export function CreativeProvider({ children }: { children: ReactNode }) {
   return (
     <CreativeContext.Provider
       value={{
-        data, setData, update, activeTab, setActiveTab, applyPreset, resetAll, savedAt,
+        data, setData, update, activeTab, setActiveTab, editSection, setEditSection, applyPreset, resetAll, savedAt,
         undo, redo, canUndo, canRedo, loadProject,
         updateCarouselSlide, addCarouselSlide, removeCarouselSlide, setActiveCarouselSlide,
       }}

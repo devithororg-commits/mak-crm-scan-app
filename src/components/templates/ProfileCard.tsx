@@ -12,6 +12,7 @@ import {
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
+import HighlightText from './HighlightText'
 
 export default function ProfileCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -121,7 +122,7 @@ export default function ProfileCard({ data }: { data: CreativeData }) {
 
         {/* Description (optional) */}
         {data.description && (
-          <p className="mt-4 line-clamp-2 text-slate-500" style={t.body}>{data.description}</p>
+          <p className="mt-4 line-clamp-2 text-slate-500" style={t.body}><HighlightText text={data.description} data={data} /></p>
         )}
 
         {/* Action buttons */}

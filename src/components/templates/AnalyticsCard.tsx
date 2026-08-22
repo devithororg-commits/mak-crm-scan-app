@@ -6,6 +6,7 @@ import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
 import HighlightsList from './HighlightsList'
+import HighlightText from './HighlightText'
 
 export default function AnalyticsCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -34,9 +35,9 @@ export default function AnalyticsCard({ data }: { data: CreativeData }) {
         />
         <div className="min-w-0">
           <p className="font-semibold uppercase tracking-wider text-slate-400" style={t.label}>
-            {data.eyebrow || data.industry || 'Analytics'}
+            <HighlightText text={data.eyebrow || data.industry || 'Analytics'} data={data} />
           </p>
-          <h2 className="font-bold leading-tight" style={t.title}>{data.title}</h2>
+          <h2 className="font-bold leading-tight" style={t.title}><HighlightText text={data.title} data={data} /></h2>
         </div>
       </div>
       {data.badge && (
@@ -44,7 +45,7 @@ export default function AnalyticsCard({ data }: { data: CreativeData }) {
           className="shrink-0 rounded-full px-3 py-1 font-semibold text-white"
           style={{ ...t.label, background: data.accentColor }}
         >
-          {data.badge}
+          <HighlightText text={data.badge} data={data} />
         </span>
       )}
     </div>
@@ -55,7 +56,7 @@ export default function AnalyticsCard({ data }: { data: CreativeData }) {
       <Watermark data={data} />
       <div className="flex min-h-0 flex-1 flex-col p-8 pb-4">
         <TemplateLayout data={data} header={header}>
-          <p className="mt-2 shrink-0 text-slate-500" style={t.subtitle}>{data.subtitle}</p>
+          <p className="mt-2 shrink-0 text-slate-500" style={t.subtitle}><HighlightText text={data.subtitle} data={data} /></p>
 
           {data.changePercent && (
             <div className="mt-3 inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-50 px-3 py-1">

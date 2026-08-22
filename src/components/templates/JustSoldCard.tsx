@@ -2,6 +2,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function JustSoldCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -16,7 +17,7 @@ export default function JustSoldCard({ data }: { data: CreativeData }) {
           </div>
         } />
         <p className="mb-2 font-semibold uppercase tracking-[0.3em] text-amber-400" style={t.label}>Just Sold</p>
-        <h2 className="mb-3 font-bold leading-tight" style={t.title}>{data.propertyTitle || data.title}</h2>
+        <h2 className="mb-3 font-bold leading-tight" style={t.title}><HighlightText text={data.propertyTitle || data.title} data={data} /></h2>
         <p className="text-white/70" style={t.subtitle}>{data.propertyAddress}</p>
         <div className="my-8 h-px w-24 bg-amber-400" />
         <p className="text-3xl font-bold text-amber-400" style={t.metric}>{data.propertyPrice}</p>

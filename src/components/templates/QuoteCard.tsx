@@ -2,6 +2,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function QuoteCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -34,13 +35,13 @@ export default function QuoteCard({ data }: { data: CreativeData }) {
 
         {data.eyebrow && (
           <p className="mb-4 font-medium uppercase tracking-[0.2em] text-indigo-300" style={t.label}>
-            {data.eyebrow}
+            <HighlightText text={data.eyebrow} data={data} />
           </p>
         )}
 
         <blockquote className="relative">
           <p className="font-medium italic leading-relaxed text-white/90" style={{ ...t.title, fontSize: (t.title.fontSize as number) * 0.95, lineHeight: 1.5 }}>
-            "{quote}"
+            "<HighlightText text={quote} data={data} />"
           </p>
         </blockquote>
 
@@ -68,14 +69,14 @@ export default function QuoteCard({ data }: { data: CreativeData }) {
 
         {data.ctaText && (
           <span className="mt-8 inline-block self-start rounded-full border border-white/20 bg-white/10 px-6 py-2.5 backdrop-blur-sm" style={t.subtitle}>
-            {data.ctaText}
+            <HighlightText text={data.ctaText} data={data} />
           </span>
         )}
       </div>
 
       {data.badge && (
         <div className="absolute bottom-8 right-8 rounded-full bg-indigo-500/20 px-4 py-1.5 font-semibold text-indigo-200" style={t.label}>
-          {data.badge}
+          <HighlightText text={data.badge} data={data} />
         </div>
       )}
 

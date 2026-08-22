@@ -2,6 +2,7 @@ import { Bookmark } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import CreativeFooter from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function JobCard({ data }: { data: CreativeData }) {
   const tags = data.tags.split(',').map((t) => t.trim()).filter(Boolean)
@@ -33,9 +34,9 @@ export default function JobCard({ data }: { data: CreativeData }) {
         </div>
 
         <p className="text-sm text-slate-500">
-          {data.companyName || data.eyebrow} · {data.badge || 'New'}
+          {data.companyName || data.eyebrow} · <HighlightText text={data.badge || 'New'} data={data} />
         </p>
-        <h2 className="mt-1 text-2xl font-bold">{data.title}</h2>
+        <h2 className="mt-1 text-2xl font-bold"><HighlightText text={data.title} data={data} /></h2>
 
         {tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
@@ -47,7 +48,7 @@ export default function JobCard({ data }: { data: CreativeData }) {
           </div>
         )}
 
-        <p className="mt-6 text-sm leading-relaxed text-slate-500">{data.description}</p>
+        <p className="mt-6 text-sm leading-relaxed text-slate-500"><HighlightText text={data.description} data={data} /></p>
 
         <div className="mt-8 flex items-end justify-between border-t border-slate-100 pt-6">
           <div>

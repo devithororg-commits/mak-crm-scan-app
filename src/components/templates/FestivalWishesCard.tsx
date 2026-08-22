@@ -2,6 +2,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 const FESTIVAL_GRADIENTS: Record<string, string> = {
   diwali: 'from-amber-600 via-orange-600 to-red-700',
@@ -69,7 +70,7 @@ export default function FestivalWishesCard({ data }: { data: CreativeData }) {
         />
 
         <p className="font-medium uppercase tracking-[0.2em] text-white/80" style={t.label}>
-          {data.eyebrow || data.companyName || 'MAK Projects'}
+          <HighlightText text={data.eyebrow || data.companyName || 'MAK Projects'} data={data} />
         </p>
 
         <div className="my-4 h-px w-16 bg-white/40" />
@@ -79,16 +80,16 @@ export default function FestivalWishesCard({ data }: { data: CreativeData }) {
         </p>
 
         <h2 className="mt-4 max-w-sm font-bold leading-tight" style={{ ...t.title, fontSize: (t.title.fontSize as number) * 1.1 }}>
-          {data.title || 'Wishing you joy, prosperity & a beautiful home!'}
+          <HighlightText text={data.title || 'Wishing you joy, prosperity & a beautiful home!'} data={data} />
         </h2>
 
         <p className="mt-4 max-w-xs text-white/80" style={t.body}>
-          {data.description || data.subtitle || 'May this festive season bring happiness and new beginnings to you and your family.'}
+          <HighlightText text={data.description || data.subtitle || 'May this festive season bring happiness and new beginnings to you and your family.'} data={data} />
         </p>
 
         {data.ctaText && (
           <span className="mt-8 inline-block rounded-full border-2 border-white/40 bg-white/15 px-8 py-3 font-semibold backdrop-blur-sm" style={t.subtitle}>
-            {data.ctaText}
+            <HighlightText text={data.ctaText} data={data} />
           </span>
         )}
 

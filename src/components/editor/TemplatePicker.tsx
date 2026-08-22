@@ -27,7 +27,7 @@ export default function TemplatePicker() {
   )
 
   return (
-    <Section title="Choose Template" desc="29 pro layouts — tap to apply instantly" noPad>
+    <Section title="Choose Template" desc="Tap to preview on the right — edit when you're ready" noPad>
       {/* Filter pills */}
       <div className="flex gap-1.5 overflow-x-auto border-b border-slate-100 px-4 py-3">
         {TEMPLATE_GROUPS.map((g) => (

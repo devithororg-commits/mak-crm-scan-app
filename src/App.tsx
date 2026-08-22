@@ -1,4 +1,5 @@
 import { CreativeProvider } from './store/CreativeContext'
+import { ExportBridgeProvider } from './context/ExportBridge'
 import AppShell from './components/layout/AppShell'
 import EditorPanel from './components/editor/EditorPanel'
 import PreviewPanel from './components/editor/PreviewPanel'
@@ -8,12 +9,14 @@ export default function App() {
   return (
     <ErrorBoundary>
       <CreativeProvider>
-        <AppShell>
-          <div className="flex flex-1 overflow-hidden">
-            <EditorPanel />
-            <PreviewPanel />
-          </div>
-        </AppShell>
+        <ExportBridgeProvider>
+          <AppShell>
+            <div className="flex flex-1 overflow-hidden">
+              <EditorPanel />
+              <PreviewPanel />
+            </div>
+          </AppShell>
+        </ExportBridgeProvider>
       </CreativeProvider>
     </ErrorBoundary>
   )

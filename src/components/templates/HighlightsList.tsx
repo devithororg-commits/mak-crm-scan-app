@@ -1,5 +1,6 @@
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
+import HighlightText from './HighlightText'
 
 export default function HighlightsList({ data, light = false }: { data: CreativeData; light?: boolean }) {
   const t = getTypography(data)
@@ -14,7 +15,9 @@ export default function HighlightsList({ data, light = false }: { data: Creative
             className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${light ? 'bg-white/60' : ''}`}
             style={light ? undefined : { background: data.accentColor }}
           />
-          <span className="leading-snug">{item}</span>
+          <span className="leading-snug">
+            <HighlightText text={item} data={data} />
+          </span>
         </li>
       ))}
     </ul>

@@ -2,7 +2,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { Section, inputClass } from './FormUI'
 
-export default function HighlightsEditor() {
+export default function HighlightsEditor({ bare = false }: { bare?: boolean }) {
   const { data, update } = useCreative()
 
   const updateHighlight = (index: number, value: string) => {
@@ -21,8 +21,7 @@ export default function HighlightsEditor() {
     update('highlights', data.highlights.filter((_, i) => i !== index))
   }
 
-  return (
-    <Section title="Key Highlights" desc="Bullet points shown on creative (up to 6)">
+  const list = (
       <div className="space-y-2">
         {data.highlights.map((h, i) => (
           <div key={i} className="flex items-center gap-2">
@@ -55,6 +54,13 @@ export default function HighlightsEditor() {
           </button>
         )}
       </div>
+  )
+
+  if (bare) return list
+
+  return (
+    <Section title="Key Highlights" desc="Bullet points — use **stars** to highlight words">
+      {list}
     </Section>
   )
 }

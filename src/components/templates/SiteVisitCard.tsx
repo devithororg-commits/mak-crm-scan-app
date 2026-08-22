@@ -4,6 +4,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function SiteVisitCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -33,10 +34,10 @@ export default function SiteVisitCard({ data }: { data: CreativeData }) {
           </span>
         </div>
         <h2 className="mt-4 font-bold leading-tight" style={t.title}>
-          {data.title || "You're Invited!"}
+          <HighlightText text={data.title || "You're Invited!"} data={data} />
         </h2>
         <p className="mt-1 text-teal-100" style={t.subtitle}>
-          {data.subtitle || 'Experience the property in person'}
+          <HighlightText text={data.subtitle || 'Experience the property in person'} data={data} />
         </p>
       </div>
 
@@ -44,7 +45,7 @@ export default function SiteVisitCard({ data }: { data: CreativeData }) {
         <TemplateLayout data={data}>
           <div className="flex min-h-0 flex-1 flex-col px-8 py-5">
             <h3 className="font-bold text-slate-800" style={{ ...t.subtitle, fontSize: (t.subtitle.fontSize as number) * 1.1 }}>
-              {data.propertyTitle || data.title}
+              <HighlightText text={data.propertyTitle || data.title} data={data} />
             </h3>
 
             <div className="mt-4 space-y-3">
@@ -85,14 +86,14 @@ export default function SiteVisitCard({ data }: { data: CreativeData }) {
             </div>
 
             {data.description && (
-              <p className="mt-4 text-slate-500" style={t.body}>{data.description}</p>
+              <p className="mt-4 text-slate-500" style={t.body}><HighlightText text={data.description} data={data} /></p>
             )}
 
             {data.ctaText && (
               <div className="mt-auto pt-5">
                 <span className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 py-3.5 font-semibold text-white shadow-lg shadow-teal-500/25" style={t.subtitle}>
                   <Navigation className="h-4 w-4" />
-                  {data.ctaText}
+                  <HighlightText text={data.ctaText} data={data} />
                 </span>
               </div>
             )}

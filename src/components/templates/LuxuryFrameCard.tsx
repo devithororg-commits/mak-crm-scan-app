@@ -2,6 +2,7 @@ import { MoreHorizontal } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
+import HighlightText from './HighlightText'
 
 const FRAME = '#f4f1ea'
 
@@ -69,7 +70,7 @@ export default function LuxuryFrameCard({ data, slideIndex }: { data: CreativeDa
           style={{ background: FRAME }}
         >
           <p className="font-bold leading-tight text-slate-900" style={{ ...t.subtitle, fontSize: (t.subtitle.fontSize as number) * 1.1 }}>
-            {partnerName}
+            <HighlightText text={partnerName} data={data} />
           </p>
         </div>
       </div>

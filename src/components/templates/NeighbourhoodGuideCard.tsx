@@ -4,6 +4,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 const AMENITY_ICONS = [GraduationCap, Hospital, Train, ShoppingBag]
 
@@ -37,10 +38,10 @@ export default function NeighbourhoodGuideCard({ data }: { data: CreativeData })
           </span>
         </div>
         <h2 className="mt-3 font-bold leading-tight" style={t.title}>
-          {data.title || data.location || 'Gachibowli'}
+          <HighlightText text={data.title || data.location || 'Gachibowli'} data={data} />
         </h2>
         <p className="mt-1 text-emerald-100" style={t.subtitle}>
-          {data.subtitle || data.propertyAddress || 'Neighbourhood Highlights'}
+          <HighlightText text={data.subtitle || data.propertyAddress || 'Neighbourhood Highlights'} data={data} />
         </p>
       </div>
 
@@ -79,13 +80,13 @@ export default function NeighbourhoodGuideCard({ data }: { data: CreativeData })
             )}
 
             {data.description && (
-              <p className="mt-4 text-slate-500" style={t.body}>{data.description}</p>
+              <p className="mt-4 text-slate-500" style={t.body}><HighlightText text={data.description} data={data} /></p>
             )}
 
             {data.ctaText && (
               <div className="mt-auto pt-5">
                 <span className="inline-block rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white" style={t.subtitle}>
-                  {data.ctaText}
+                  <HighlightText text={data.ctaText} data={data} />
                 </span>
               </div>
             )}

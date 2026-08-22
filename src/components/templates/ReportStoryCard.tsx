@@ -4,6 +4,7 @@ import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
 import HighlightsList from './HighlightsList'
+import HighlightText from './HighlightText'
 
 export default function ReportStoryCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -23,14 +24,14 @@ export default function ReportStoryCard({ data }: { data: CreativeData }) {
             </div>
           }
         />
-        <span className="truncate font-semibold" style={t.subtitle}>{data.eyebrow || data.companyName}</span>
+        <span className="truncate font-semibold" style={t.subtitle}><HighlightText text={data.eyebrow || data.companyName} data={data} /></span>
       </div>
       {data.badge && (
         <span
           className="shrink-0 rounded-full border px-3 py-1 font-medium"
           style={{ ...t.label, borderColor: data.accentColor, color: data.accentColor }}
         >
-          {data.badge}
+          <HighlightText text={data.badge} data={data} />
         </span>
       )}
     </div>
@@ -42,9 +43,9 @@ export default function ReportStoryCard({ data }: { data: CreativeData }) {
       <div className="flex min-h-0 flex-1 flex-col justify-between p-10">
         <TemplateLayout data={data} header={header}>
           <div className="my-6 min-h-0 flex-1">
-            <h2 className="font-bold leading-tight tracking-tight" style={t.title}>{data.title}</h2>
-            {data.subtitle && <p className="mt-3 text-slate-500" style={t.subtitle}>{data.subtitle}</p>}
-            <p className="mt-4 leading-relaxed text-slate-500" style={t.body}>{data.description}</p>
+            <h2 className="font-bold leading-tight tracking-tight" style={t.title}><HighlightText text={data.title} data={data} /></h2>
+            {data.subtitle && <p className="mt-3 text-slate-500" style={t.subtitle}><HighlightText text={data.subtitle} data={data} /></p>}
+            <p className="mt-4 leading-relaxed text-slate-500" style={t.body}><HighlightText text={data.description} data={data} /></p>
             <div className="mt-6">
               <HighlightsList data={data} />
             </div>

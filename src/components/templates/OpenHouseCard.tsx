@@ -4,6 +4,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function OpenHouseCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -24,12 +25,12 @@ export default function OpenHouseCard({ data }: { data: CreativeData }) {
               } />
               <span className="rounded-full bg-violet-100 px-4 py-1.5 font-bold text-violet-700" style={t.label}>OPEN HOUSE</span>
             </div>
-            <h2 className="font-bold leading-tight" style={t.title}>{data.propertyTitle || data.title}</h2>
+            <h2 className="font-bold leading-tight" style={t.title}><HighlightText text={data.propertyTitle || data.title} data={data} /></h2>
             <div className="mt-3 flex items-center gap-2 text-slate-500" style={t.subtitle}>
               <MapPin className="h-4 w-4 shrink-0" /> {data.propertyAddress}
             </div>
             <div className="mt-2 flex items-center gap-2 text-violet-600" style={t.subtitle}>
-              <Calendar className="h-4 w-4 shrink-0" /> {data.badge || data.publishedDate || 'This Weekend'}
+              <Calendar className="h-4 w-4 shrink-0" /> <HighlightText text={data.badge || data.publishedDate || 'This Weekend'} data={data} />
             </div>
             <div className="mt-6 grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-violet-100 bg-violet-50 p-4">
@@ -41,9 +42,9 @@ export default function OpenHouseCard({ data }: { data: CreativeData }) {
                 <p className="text-slate-400" style={t.label}>{data.propertySqft} sqft</p>
               </div>
             </div>
-            <p className="mt-4 flex-1 text-slate-500" style={t.body}>{data.description}</p>
+            <p className="mt-4 flex-1 text-slate-500" style={t.body}><HighlightText text={data.description} data={data} /></p>
             {data.ctaText && (
-              <span className="mt-4 inline-block self-start rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white" style={t.subtitle}>{data.ctaText}</span>
+              <span className="mt-4 inline-block self-start rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white" style={t.subtitle}><HighlightText text={data.ctaText} data={data} /></span>
             )}
           </div>
         </TemplateLayout>

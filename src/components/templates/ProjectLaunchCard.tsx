@@ -4,6 +4,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function ProjectLaunchCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -33,10 +34,10 @@ export default function ProjectLaunchCard({ data }: { data: CreativeData }) {
         </div>
 
         <p className="relative mt-4 font-medium uppercase tracking-widest text-orange-100" style={t.label}>
-          {data.eyebrow || 'Coming Soon'}
+          <HighlightText text={data.eyebrow || 'Coming Soon'} data={data} />
         </p>
         <h2 className="relative mt-1 font-bold leading-tight" style={t.title}>
-          {data.propertyTitle || data.title || 'MAK Heights'}
+          <HighlightText text={data.propertyTitle || data.title || 'MAK Heights'} data={data} />
         </h2>
       </div>
 
@@ -97,7 +98,7 @@ export default function ProjectLaunchCard({ data }: { data: CreativeData }) {
             {data.ctaText && (
               <div className="mt-auto pt-5">
                 <span className="block rounded-xl bg-gradient-to-r from-orange-500 to-red-500 py-3.5 text-center font-bold text-white shadow-lg shadow-orange-500/30" style={t.subtitle}>
-                  {data.ctaText}
+                  <HighlightText text={data.ctaText} data={data} />
                 </span>
               </div>
             )}

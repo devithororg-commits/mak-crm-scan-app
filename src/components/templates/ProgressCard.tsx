@@ -3,6 +3,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function ProgressCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -29,11 +30,11 @@ export default function ProgressCard({ data }: { data: CreativeData }) {
       />
       <div className="min-w-0 flex-1">
         <p className="text-slate-400" style={t.label}>goal</p>
-        <h2 className="font-bold" style={t.title}>{data.title}</h2>
+        <h2 className="font-bold" style={t.title}><HighlightText text={data.title} data={data} /></h2>
         <p className="font-semibold text-rose-500" style={t.metric}>{data.targetValue}</p>
       </div>
       {data.badge && (
-        <span className="shrink-0 rounded-full bg-rose-50 px-3 py-1 font-medium text-rose-500" style={t.label}>{data.badge}</span>
+        <span className="shrink-0 rounded-full bg-rose-50 px-3 py-1 font-medium text-rose-500" style={t.label}><HighlightText text={data.badge} data={data} /></span>
       )}
     </div>
   )
@@ -73,7 +74,7 @@ export default function ProgressCard({ data }: { data: CreativeData }) {
           <span className="text-rose-200">remaining</span>
         </div>
 
-        <p className="text-center text-rose-100" style={t.body}>{data.subtitle}</p>
+        <p className="text-center text-rose-100" style={t.body}><HighlightText text={data.subtitle} data={data} /></p>
       </div>
       <CreativeFooter data={data} />
     </div>

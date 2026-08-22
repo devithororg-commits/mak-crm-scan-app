@@ -3,6 +3,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function JustListedCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -28,7 +29,7 @@ export default function JustListedCard({ data }: { data: CreativeData }) {
           }
         >
           <div className="flex min-h-0 flex-1 flex-col px-8 pb-4">
-            <h2 className="font-bold leading-tight" style={t.title}>{data.propertyTitle || data.title}</h2>
+            <h2 className="font-bold leading-tight" style={t.title}><HighlightText text={data.propertyTitle || data.title} data={data} /></h2>
             <p className="mt-2 text-slate-500" style={t.subtitle}>{data.propertyAddress}</p>
             <div className="mt-6 grid grid-cols-3 gap-3">
               {[
@@ -42,13 +43,13 @@ export default function JustListedCard({ data }: { data: CreativeData }) {
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-slate-500" style={t.body}>{data.description}</p>
+            <p className="mt-4 text-slate-500" style={t.body}><HighlightText text={data.description} data={data} /></p>
             {data.reraNumber && (
               <p className="mt-3 text-slate-400" style={t.label}>RERA: {data.reraNumber}</p>
             )}
             {data.ctaText && (
               <div className="mt-6">
-                <span className="inline-block rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white" style={t.subtitle}>{data.ctaText}</span>
+                <span className="inline-block rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white" style={t.subtitle}><HighlightText text={data.ctaText} data={data} /></span>
               </div>
             )}
           </div>

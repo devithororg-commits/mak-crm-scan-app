@@ -2,6 +2,7 @@ import { ArrowUpRight, MapPin, TrendingUp } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
+import HighlightText from './HighlightText'
 
 export default function MarketUpdateCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -32,12 +33,12 @@ export default function MarketUpdateCard({ data }: { data: CreativeData }) {
         </div>
 
         <p className="mb-2 font-medium uppercase tracking-widest text-white/60" style={t.label}>
-          {data.eyebrow || 'Market Intelligence'}
+          <HighlightText text={data.eyebrow || 'Market Intelligence'} data={data} />
         </p>
         <h2 className="mb-3 font-bold leading-tight" style={t.title}>
-          {data.title || `${location} Market Update`}
+          <HighlightText text={data.title || `${location} Market Update`} data={data} />
         </h2>
-        <p className="mb-6 text-white/75" style={t.subtitle}>{data.subtitle}</p>
+        <p className="mb-6 text-white/75" style={t.subtitle}><HighlightText text={data.subtitle} data={data} /></p>
 
         <div className="mb-6 inline-flex items-center gap-2 self-start rounded-2xl bg-white/15 px-5 py-3 backdrop-blur-sm">
           <ArrowUpRight className="h-6 w-6 text-emerald-300" />
@@ -70,7 +71,7 @@ export default function MarketUpdateCard({ data }: { data: CreativeData }) {
         {data.ctaText && (
           <div className="mt-auto pt-8">
             <span className="inline-block rounded-xl bg-white px-6 py-3 font-semibold text-slate-900" style={t.subtitle}>
-              {data.ctaText}
+              <HighlightText text={data.ctaText} data={data} />
             </span>
           </div>
         )}

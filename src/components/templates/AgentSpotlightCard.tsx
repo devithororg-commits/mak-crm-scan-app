@@ -3,6 +3,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function AgentSpotlightCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -47,7 +48,7 @@ export default function AgentSpotlightCard({ data }: { data: CreativeData }) {
           </div>
 
           <h2 className="mt-4 text-center font-bold" style={t.title}>
-            {data.personName || data.title || 'Rahul Sharma'}
+            <HighlightText text={data.personName || data.title || 'Rahul Sharma'} data={data} />
           </h2>
           <p className="mt-1 text-center font-medium text-indigo-600" style={t.subtitle}>
             {data.personRole || data.subtitle || 'Senior Property Consultant'}
@@ -68,7 +69,7 @@ export default function AgentSpotlightCard({ data }: { data: CreativeData }) {
 
         <div className="flex-1 px-8 py-5">
           <p className="text-center leading-relaxed text-slate-600" style={t.body}>
-            {data.description || 'Helping families find their perfect home with trust, transparency, and local expertise.'}
+            <HighlightText text={data.description || 'Helping families find their perfect home with trust, transparency, and local expertise.'} data={data} />
           </p>
 
           {data.highlights.filter(Boolean).length > 0 && (
@@ -98,7 +99,7 @@ export default function AgentSpotlightCard({ data }: { data: CreativeData }) {
         {data.ctaText && (
           <div className="px-8 pb-4">
             <span className="block rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-center font-semibold text-white shadow-lg shadow-indigo-500/25" style={t.subtitle}>
-              {data.ctaText}
+              <HighlightText text={data.ctaText} data={data} />
             </span>
           </div>
         )}

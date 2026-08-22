@@ -2,6 +2,7 @@ import { Quote, Star } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
+import HighlightText from './HighlightText'
 
 export default function TestimonialCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -24,7 +25,7 @@ export default function TestimonialCard({ data }: { data: CreativeData }) {
         <Quote className="mb-6 h-10 w-10 opacity-20" style={{ color: data.accentColor }} />
 
         <p className="flex-1 leading-relaxed text-slate-700" style={{ ...t.body, fontSize: (t.body.fontSize as number) * 1.15 }}>
-          &ldquo;{review}&rdquo;
+          &ldquo;<HighlightText text={review} data={data} />&rdquo;
         </p>
 
         <div className="mt-8 flex items-center gap-4 border-t border-slate-100 pt-8">

@@ -2,6 +2,7 @@ import { Calendar, Flag } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import CreativeFooter from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function KanbanCard({ data }: { data: CreativeData }) {
   const tags = data.tags.split(',').map((t) => t.trim()).filter(Boolean)
@@ -14,12 +15,12 @@ export default function KanbanCard({ data }: { data: CreativeData }) {
             <Flag className="h-3 w-3" /> High
           </span>
           <span className="flex items-center gap-1 text-xs text-slate-400">
-            <Calendar className="h-3 w-3" /> {data.badge || 'Today'}
+            <Calendar className="h-3 w-3" /> <HighlightText text={data.badge || 'Today'} data={data} />
           </span>
         </div>
 
-        <h2 className="text-xl font-bold">{data.title}</h2>
-        <p className="mt-2 text-sm leading-relaxed text-slate-500">{data.description}</p>
+        <h2 className="text-xl font-bold"><HighlightText text={data.title} data={data} /></h2>
+        <p className="mt-2 text-sm leading-relaxed text-slate-500"><HighlightText text={data.description} data={data} /></p>
 
         {tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">

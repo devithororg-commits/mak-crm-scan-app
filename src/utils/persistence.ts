@@ -1,4 +1,5 @@
 import { defaultCreativeData, type CreativeData, type ImageAlign, type ImagePosition, type TemplateId } from '../types/creative'
+import { resolveHighlightStyle } from './textHighlight'
 
 const IMAGE_STORAGE_KEY = 'creative-studio-images'
 const STORAGE_KEYS = ['creative-studio-v4', 'creative-studio-v3', 'creative-studio-v2', 'creative-studio']
@@ -11,6 +12,7 @@ const VALID_TEMPLATES: TemplateId[] = [
   'testimonial', 'market-update', 'photo-gallery',
   'price-drop', 'emi-calculator', 'agent-spotlight', 'festival-wishes', 'site-visit',
   'before-after', 'neighbourhood-guide', 'investment-roi', 'project-launch', 'quote-card',
+  'rera-trust', 'rental-yield', 'property-compare', 'home-tips', 'team-showcase',
 ]
 
 export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {
@@ -41,6 +43,8 @@ export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {
   merged.metricFontSize = Number(merged.metricFontSize) || defaults.metricFontSize
   merged.labelFontSize = Number(merged.labelFontSize) || defaults.labelFontSize
   merged.textScale = Number(merged.textScale) || defaults.textScale
+  merged.highlightStyle = resolveHighlightStyle(merged.highlightStyle)
+  merged.highlightColor = merged.highlightColor ?? defaults.highlightColor
   merged.footerFontSize = Number(merged.footerFontSize) || defaults.footerFontSize
   merged.footerLogoSize = Number(merged.footerLogoSize) || defaults.footerLogoSize
   merged.footerLogoRadius = Number(merged.footerLogoRadius) ?? defaults.footerLogoRadius

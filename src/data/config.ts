@@ -46,6 +46,11 @@ export const TEMPLATES: {
   { id: 'investment-roi', name: 'Investment ROI', desc: 'Rental yield & returns card', preview: 'bg-gradient-to-br from-violet-950 to-indigo-950', bestFor: 'NRI / Investors' },
   { id: 'project-launch', name: 'Project Launch', desc: 'Countdown + construction progress', preview: 'bg-gradient-to-br from-orange-500 to-red-500', bestFor: 'Real Estate' },
   { id: 'quote-card', name: 'Quote Card', desc: 'Inspirational quote with author', preview: 'bg-gradient-to-br from-slate-800 to-indigo-950', bestFor: 'Social / Brand' },
+  { id: 'rera-trust', name: 'RERA Trust', desc: 'RERA certification & trust badge', preview: 'bg-gradient-to-br from-slate-900 to-emerald-950', bestFor: 'Real Estate' },
+  { id: 'rental-yield', name: 'Rental Yield', desc: 'Monthly rent & yield calculator', preview: 'bg-gradient-to-r from-cyan-600 to-teal-600', bestFor: 'Investors' },
+  { id: 'property-compare', name: 'Property Compare', desc: 'Side-by-side A vs B comparison', preview: 'bg-slate-50 border', bestFor: 'Real Estate' },
+  { id: 'home-tips', name: 'Home Tips', desc: 'Numbered tips checklist card', preview: 'bg-gradient-to-br from-amber-50 to-orange-50', bestFor: 'Education' },
+  { id: 'team-showcase', name: 'Team Showcase', desc: 'Team stats & office intro', preview: 'bg-white border shadow', bestFor: 'Agency / Broker' },
 ]
 
 export const CHART_TYPES: { id: 'line' | 'bar' | 'pie' | 'area' | 'none'; label: string; icon: IconName }[] = [

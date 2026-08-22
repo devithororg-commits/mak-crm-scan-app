@@ -2,6 +2,7 @@ import { ArrowRight, Check } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
+import HighlightText from './HighlightText'
 
 const GOLD = '#d1a550'
 
@@ -39,14 +40,14 @@ export default function BuyerMatchCard({ data }: { data: CreativeData }) {
           className="font-bold leading-tight text-slate-900"
           style={{ ...t.title, fontFamily: "'Playfair Display', Georgia, serif" }}
         >
-          {headline}
+          <HighlightText text={headline} data={data} />
         </h2>
 
         <ul className="mt-5 space-y-3.5">
           {listItems.map((item, i) => (
             <li key={i} className="flex items-start gap-3 text-slate-600" style={t.body}>
               <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: GOLD }} strokeWidth={2.5} />
-              <span className="leading-snug">{item}</span>
+              <span className="leading-snug"><HighlightText text={item} data={data} /></span>
             </li>
           ))}
         </ul>
@@ -56,7 +57,7 @@ export default function BuyerMatchCard({ data }: { data: CreativeData }) {
             className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 font-bold text-slate-900"
             style={{ ...t.subtitle, background: GOLD }}
           >
-            {cta}
+            <HighlightText text={cta} data={data} />
             <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
           </div>
 

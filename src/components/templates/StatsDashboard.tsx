@@ -3,6 +3,7 @@ import type { CreativeData } from '../../types/creative'
 import DynamicChart from '../charts/DynamicChart'
 import CreativeFooter from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function StatsDashboard({ data }: { data: CreativeData }) {
   return (
@@ -24,11 +25,11 @@ export default function StatsDashboard({ data }: { data: CreativeData }) {
               <Heart className="h-5 w-5 text-rose-500" fill="#f43f5e" />
             )}
             <div>
-              <h2 className="font-bold">{data.title}</h2>
-              <p className="text-xs text-slate-400">{data.subtitle}</p>
+              <h2 className="font-bold"><HighlightText text={data.title} data={data} /></h2>
+              <p className="text-xs text-slate-400"><HighlightText text={data.subtitle} data={data} /></p>
             </div>
           </div>
-          <span className="rounded-full bg-white px-3 py-1 text-xs shadow-sm">{data.badge || 'Daily'}</span>
+          <span className="rounded-full bg-white px-3 py-1 text-xs shadow-sm"><HighlightText text={data.badge || 'Daily'} data={data} /></span>
         </div>
 
         <div className="mb-4 flex gap-8">
@@ -47,7 +48,7 @@ export default function StatsDashboard({ data }: { data: CreativeData }) {
         </div>
 
         <div className="rounded-2xl bg-white p-5 shadow-sm">
-          <p className="mb-4 text-sm text-slate-600">{data.description}</p>
+          <p className="mb-4 text-sm text-slate-600"><HighlightText text={data.description} data={data} /></p>
           <div className="grid grid-cols-2 gap-4">
             {[
               { label: data.metric1Label, value: data.metric1Value },

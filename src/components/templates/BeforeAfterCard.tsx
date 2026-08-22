@@ -2,6 +2,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function BeforeAfterCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -25,12 +26,12 @@ export default function BeforeAfterCard({ data }: { data: CreativeData }) {
           }
         />
         <span className="rounded-full bg-white/10 px-3 py-1 font-bold uppercase tracking-wider text-amber-300" style={t.label}>
-          {data.badge || 'Transformation'}
+          <HighlightText text={data.badge || 'Transformation'} data={data} />
         </span>
       </div>
 
       <h2 className="px-8 font-bold leading-tight" style={t.title}>
-        {data.propertyTitle || data.title || 'Stunning Renovation'}
+        <HighlightText text={data.propertyTitle || data.title || 'Stunning Renovation'} data={data} />
       </h2>
       <p className="mt-1 px-8 text-white/50" style={t.subtitle}>{data.propertyAddress}</p>
 
@@ -67,10 +68,10 @@ export default function BeforeAfterCard({ data }: { data: CreativeData }) {
       </div>
 
       <div className="px-8 py-5">
-        <p className="text-white/70" style={t.body}>{data.description}</p>
+        <p className="text-white/70" style={t.body}><HighlightText text={data.description} data={data} /></p>
         {data.ctaText && (
           <span className="mt-4 inline-block rounded-xl bg-amber-400 px-6 py-3 font-bold text-slate-900" style={t.subtitle}>
-            {data.ctaText}
+            <HighlightText text={data.ctaText} data={data} />
           </span>
         )}
       </div>

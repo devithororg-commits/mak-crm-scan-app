@@ -3,6 +3,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function InvestmentRoiCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -32,15 +33,15 @@ export default function InvestmentRoiCard({ data }: { data: CreativeData }) {
             }
           />
           <span className="rounded-full bg-amber-400/20 px-3 py-1 font-bold text-amber-300" style={t.label}>
-            {data.badge || 'NRI Investment'}
+            <HighlightText text={data.badge || 'NRI Investment'} data={data} />
           </span>
         </div>
 
         <p className="mt-6 font-medium uppercase tracking-widest text-violet-300" style={t.label}>
-          {data.eyebrow || 'Investment Opportunity'}
+          <HighlightText text={data.eyebrow || 'Investment Opportunity'} data={data} />
         </p>
         <h2 className="mt-1 font-bold leading-tight" style={t.title}>
-          {data.propertyTitle || data.title || 'Hyderabad Real Estate'}
+          <HighlightText text={data.propertyTitle || data.title || 'Hyderabad Real Estate'} data={data} />
         </h2>
         <p className="mt-2 text-white/50" style={t.subtitle}>{data.propertyAddress || data.location}</p>
 
@@ -85,7 +86,7 @@ export default function InvestmentRoiCard({ data }: { data: CreativeData }) {
         {data.ctaText && (
           <div className="mt-auto pt-6">
             <span className="block rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 py-3.5 text-center font-semibold shadow-lg shadow-violet-500/30" style={t.subtitle}>
-              {data.ctaText}
+              <HighlightText text={data.ctaText} data={data} />
             </span>
           </div>
         )}

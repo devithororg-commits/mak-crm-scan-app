@@ -393,10 +393,74 @@ const THUMBS: Record<TemplateId, ReactNode> = {
       <span className="text-lg font-serif text-white/10">"</span>
       <Bar w="w-10" color="bg-white/60" />
       <Bar w="w-8" color="bg-white/40" />
-      <Bar w="w-6" color="bg-white/30" />
       <div className="mt-2 flex items-center gap-1">
         <div className="h-3 w-3 rounded-full bg-indigo-400" />
         <Bar w="w-4" h="h-0.5" color="bg-white/50" />
+      </div>
+    </div>
+  ),
+
+  'rera-trust': (
+    <div className="flex h-full flex-col bg-gradient-to-br from-slate-900 to-emerald-950 p-2">
+      <div className="mb-1 flex h-4 w-4 items-center justify-center rounded bg-emerald-500/30">
+        <div className="h-2 w-2 rounded-full bg-emerald-400" />
+      </div>
+      <Bar w="w-8" color="bg-white/70" />
+      <div className="mt-2 rounded border border-emerald-500/30 bg-emerald-500/10 p-1.5">
+        <Bar w="w-6" color="bg-emerald-400" />
+      </div>
+    </div>
+  ),
+
+  'rental-yield': (
+    <div className="flex h-full flex-col bg-white">
+      <div className="bg-gradient-to-r from-cyan-500 to-teal-500 p-2">
+        <Bar w="w-6" color="bg-white" />
+      </div>
+      <div className="grid flex-1 grid-cols-3 gap-0.5 p-1">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="rounded bg-cyan-50 p-1 text-center">
+            <Bar w="w-3" color="bg-cyan-500" />
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+
+  'property-compare': (
+    <div className="flex h-full bg-slate-100">
+      <div className="flex-1 border-r border-slate-200 bg-white p-1.5">
+        <Bar w="w-4" color="bg-indigo-400" />
+        <Bar w="w-3" h="h-0.5" color="bg-slate-300" />
+      </div>
+      <div className="flex-1 bg-violet-50 p-1.5">
+        <Bar w="w-4" color="bg-violet-400" />
+        <Bar w="w-3" h="h-0.5" color="bg-slate-300" />
+      </div>
+    </div>
+  ),
+
+  'home-tips': (
+    <div className="flex h-full flex-col bg-gradient-to-br from-amber-50 to-orange-50 p-2">
+      <Bar w="w-8" color="bg-orange-500" />
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="mt-1 flex items-center gap-1">
+          <Dot color="bg-orange-400" />
+          <Bar w="w-5" h="h-0.5" />
+        </div>
+      ))}
+    </div>
+  ),
+
+  'team-showcase': (
+    <div className="flex h-full flex-col bg-white p-2">
+      <Bar w="w-6" color="bg-indigo-500" />
+      <div className="mt-2 grid grid-cols-3 gap-0.5">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="rounded bg-indigo-50 p-1 text-center">
+            <Bar w="w-2" color="bg-indigo-400" />
+          </div>
+        ))}
       </div>
     </div>
   ),
@@ -439,4 +503,9 @@ export const TEMPLATE_GROUP_MAP: Record<TemplateId, string> = {
   'investment-roi': 'realestate',
   'project-launch': 'realestate',
   'quote-card': 'social',
+  'rera-trust': 'realestate',
+  'rental-yield': 'realestate',
+  'property-compare': 'realestate',
+  'home-tips': 'social',
+  'team-showcase': 'business',
 }

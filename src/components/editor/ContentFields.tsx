@@ -2,12 +2,55 @@ import { useCreative } from '../../store/CreativeContext'
 import { CATEGORY_FIELDS } from '../../data/config'
 import type { CreativeData } from '../../types/creative'
 import MediaEditor from './MediaEditor'
+import { HighlightField } from './HighlightField'
 import { Field, Section, inputClass, textareaClass } from './FormUI'
+
+const HIGHLIGHT_KEYS = new Set(['title', 'subtitle', 'description', 'eyebrow', 'badge', 'ctaText', 'propertyTitle', 'reviewText'])
 
 export default function ContentFields() {
   const { data, update } = useCreative()
   const fields = CATEGORY_FIELDS[data.category]
   const groups = [...new Set(fields.map((f) => f.group ?? 'General'))]
+
+  const renderField = (field: (typeof fields)[number]) => {
+    const value = data[field.key as keyof CreativeData] as string
+    const onChange = (v: string) => update(field.key as keyof CreativeData, v)
+
+    if (HIGHLIGHT_KEYS.has(field.key)) {
+      return (
+        <HighlightField
+          key={field.key}
+          label={field.label}
+          value={value}
+          onChange={onChange}
+          multiline={field.multiline}
+          placeholder={field.placeholder}
+        />
+      )
+    }
+
+    return (
+      <Field key={field.key} label={field.label}>
+        {field.multiline ? (
+          <textarea
+            rows={3}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            className={textareaClass}
+          />
+        ) : (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            className={inputClass}
+          />
+        )}
+      </Field>
+    )
+  }
 
   return (
     <>
@@ -16,27 +59,7 @@ export default function ContentFields() {
           <div className="space-y-3">
             {fields
               .filter((f) => (f.group ?? 'General') === group)
-              .map((field) => (
-                <Field key={field.key} label={field.label}>
-                  {field.multiline ? (
-                    <textarea
-                      rows={3}
-                      value={data[field.key as keyof CreativeData] as string}
-                      onChange={(e) => update(field.key as keyof CreativeData, e.target.value)}
-                      placeholder={field.placeholder}
-                      className={textareaClass}
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={data[field.key as keyof CreativeData] as string}
-                      onChange={(e) => update(field.key as keyof CreativeData, e.target.value)}
-                      placeholder={field.placeholder}
-                      className={inputClass}
-                    />
-                  )}
-                </Field>
-              ))}
+              .map((field) => renderField(field))}
           </div>
         </Section>
       ))}
@@ -53,9 +76,13 @@ export default function ContentFields() {
             <Field label="Star Rating">
               <input type="text" value={data.reviewRating} onChange={(e) => update('reviewRating', e.target.value)} placeholder="5.0" className={inputClass} />
             </Field>
-            <Field label="Review Text">
-              <textarea rows={4} value={data.reviewText} onChange={(e) => update('reviewText', e.target.value)} placeholder="Outstanding service..." className={textareaClass} />
-            </Field>
+            <HighlightField
+              label="Review Text"
+              value={data.reviewText}
+              onChange={(v) => update('reviewText', v)}
+              multiline
+              placeholder="Outstanding service..."
+            />
           </div>
         </Section>
       )}
@@ -71,15 +98,12 @@ export default function ContentFields() {
               className={inputClass}
             />
           </Field>
-          <Field label="CTA Button Text">
-            <input
-              type="text"
-              value={data.ctaText}
-              onChange={(e) => update('ctaText', e.target.value)}
-              placeholder="Learn More"
-              className={inputClass}
-            />
-          </Field>
+          <HighlightField
+            label="CTA Button Text"
+            value={data.ctaText}
+            onChange={(v) => update('ctaText', v)}
+            placeholder="Learn More"
+          />
         </div>
       </Section>
 

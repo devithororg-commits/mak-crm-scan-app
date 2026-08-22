@@ -2,6 +2,7 @@ import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function EmiCalculatorCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -37,10 +38,10 @@ export default function EmiCalculatorCard({ data }: { data: CreativeData }) {
         </div>
 
         <p className="font-medium uppercase tracking-wider text-indigo-300" style={t.label}>
-          {data.eyebrow || data.propertyType || 'Home Loan'}
+          <HighlightText text={data.eyebrow || data.propertyType || 'Home Loan'} data={data} />
         </p>
         <h2 className="mt-1 font-bold leading-tight" style={t.title}>
-          {data.propertyTitle || data.title || 'Dream Home Financing'}
+          <HighlightText text={data.propertyTitle || data.title || 'Dream Home Financing'} data={data} />
         </h2>
         <p className="mt-2 text-white/60" style={t.subtitle}>{data.propertyAddress || data.subtitle}</p>
 
@@ -82,7 +83,7 @@ export default function EmiCalculatorCard({ data }: { data: CreativeData }) {
         {data.ctaText && (
           <div className="mt-auto pt-6">
             <span className="inline-block rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-6 py-3 font-semibold text-white shadow-lg shadow-indigo-500/30" style={t.subtitle}>
-              {data.ctaText}
+              <HighlightText text={data.ctaText} data={data} />
             </span>
           </div>
         )}

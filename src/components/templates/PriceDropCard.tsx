@@ -4,6 +4,7 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import { TemplateLayout } from './CreativeImage'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 export default function PriceDropCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
@@ -44,7 +45,7 @@ export default function PriceDropCard({ data }: { data: CreativeData }) {
         >
           <div className="flex min-h-0 flex-1 flex-col px-8 pb-4">
             <h2 className="font-bold leading-tight" style={t.title}>
-              {data.propertyTitle || data.title}
+              <HighlightText text={data.propertyTitle || data.title} data={data} />
             </h2>
             <p className="mt-2 text-slate-500" style={t.subtitle}>{data.propertyAddress}</p>
 
@@ -76,7 +77,7 @@ export default function PriceDropCard({ data }: { data: CreativeData }) {
             {data.ctaText && (
               <div className="mt-6">
                 <span className="inline-block rounded-xl bg-gradient-to-r from-rose-600 to-red-600 px-6 py-3 font-semibold text-white shadow-lg shadow-rose-500/25" style={t.subtitle}>
-                  {data.ctaText}
+                  <HighlightText text={data.ctaText} data={data} />
                 </span>
               </div>
             )}

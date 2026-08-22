@@ -2,6 +2,7 @@ import { ArrowRight, Bookmark } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import CreativeFooter from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
+import HighlightText from './HighlightText'
 
 const PASTELS = ['bg-purple-100', 'bg-amber-50', 'bg-emerald-50', 'bg-sky-50', 'bg-rose-50', 'bg-violet-50']
 
@@ -17,7 +18,7 @@ export default function PastelJobCard({ data }: { data: CreativeData }) {
         </div>
 
         <div>
-          <h2 className="text-3xl font-bold leading-tight">{data.title}</h2>
+          <h2 className="text-3xl font-bold leading-tight"><HighlightText text={data.title} data={data} /></h2>
           <ArrowRight className="mt-4 h-5 w-5" />
         </div>
 

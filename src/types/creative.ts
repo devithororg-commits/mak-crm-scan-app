@@ -36,9 +36,16 @@ export type TemplateId =
   | 'investment-roi'
   | 'project-launch'
   | 'quote-card'
+  | 'rera-trust'
+  | 'rental-yield'
+  | 'property-compare'
+  | 'home-tips'
+  | 'team-showcase'
 
+export type HighlightStyle = 'accent' | 'gradient' | 'underline' | 'background' | 'bold'
 export type CaptionTone = 'professional' | 'casual' | 'sales' | 'educational'
-export type EditorTab = 'content' | 'analytics' | 'brand' | 'carousel' | 'export'
+export type EditorTab = 'templates' | 'edit'
+export type EditSection = 'content' | 'data' | 'brand' | 'slides'
 
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'none'
 export type AspectRatio = '1:1' | '4:5' | '9:16' | '16:9'
@@ -195,6 +202,9 @@ export interface CreativeData {
   labelFontSize: number
   textScale: number
 
+  highlightStyle: HighlightStyle
+  highlightColor: string
+
   showCreativeImage: boolean
   imagePosition: ImagePosition
   imageFit: ImageFit
@@ -282,16 +292,16 @@ export const defaultCreativeData = (): CreativeData => ({
   aspectRatio: '1:1',
   platform: 'instagram',
 
-  title: 'Q4 Growth Report',
-  subtitle: 'Revenue up 34% year over year',
+  title: 'Q4 **Growth** Report',
+  subtitle: 'Revenue up **34%** year over year',
   description:
     'Our company achieved record-breaking performance this quarter with strong expansion across residential and commercial segments in key markets.',
   eyebrow: 'MAK Projects',
   badge: 'Q4 2025',
   highlights: [
-    'Record quarterly revenue of ₹48 Cr',
-    '1,240 units sold across 3 projects',
-    '34% YoY growth in Hyderabad market',
+    'Record quarterly revenue of **₹48 Cr**',
+    '**1,240** units sold across 3 projects',
+    '**34%** YoY growth in Hyderabad market',
     '98% customer satisfaction score',
   ],
   ctaText: 'Learn More',
@@ -376,6 +386,9 @@ export const defaultCreativeData = (): CreativeData => ({
   metricFontSize: 20,
   labelFontSize: 11,
   textScale: 100,
+
+  highlightStyle: 'accent',
+  highlightColor: '',
 
   showCreativeImage: false,
   imagePosition: 'top',

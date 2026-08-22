@@ -2,6 +2,7 @@ import type { CreativeData } from '../../types/creative'
 import { buildImageCssFilter } from '../../utils/imageFilters'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
+import HighlightText from './HighlightText'
 
 function GalleryImage({ data, src }: { data: CreativeData; src: string }) {
   const cssFilter = buildImageCssFilter(
@@ -70,11 +71,11 @@ export default function PhotoGalleryCard({ data }: { data: CreativeData }) {
               className="mb-3 inline-flex w-fit rounded-full px-4 py-1 font-semibold text-white"
               style={{ ...t.label, background: data.accentColor }}
             >
-              {data.badge}
+              <HighlightText text={data.badge} data={data} />
             </span>
           )}
           <h2 className="font-bold leading-tight" style={t.title}>
-            {data.propertyTitle || data.title || 'Property Gallery'}
+            <HighlightText text={data.propertyTitle || data.title || 'Property Gallery'} data={data} />
           </h2>
           <p className="mt-2 text-slate-500" style={t.subtitle}>
             {data.propertyPrice && <span className="font-semibold text-slate-800">{data.propertyPrice} · </span>}
@@ -100,7 +101,7 @@ export default function PhotoGalleryCard({ data }: { data: CreativeData }) {
                 className="inline-block rounded-full px-6 py-3 font-semibold text-white"
                 style={{ ...t.subtitle, background: data.accentColor }}
               >
-                {data.ctaText}
+                <HighlightText text={data.ctaText} data={data} />
               </span>
             </div>
           )}

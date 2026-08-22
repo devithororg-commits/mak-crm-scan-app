@@ -1,5 +1,6 @@
 import { useCreative } from '../../store/CreativeContext'
 import { FONT_SIZE_DEFAULTS, FONT_SIZE_LIMITS } from '../../utils/typography'
+import { HighlightStylePicker } from './HighlightField'
 import { Section } from './FormUI'
 
 function SizeSlider({
@@ -118,6 +119,10 @@ export default function TypographyEditor() {
         >
           Reset to default sizes
         </button>
+      </Section>
+
+      <Section title="Word Highlight" desc="Emphasize key words in title, subtitle & description">
+        <HighlightStylePicker />
       </Section>
     </>
   )
