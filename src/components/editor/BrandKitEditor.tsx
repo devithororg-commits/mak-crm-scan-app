@@ -2,7 +2,6 @@ import { useCreative } from '../../store/CreativeContext'
 import { COLOR_PALETTES, FONT_OPTIONS } from '../../data/config'
 import type { FontFamily } from '../../types/creative'
 import LogoEditor from './LogoEditor'
-import TypographyEditor from './TypographyEditor'
 import { Field, Section, inputClass } from './FormUI'
 
 export default function BrandKitEditor() {
@@ -69,8 +68,6 @@ export default function BrandKitEditor() {
           ))}
         </div>
       </Section>
-
-      <TypographyEditor />
 
       <LogoEditor />
 

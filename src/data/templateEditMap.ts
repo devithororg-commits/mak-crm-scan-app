@@ -333,11 +333,36 @@ const TEMPLATE_SPECIFIC: Partial<Record<TemplateId, QuickEditZone[]>> = {
       { key: 'comparisonLabel', label: 'Button 2' },
     ],
   }],
+  'market-update': [{
+    id: 'market', title: 'Market Data', subtitle: 'Location & metrics', defaultOpen: true,
+    fields: [
+      { key: 'title', label: 'Headline', highlight: hl },
+      { key: 'subtitle', label: 'Sub-headline', highlight: hl },
+      { key: 'eyebrow', label: 'Category Label', placeholder: 'Market Intelligence' },
+      { key: 'badge', label: 'Period', placeholder: 'Q4 2025' },
+      { key: 'location', label: 'City', placeholder: 'Hyderabad' },
+      { key: 'changePercent', label: 'YoY Growth', placeholder: '+22%', highlight: hl },
+      { key: 'metric1Label', label: 'Metric 1 Label' }, { key: 'metric1Value', label: 'Metric 1 Value', highlight: hl },
+      { key: 'metric2Label', label: 'Metric 2 Label' }, { key: 'metric2Value', label: 'Metric 2 Value' },
+      { key: 'metric3Label', label: 'Metric 3 Label' }, { key: 'metric3Value', label: 'Metric 3 Value' },
+      { key: 'metric4Label', label: 'Metric 4 Label' }, { key: 'metric4Value', label: 'Metric 4 Value' },
+      { key: 'ctaText', label: 'Button Text' },
+    ],
+  }],
+  'luxury-frame': [{
+    id: 'frame', title: 'Frame Content', subtitle: 'Brand names & slide badge', defaultOpen: true,
+    fields: [
+      { key: 'companyName', label: 'Brand Left', placeholder: 'ALFA', highlight: hl },
+      { key: 'eyebrow', label: 'Brand Right', placeholder: 'BINGHATTI' },
+      { key: 'title', label: 'Partner / Product', placeholder: 'Mercedes - Benz', highlight: hl },
+      { key: 'badge', label: 'Slide Badge', placeholder: '1 / 7' },
+    ],
+  }],
 }
 
 const REAL_ESTATE_TEMPLATES: TemplateId[] = [
-  'just-listed', 'just-sold', 'open-house', 'buyer-match', 'market-update',
-  'photo-gallery', 'luxury-frame',
+  'just-listed', 'just-sold', 'open-house', 'buyer-match',
+  'photo-gallery',
 ]
 
 const PERSON_TEMPLATES: TemplateId[] = ['profile-card', 'profile-glass', 'agent-spotlight']

@@ -24,20 +24,26 @@ const ExportBridgeContext = createContext<ExportBridgeValue | null>(null)
 
 export function ExportBridgeProvider({ children }: { children: ReactNode }) {
   const exportRef = useRef<HTMLDivElement | null>(null)
-  const [handlers, setHandlers] = useState<ExportHandlers | null>(null)
+  const handlersRef = useRef<ExportHandlers | null>(null)
+  const handlersReadyRef = useRef(false)
+  const [, setHandlersReady] = useState(false)
   const [exporting, setExporting] = useState('')
   const [exportError, setExportError] = useState('')
   const [savedMsg, setSavedMsg] = useState('')
 
   const registerHandlers = useCallback((h: ExportHandlers) => {
-    setHandlers(() => h)
+    handlersRef.current = h
+    if (!handlersReadyRef.current) {
+      handlersReadyRef.current = true
+      setHandlersReady(true)
+    }
   }, [])
 
   return (
     <ExportBridgeContext.Provider
       value={{
         exportRef,
-        handlers,
+        handlers: handlersRef.current,
         exporting,
         exportError,
         savedMsg,

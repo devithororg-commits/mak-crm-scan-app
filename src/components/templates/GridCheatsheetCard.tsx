@@ -3,17 +3,14 @@ import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import HighlightText from './HighlightText'
 
-const FOREST = '#1B4332'
-const TEAL = '#2D6A4F'
-
-function DotGrid({ rows, cols, className = '' }: { rows: number; cols: number; className?: string }) {
+function DotGrid({ rows, cols, color, className = '' }: { rows: number; cols: number; color: string; className?: string }) {
   return (
     <div
       className={`grid gap-1.5 ${className}`}
       style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, width: cols * 14 }}
     >
       {Array.from({ length: rows * cols }).map((_, i) => (
-        <div key={i} className="h-2.5 w-2.5 rounded-full" style={{ background: TEAL }} />
+        <div key={i} className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
       ))}
     </div>
   )
@@ -21,6 +18,8 @@ function DotGrid({ rows, cols, className = '' }: { rows: number; cols: number; c
 
 export default function GridCheatsheetCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
+  const forest = data.secondaryColor || '#1B4332'
+  const dotColor = data.accentColor || '#2D6A4F'
   const brand = data.eyebrow || "Instagram's"
   const sheetTitle = data.badge || 'New Grid Cheatsheet'
   const intro = data.subtitle || 'Introducing'
@@ -44,10 +43,9 @@ export default function GridCheatsheetCard({ data }: { data: CreativeData }) {
     >
       <Watermark data={data} />
 
-      {/* Header */}
       <div className="flex shrink-0 items-start justify-between px-10 pt-10">
         <div>
-          <p className="font-bold leading-tight" style={{ ...t.label, color: FOREST, fontSize: 13 }}>
+          <p className="font-bold leading-tight" style={{ ...t.label, color: forest, fontSize: 13 }}>
             {brand}
           </p>
           <p className="mt-0.5" style={{ ...t.label, color: '#9CA3AF', fontSize: 12 }}>
@@ -56,17 +54,16 @@ export default function GridCheatsheetCard({ data }: { data: CreativeData }) {
         </div>
       </div>
 
-      {/* Center content */}
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-10 text-center">
-        <DotGrid rows={2} cols={3} className="mb-8 opacity-90" />
+        <DotGrid rows={2} cols={3} color={dotColor} className="mb-8 opacity-90" />
 
-        <p className="font-bold" style={{ ...t.subtitle, color: FOREST, fontSize: (t.subtitle.fontSize as number) * 1.1 }}>
+        <p className="font-bold" style={{ ...t.subtitle, color: forest, fontSize: (t.subtitle.fontSize as number) * 1.1 }}>
           {intro}
         </p>
 
         <h2
           className="mt-2 max-w-md font-extrabold leading-[1.05] tracking-tight"
-          style={{ ...t.title, fontSize: (t.title.fontSize as number) * 1.35, color: FOREST }}
+          style={{ ...t.title, fontSize: (t.title.fontSize as number) * 1.35, color: forest }}
         >
           <HighlightText text={headline} data={data} />
         </h2>
@@ -75,18 +72,17 @@ export default function GridCheatsheetCard({ data }: { data: CreativeData }) {
           <HighlightText text={explainer} data={data} />
         </p>
 
-        <p className="mt-6 font-semibold" style={{ ...t.subtitle, color: FOREST }}>
+        <p className="mt-6 font-semibold" style={{ ...t.subtitle, color: forest }}>
           <HighlightText text={cta} data={data} />
         </p>
 
-        <DotGrid rows={3} cols={4} className="mt-8 opacity-90" />
+        <DotGrid rows={3} cols={4} color={dotColor} className="mt-8 opacity-90" />
       </div>
 
-      {/* Footer */}
       <div className="flex shrink-0 items-end justify-between px-10 pb-10">
         <div className="text-left">
           <p className="text-slate-400" style={t.label}>Created by</p>
-          <p className="font-bold" style={{ ...t.subtitle, color: FOREST }}>{author}</p>
+          <p className="font-bold" style={{ ...t.subtitle, color: forest }}>{author}</p>
           <p className="mt-1 text-slate-400" style={t.label}>{date}</p>
         </div>
         <svg className="h-8 w-6 text-slate-300" viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="2">

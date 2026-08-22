@@ -4,10 +4,11 @@ import { ChevronDown, Sparkles } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { TEMPLATES } from '../../data/config'
 import { getQuickEditZones } from '../../data/templateEditMap'
-import type { CreativeData } from '../../types/creative'
+import type { CreativeData, TemplateId } from '../../types/creative'
 import { HighlightField } from './HighlightField'
 import HighlightsEditor from './HighlightsEditor'
 import MediaEditor from './MediaEditor'
+import QuickStyleBar from './QuickStyleBar'
 import { Field, inputClass, textareaClass } from './FormUI'
 
 function EditField({
@@ -105,6 +106,12 @@ function AccordionZone({
   )
 }
 
+const HIGHLIGHTS_PROMINENT: TemplateId[] = [
+  'design-pills', 'market-update', 'home-tips', 'emi-calculator',
+  'investment-roi', 'project-launch', 'rera-trust', 'neighbourhood-guide',
+  'buyer-match', 'agent-spotlight',
+]
+
 export default function QuickEditPanel() {
   const { data, update } = useCreative()
   const zones = getQuickEditZones(data.templateId)
@@ -135,6 +142,8 @@ export default function QuickEditPanel() {
         </div>
       </div>
 
+      <QuickStyleBar />
+
       {zones.map((zone) => (
         <AccordionZone key={zone.id} title={zone.title} subtitle={zone.subtitle} defaultOpen={zone.defaultOpen}>
           {zone.fields.map((field) => (
@@ -152,11 +161,15 @@ export default function QuickEditPanel() {
         </AccordionZone>
       ))}
 
-      <AccordionZone title="Bullet Points" subtitle="Key highlights list" defaultOpen={false}>
+      <AccordionZone
+        title={data.templateId === 'design-pills' ? 'Pill Items' : 'Bullet Points'}
+        subtitle={data.templateId === 'design-pills' ? 'Each pill line in the list below' : 'Key highlights list'}
+        defaultOpen={HIGHLIGHTS_PROMINENT.includes(data.templateId)}
+      >
         <HighlightsEditor bare />
       </AccordionZone>
 
-      <AccordionZone title="Photos & Media" subtitle="Images, logo & layout" defaultOpen={false}>
+      <AccordionZone title="Photos & Media" subtitle="Quick image toggle — full controls in Style tab" defaultOpen={false}>
         <MediaEditor />
       </AccordionZone>
     </div>

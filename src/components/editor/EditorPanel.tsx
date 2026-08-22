@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  BarChart3, Download, LayoutGrid, Palette, PenLine, Images, ChevronRight, ArrowRight,
+  BarChart3, Download, LayoutGrid, Palette, PenLine, Images, ChevronRight, ArrowRight, SlidersHorizontal,
 } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import type { EditSection } from '../../types/creative'
@@ -17,6 +17,7 @@ import ListingImport from './ListingImport'
 import MetricsEditor from './MetricsEditor'
 import TemplatePicker from './TemplatePicker'
 import ThemeEditor from './ThemeEditor'
+import AdvancedControlsPanel from './AdvancedControlsPanel'
 
 const MAIN_NAV = [
   { id: 'templates' as const, label: 'Templates', icon: LayoutGrid },
@@ -25,6 +26,7 @@ const MAIN_NAV = [
 
 const EDIT_SECTIONS: { id: EditSection; label: string; icon: typeof PenLine }[] = [
   { id: 'content', label: 'Content', icon: PenLine },
+  { id: 'style', label: 'Style', icon: SlidersHorizontal },
   { id: 'data', label: 'Data', icon: BarChart3 },
   { id: 'brand', label: 'Brand', icon: Palette },
   { id: 'slides', label: 'Slides', icon: Images },
@@ -169,6 +171,8 @@ export default function EditorPanel() {
                   </>
                 )}
 
+                {activeTab === 'edit' && editSection === 'style' && <AdvancedControlsPanel />}
+
                 {activeTab === 'edit' && editSection === 'data' && (
                   <>
                     <CsvImporter />
@@ -203,6 +207,11 @@ export default function EditorPanel() {
                   Start Editing
                   <ArrowRight className="h-4 w-4" />
                 </button>
+                <p className="mt-2 text-center text-[10px] text-slate-400">
+                  Advanced controls in Edit →{' '}
+                  <button type="button" onClick={() => { setActiveTab('edit'); setEditSection('style') }} className="font-semibold text-indigo-600 hover:underline">Style</button>
+                  {' '}tab
+                </p>
               </div>
             )}
           </>

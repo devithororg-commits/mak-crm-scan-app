@@ -345,6 +345,8 @@ export const TEMPLATE_PRESETS: Partial<Record<TemplateId, Partial<CreativeData>>
     listingStatus: 'open-house',
   },
   'profile-glass': {
+    templateId: 'profile-glass',
+    category: 'person',
     personName: 'Aiwanfo Faith',
     personRole: 'Product designer',
     description: 'Designing for clarity & usability',
@@ -359,6 +361,8 @@ export const TEMPLATE_PRESETS: Partial<Record<TemplateId, Partial<CreativeData>>
     metric3Label: 'rate', metric3Value: '$44/hr',
   },
   'buyer-match': {
+    templateId: 'buyer-match',
+    category: 'location',
     title: 'Buying a home',
     ctaText: 'Get My Buyer Match',
     comparisonLabel: 'How matching works',
@@ -374,6 +378,8 @@ export const TEMPLATE_PRESETS: Partial<Record<TemplateId, Partial<CreativeData>>
     ],
   },
   'luxury-frame': {
+    templateId: 'luxury-frame',
+    category: 'marketing',
     title: 'Mercedes - Benz',
     companyName: 'ALFA',
     eyebrow: 'BINGHATTI',

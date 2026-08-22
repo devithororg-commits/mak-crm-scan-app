@@ -1,4 +1,5 @@
 import type { CreativeData } from '../../types/creative'
+import { hexToRgba } from '../../utils/color'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
 import CreativeLogo from './CreativeLogo'
@@ -15,8 +16,8 @@ export default function GlassCard({ data }: { data: CreativeData }) {
       className="relative flex h-full flex-col overflow-hidden rounded-3xl"
       style={{
         background: `
-          radial-gradient(ellipse 80% 60% at 0% 0%, rgba(253, 186, 116, 0.45) 0%, transparent 55%),
-          radial-gradient(ellipse 70% 50% at 100% 100%, rgba(251, 146, 60, 0.35) 0%, transparent 50%),
+          radial-gradient(ellipse 80% 60% at 0% 0%, ${hexToRgba(data.accentColor, 0.45)} 0%, transparent 55%),
+          radial-gradient(ellipse 70% 50% at 100% 100%, ${hexToRgba(data.secondaryColor, 0.35)} 0%, transparent 50%),
           linear-gradient(135deg, #FFF7ED 0%, #FFFBF5 40%, #FFFFFF 100%)
         `,
       }}

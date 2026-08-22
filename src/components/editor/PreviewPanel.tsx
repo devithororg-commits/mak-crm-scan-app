@@ -76,6 +76,8 @@ export default function PreviewPanel() {
 
   const batchRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
+  const dataRef = useRef(data)
+
   const [zoom, setZoom] = useState(1)
 
   const [showGrid, setShowGrid] = useState(false)
@@ -92,7 +94,7 @@ export default function PreviewPanel() {
 
   const previewSlide = data.carouselEnabled ? data.activeCarouselSlide : undefined
 
-
+  useEffect(() => { dataRef.current = data }, [data])
 
   const setBatchRef = useCallback((ratio: AspectRatio) => (el: HTMLDivElement | null) => {
 
@@ -102,11 +104,11 @@ export default function PreviewPanel() {
 
 
 
-  const applyQrIfNeeded = async (dataUrl: string) => {
+  const applyQrIfNeeded = async (dataUrl: string, snapshot = dataRef.current) => {
 
-    const qrUrl = data.qrCodeUrl || data.website || data.footerWebsite
+    const qrUrl = snapshot.qrCodeUrl || snapshot.website || snapshot.footerWebsite
 
-    if (data.showQrCode && qrUrl) {
+    if (snapshot.showQrCode && qrUrl) {
 
       try {
 
@@ -127,6 +129,8 @@ export default function PreviewPanel() {
 
 
   const renderSlideToUrl = async (slideIndex: number, aspect: AspectRatio = '4:5') => {
+
+    const snapshot = dataRef.current
 
     const container = document.createElement('div')
 
@@ -150,11 +154,11 @@ export default function PreviewPanel() {
 
       root.render(
 
-        <div style={{ width: dims.width, height: dims.height, fontFamily: fontFamilyCss(data.fontFamily) }}>
+        <div style={{ width: dims.width, height: dims.height, fontFamily: fontFamilyCss(snapshot.fontFamily) }}>
 
           <TemplateRenderer
 
-            data={{ ...data, aspectRatio: aspect, carouselEnabled: data.carouselEnabled }}
+            data={{ ...snapshot, aspectRatio: aspect, carouselEnabled: snapshot.carouselEnabled }}
 
             slideIndex={slideIndex}
 
@@ -170,9 +174,9 @@ export default function PreviewPanel() {
 
     await prepareElementForExport(inner)
 
-    let url = await renderElement(inner, { ...data, aspectRatio: aspect }, aspect, 'png')
+    let url = await renderElement(inner, { ...snapshot, aspectRatio: aspect }, aspect, 'png')
 
-    url = await applyQrIfNeeded(url)
+    url = await applyQrIfNeeded(url, snapshot)
 
     root.unmount()
 
@@ -198,7 +202,7 @@ export default function PreviewPanel() {
 
         try {
 
-          await exportCreative(exportRef.current, data, format)
+          await exportCreative(exportRef.current, dataRef.current, format)
 
         } catch (e) {
 
@@ -248,9 +252,9 @@ export default function PreviewPanel() {
 
               root.render(
 
-                <div style={{ width: ratioDims.width, height: ratioDims.height, fontFamily: fontFamilyCss(data.fontFamily) }}>
+                <div style={{ width: ratioDims.width, height: ratioDims.height, fontFamily: fontFamilyCss(dataRef.current.fontFamily) }}>
 
-                  <TemplateRenderer data={{ ...data, aspectRatio: ratio }} />
+                  <TemplateRenderer data={{ ...dataRef.current, aspectRatio: ratio }} />
 
                 </div>,
 
@@ -262,7 +266,7 @@ export default function PreviewPanel() {
 
             },
 
-            data,
+            dataRef.current,
 
             format,
 
@@ -288,9 +292,10 @@ export default function PreviewPanel() {
 
         try {
 
-          const thumb = await renderElement(exportRef.current, data, data.aspectRatio, 'png')
+          const snap = dataRef.current
+          const thumb = await renderElement(exportRef.current, snap, snap.aspectRatio, 'png')
 
-          saveToLibrary(data, thumb)
+          saveToLibrary(snap, thumb)
 
           setSavedMsg('Saved to library!')
 
@@ -298,7 +303,7 @@ export default function PreviewPanel() {
 
         } catch {
 
-          saveToLibrary(data)
+          saveToLibrary(dataRef.current)
 
           setSavedMsg('Saved to library!')
 
@@ -320,17 +325,18 @@ export default function PreviewPanel() {
 
         try {
 
-          const slideCount = data.carouselEnabled ? data.carouselSlides.length : 1
+          const snap = dataRef.current
+          const slideCount = snap.carouselEnabled ? snap.carouselSlides.length : 1
 
           const urls: string[] = []
 
           for (let i = 0; i < slideCount; i++) {
 
-            urls.push(await renderSlideToUrl(i, data.aspectRatio))
+            urls.push(await renderSlideToUrl(i, snap.aspectRatio))
 
           }
 
-          const dims = aspectDimensions(data.aspectRatio)
+          const dims = aspectDimensions(snap.aspectRatio)
 
           const blob = await exportSlideshowVideo(urls, {
 
@@ -344,7 +350,7 @@ export default function PreviewPanel() {
 
           })
 
-          const slug = (data.title || 'creative').slice(0, 20).replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()
+          const slug = (snap.title || 'creative').slice(0, 20).replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()
 
           downloadBlob(blob, `${slug}-reel.webm`)
 
@@ -370,7 +376,8 @@ export default function PreviewPanel() {
 
           const urls: string[] = []
 
-          for (let i = 0; i < data.carouselSlides.length; i++) {
+          const snap = dataRef.current
+          for (let i = 0; i < snap.carouselSlides.length; i++) {
 
             urls.push(await renderSlideToUrl(i, '4:5'))
 
@@ -394,7 +401,7 @@ export default function PreviewPanel() {
 
     })
 
-  }, [data, exportRef, registerHandlers, setExportError, setExporting, setSavedMsg])
+  }, [exportRef, registerHandlers, setExportError, setExporting, setSavedMsg])
 
 
 

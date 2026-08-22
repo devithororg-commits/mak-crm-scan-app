@@ -34,7 +34,7 @@ export default function FestivalWishesCard({ data }: { data: CreativeData }) {
 
       {data.showCreativeImage && data.imageUrl && (
         <div className="absolute inset-0">
-          <img src={data.imageUrl} alt="" className="h-full w-full object-cover opacity-30" />
+          <img src={data.imageUrl} alt="" className="h-full w-full object-cover" style={{ opacity: (data.imageOpacity ?? 30) / 100 }} />
           <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-80`} />
         </div>
       )}

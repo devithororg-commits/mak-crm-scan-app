@@ -13,10 +13,24 @@ interface Props {
   onClose: () => void
 }
 
+function loadExportFormat(): 'png' | 'jpeg' {
+  try {
+    const saved = sessionStorage.getItem('exportFormat')
+    return saved === 'jpeg' ? 'jpeg' : 'png'
+  } catch {
+    return 'png'
+  }
+}
+
 export default function ExportPanel({ onClose }: Props) {
   const { data } = useCreative()
   const { handlers, exporting, exportError, savedMsg } = useExportBridge()
-  const [exportFormat, setExportFormat] = useState<'png' | 'jpeg'>('png')
+  const [exportFormat, setExportFormat] = useState<'png' | 'jpeg'>(loadExportFormat)
+
+  const setFormat = (format: 'png' | 'jpeg') => {
+    setExportFormat(format)
+    try { sessionStorage.setItem('exportFormat', format) } catch { /* ignore */ }
+  }
   const templateName = TEMPLATES.find((t) => t.id === data.templateId)?.name ?? 'Creative'
 
   const busy = !!exporting
@@ -40,19 +54,12 @@ export default function ExportPanel({ onClose }: Props) {
         </button>
       </div>
 
-      {/* Step indicator */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-slate-100 bg-slate-50/80 px-5 py-3">
-        {['Configure', 'Preview', 'Download'].map((step, i) => (
-          <div key={step} className="flex items-center gap-2">
-            <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold ${
-              i < 2 ? 'bg-indigo-600 text-white' : 'bg-emerald-500 text-white'
-            }`}>
-              {i + 1}
-            </span>
-            <span className="text-[11px] font-semibold text-slate-600">{step}</span>
-            {i < 2 && <span className="mx-1 text-slate-300">→</span>}
-          </div>
-        ))}
+      <div className="shrink-0 border-b border-slate-100 bg-slate-50/80 px-5 py-3 text-[11px] text-slate-600">
+        <span className="font-semibold text-indigo-700">1. Configure</span>
+        <span className="mx-2 text-slate-300">→</span>
+        <span className="font-semibold text-indigo-700">2. Preview</span> (live on the right)
+        <span className="mx-2 text-slate-300">→</span>
+        <span className={`font-semibold ${savedMsg ? 'text-emerald-600' : 'text-slate-500'}`}>3. Download</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4">
@@ -84,14 +91,14 @@ export default function ExportPanel({ onClose }: Props) {
           <div className="flex rounded-[12px] border border-slate-200/80 bg-slate-50/80 p-0.5">
             <button
               type="button"
-              onClick={() => setExportFormat('png')}
+              onClick={() => setFormat('png')}
               className={`rounded-[10px] px-3.5 py-1.5 text-[12px] font-bold transition ${exportFormat === 'png' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
             >
               PNG
             </button>
             <button
               type="button"
-              onClick={() => setExportFormat('jpeg')}
+              onClick={() => setFormat('jpeg')}
               className={`rounded-[10px] px-3.5 py-1.5 text-[12px] font-bold transition ${exportFormat === 'jpeg' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}`}
             >
               JPEG

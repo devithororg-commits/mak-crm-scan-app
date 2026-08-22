@@ -1,4 +1,4 @@
-import { Bookmark, Camera, MapPin, Star } from 'lucide-react'
+import { Bookmark, Briefcase, MapPin, Star } from 'lucide-react'
 import type { CreativeData } from '../../types/creative'
 import { getTypography } from '../../utils/typography'
 import CreativeFooter, { Watermark } from './CreativeFooter'
@@ -73,7 +73,7 @@ export default function ProfileGlassCard({ data }: { data: CreativeData }) {
         {/* Role + location (+ tools inline for layout A) */}
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
           <span className="inline-flex items-center gap-1.5 text-slate-600" style={t.body}>
-            <Camera className="h-4 w-4 text-slate-400" strokeWidth={1.75} />
+            <Briefcase className="h-4 w-4 text-slate-400" strokeWidth={1.75} />
             <HighlightText text={role} data={data} />
           </span>
           <span className="inline-flex items-center gap-1.5 text-slate-600" style={t.body}>

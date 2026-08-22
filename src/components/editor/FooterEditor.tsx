@@ -38,11 +38,11 @@ function SizeSlider({ label, value, min, max, unit, onChange }: {
   )
 }
 
-export default function FooterEditor() {
+export default function FooterEditor({ bare = false }: { bare?: boolean }) {
   const { data, update } = useCreative()
 
-  return (
-    <Section title="Footer Controls" desc="Full control over footer text, style & visibility">
+  const inner = (
+    <>
       <label className="mb-4 flex items-center gap-2 text-xs text-slate-700">
         <input type="checkbox" checked={data.showFooter} onChange={(e) => update('showFooter', e.target.checked)} className="rounded accent-indigo-500" />
         Show footer on creative
@@ -208,6 +208,14 @@ export default function FooterEditor() {
           </div>
         </div>
       )}
+    </>
+  )
+
+  if (bare) return inner
+
+  return (
+    <Section title="Footer Controls" desc="Full control over footer text, style & visibility">
+      {inner}
     </Section>
   )
 }

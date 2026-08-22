@@ -76,7 +76,7 @@ export default function AgentSpotlightCard({ data }: { data: CreativeData }) {
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {data.highlights.filter(Boolean).slice(0, 4).map((tag, i) => (
                 <span key={i} className="rounded-full bg-indigo-50 px-3 py-1 font-medium text-indigo-700" style={t.label}>
-                  {tag}
+                  <HighlightText text={tag} data={data} />
                 </span>
               ))}
             </div>
