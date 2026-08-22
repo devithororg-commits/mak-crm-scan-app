@@ -114,6 +114,9 @@ export default function TypographyEditor() {
             update('metricFontSize', FONT_SIZE_DEFAULTS.metricFontSize)
             update('labelFontSize', FONT_SIZE_DEFAULTS.labelFontSize)
             update('textScale', FONT_SIZE_DEFAULTS.textScale)
+            update('textAlign', FONT_SIZE_DEFAULTS.textAlign)
+            update('lineHeightScale', FONT_SIZE_DEFAULTS.lineHeightScale)
+            update('letterSpacing', FONT_SIZE_DEFAULTS.letterSpacing)
           }}
           className="mt-4 w-full rounded-xl border border-slate-200 py-2 text-xs text-slate-400 transition hover:border-slate-300 hover:text-slate-900"
         >

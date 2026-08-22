@@ -1,8 +1,9 @@
-import { Palette, Type, ZoomIn } from 'lucide-react'
+import { Palette, Type, ZoomIn, Wand2 } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { COLOR_PALETTES } from '../../data/config'
 import type { HighlightStyle } from '../../types/creative'
 import { getHighlightStyle } from '../../utils/textHighlight'
+import StylePresetsBar from './StylePresetsBar'
 
 const HIGHLIGHT_STYLES: { id: HighlightStyle; label: string }[] = [
   { id: 'accent', label: 'Accent' },
@@ -93,6 +94,14 @@ export default function QuickStyleBar() {
             onChange={(e) => update('textScale', Number(e.target.value))}
             className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-100 accent-indigo-500"
           />
+        </div>
+
+        {/* Quick presets */}
+        <div className="border-t border-slate-100 pt-3">
+          <p className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <Wand2 className="h-3 w-3" /> Quick Looks
+          </p>
+          <StylePresetsBar compact />
         </div>
       </div>
     </div>

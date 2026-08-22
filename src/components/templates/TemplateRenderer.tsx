@@ -102,7 +102,7 @@ interface Props {
 export default function TemplateRenderer({ data, slideIndex }: Props) {
   if (data.carouselEnabled) {
     return (
-      <div className="h-full w-full" style={{ fontFamily: fontFamilyCss(data.fontFamily) }}>
+      <div className="h-full w-full" style={{ fontFamily: fontFamilyCss(data.fontFamily), textAlign: data.textAlign }}>
         <CarouselSlideCard data={data} slideIndex={slideIndex} />
       </div>
     )
@@ -110,7 +110,7 @@ export default function TemplateRenderer({ data, slideIndex }: Props) {
 
   const Component = TEMPLATE_MAP[data.templateId] ?? AnalyticsCard
   return (
-    <div className="h-full w-full" style={{ fontFamily: fontFamilyCss(data.fontFamily) }}>
+    <div className="h-full w-full" style={{ fontFamily: fontFamilyCss(data.fontFamily), textAlign: data.textAlign }}>
       <Component data={data} slideIndex={slideIndex} />
     </div>
   )

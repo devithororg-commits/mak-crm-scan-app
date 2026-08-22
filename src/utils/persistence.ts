@@ -45,6 +45,11 @@ export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {
   merged.metricFontSize = Number(merged.metricFontSize) || defaults.metricFontSize
   merged.labelFontSize = Number(merged.labelFontSize) || defaults.labelFontSize
   merged.textScale = Number(merged.textScale) || defaults.textScale
+  merged.textAlign = (['left', 'center', 'right'] as const).includes(merged.textAlign as 'left' | 'center' | 'right')
+    ? merged.textAlign
+    : defaults.textAlign
+  merged.lineHeightScale = Number(merged.lineHeightScale) || defaults.lineHeightScale
+  merged.letterSpacing = Number(merged.letterSpacing) ?? defaults.letterSpacing
   merged.highlightStyle = resolveHighlightStyle(merged.highlightStyle)
   merged.highlightColor = merged.highlightColor ?? defaults.highlightColor
   merged.footerFontSize = Number(merged.footerFontSize) || defaults.footerFontSize

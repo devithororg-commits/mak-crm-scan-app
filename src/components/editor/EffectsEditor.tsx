@@ -1,4 +1,5 @@
 import { useCreative } from '../../store/CreativeContext'
+import { IMAGE_FILTER_PRESETS, applyFilterPreset } from '../../utils/imageFilters'
 import { Field, Section, inputClass } from './FormUI'
 
 function Slider({ label, value, min, max, unit, onChange }: {
@@ -20,10 +21,34 @@ function Slider({ label, value, min, max, unit, onChange }: {
 }
 
 export default function EffectsEditor({ bare = false }: { bare?: boolean }) {
-  const { data, update } = useCreative()
+  const { data, update, setData } = useCreative()
 
   const inner = (
     <div className="space-y-5">
+        {/* Image filters */}
+        {data.showCreativeImage && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Photo Filters</p>
+            <div className="grid grid-cols-4 gap-1.5">
+              {IMAGE_FILTER_PRESETS.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setData((prev) => ({ ...prev, ...applyFilterPreset(f.id) }))}
+                  className={`rounded-lg border py-2 text-center transition ${
+                    data.imageFilter === f.id ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <p className="text-[9px] font-medium text-slate-900">{f.name}</p>
+                </button>
+              ))}
+            </div>
+            <Slider label="Brightness" value={data.imageBrightness} min={70} max={130} unit="%" onChange={(v) => update('imageBrightness', v)} />
+            <Slider label="Contrast" value={data.imageContrast} min={70} max={150} unit="%" onChange={(v) => update('imageContrast', v)} />
+            <Slider label="Saturation" value={data.imageSaturation} min={0} max={150} unit="%" onChange={(v) => update('imageSaturation', v)} />
+          </div>
+        )}
+
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Image Effects</p>
           <Slider label="Image Opacity" value={data.imageOpacity} min={0} max={100} unit="%" onChange={(v) => update('imageOpacity', v)} />

@@ -1,11 +1,16 @@
 import { useState, type ReactNode } from 'react'
-import { ChevronDown, Layers, Image, Type, Sparkles, Layout, PanelBottom } from 'lucide-react'
+import { ChevronDown, Layers, Image, Type, Sparkles, Layout, PanelBottom, Eye, Wand2, QrCode, Move } from 'lucide-react'
 import CanvasSettings from './CanvasSettings'
 import TypographyEditor from './TypographyEditor'
 import MediaEditor from './MediaEditor'
 import EffectsEditor from './EffectsEditor'
 import FooterEditor from './FooterEditor'
 import LogoEditor from './LogoEditor'
+import ThemeEditor from './ThemeEditor'
+import StylePresetsBar from './StylePresetsBar'
+import LayoutVisibilityEditor from './LayoutVisibilityEditor'
+import LayoutSpacingEditor from './LayoutSpacingEditor'
+import QrCodeEditor from './QrCodeEditor'
 
 function Accordion({
   id,
@@ -61,13 +66,29 @@ export default function AdvancedControlsPanel() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-violet-600">Advanced Studio</p>
             <p className="text-[14px] font-extrabold text-slate-900">Pro Controls</p>
             <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
-              Typography, images, effects, canvas & footer — full creative control
+              Themes, visibility, spacing, typography & effects — full creative control
             </p>
           </div>
         </div>
       </div>
 
-      <Accordion id="canvas" title="Canvas & Format" subtitle="Platform, aspect ratio & size" icon={Layout} defaultOpen>
+      <Accordion id="presets" title="Style Presets" subtitle="One-click looks & content density" icon={Wand2} defaultOpen>
+        <StylePresetsBar />
+      </Accordion>
+
+      <Accordion id="themes" title="Color Themes" subtitle="Full brand reskin — colors + font" icon={Sparkles} defaultOpen>
+        <ThemeEditor bare />
+      </Accordion>
+
+      <Accordion id="visibility" title="Show / Hide" subtitle="Toggle footer, logos, image & QR" icon={Eye}>
+        <LayoutVisibilityEditor />
+      </Accordion>
+
+      <Accordion id="layout" title="Layout & Spacing" subtitle="Alignment, line height & padding" icon={Move}>
+        <LayoutSpacingEditor />
+      </Accordion>
+
+      <Accordion id="canvas" title="Canvas & Format" subtitle="Platform, aspect ratio & size" icon={Layout}>
         <CanvasSettings compact />
       </Accordion>
 
@@ -81,6 +102,10 @@ export default function AdvancedControlsPanel() {
 
       <Accordion id="effects" title="Visual Effects" subtitle="Opacity, borders, overlay & watermark" icon={Layers}>
         <EffectsEditor bare />
+      </Accordion>
+
+      <Accordion id="qr" title="QR Code" subtitle="Scannable link on exported image" icon={QrCode}>
+        <QrCodeEditor bare />
       </Accordion>
 
       <Accordion id="logo" title="Logo Placement" subtitle="Size, position & fit per template zone" icon={Image}>

@@ -72,6 +72,7 @@ export type ImageFilter = 'none' | 'luxury' | 'modern' | 'natural' | 'dramatic' 
 export type UploadQuality = 'standard' | 'high' | 'ultra'
 export type LogoFit = 'contain' | 'cover'
 export type FooterAlign = 'left' | 'center' | 'right' | 'split'
+export type TextAlign = 'left' | 'center' | 'right'
 
 export interface ChartDataPoint {
   label: string
@@ -211,6 +212,9 @@ export interface CreativeData {
   metricFontSize: number
   labelFontSize: number
   textScale: number
+  textAlign: TextAlign
+  lineHeightScale: number
+  letterSpacing: number
 
   highlightStyle: HighlightStyle
   highlightColor: string
@@ -396,6 +400,9 @@ export const defaultCreativeData = (): CreativeData => ({
   metricFontSize: 20,
   labelFontSize: 11,
   textScale: 100,
+  textAlign: 'left',
+  lineHeightScale: 100,
+  letterSpacing: 0,
 
   highlightStyle: 'accent',
   highlightColor: '',
