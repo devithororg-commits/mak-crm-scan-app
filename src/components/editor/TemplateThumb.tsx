@@ -464,6 +464,112 @@ const THUMBS: Record<TemplateId, ReactNode> = {
       </div>
     </div>
   ),
+
+  'grid-cheatsheet': (
+    <div
+      className="flex h-full flex-col items-center justify-center p-2"
+      style={{
+        backgroundImage: 'linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)',
+        backgroundSize: '8px 8px',
+        backgroundColor: '#FAFAFA',
+      }}
+    >
+      <div className="grid grid-cols-3 gap-0.5">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="h-1 w-1 rounded-full bg-emerald-600" />
+        ))}
+      </div>
+      <Bar w="w-8" color="bg-emerald-800" />
+      <Bar w="w-5" color="bg-lime-500" />
+    </div>
+  ),
+
+  'glass-card': (
+    <div className="flex h-full items-center justify-center bg-gradient-to-br from-orange-100 to-white p-2">
+      <div className="w-full rounded-lg border border-white/80 bg-white/50 p-2 backdrop-blur-sm">
+        <Bar w="w-4" color="bg-slate-800" />
+        <Bar w="w-8" color="bg-orange-400" />
+        <Bar w="w-6" color="bg-slate-300" />
+      </div>
+    </div>
+  ),
+
+  'gradient-radar': (
+    <div className="flex h-full bg-slate-50 p-2">
+      <div className="flex w-1/2 flex-col justify-center gap-1">
+        <Bar w="w-5" color="bg-slate-400" />
+        <Bar w="w-6" color="bg-pink-500" />
+      </div>
+      <div className="flex w-1/2 items-center justify-center">
+        <div className="h-8 w-8 rounded-full border border-pink-300" />
+      </div>
+    </div>
+  ),
+
+  'serif-authority': (
+    <div className="flex h-full flex-col justify-between bg-stone-50 p-2">
+      <Bar w="w-8" color="bg-slate-800" />
+      <Bar w="w-6" color="bg-slate-400" />
+      <div className="h-3 w-full rounded bg-gradient-to-r from-violet-400 to-amber-300 opacity-60" />
+    </div>
+  ),
+
+  'growth-curve': (
+    <div className="flex h-full flex-col bg-slate-50 p-2">
+      <Bar w="w-4" color="bg-slate-700" />
+      <Bar w="w-7" color="bg-slate-800" />
+      <div className="mt-auto h-4 w-full rounded bg-gradient-to-r from-orange-300 via-pink-400 to-blue-400 opacity-70" />
+    </div>
+  ),
+
+  'minimal-pill': (
+    <div className="relative flex h-full flex-col bg-slate-50 p-2">
+      <div className="absolute right-0 top-0 h-6 w-6 rounded-full bg-purple-200 blur-sm" />
+      <div className="w-5 rounded-full border border-slate-800 px-1 py-0.5 text-[5px]">PILL</div>
+      <Bar w="w-8" color="bg-slate-800" />
+    </div>
+  ),
+
+  'carousel-tip': (
+    <div className="relative flex h-full flex-col items-center justify-center bg-[#F9F9FB] p-2">
+      <div className="absolute left-1 top-1 h-3 w-3 rounded-full border border-slate-800" />
+      <Bar w="w-7" color="bg-slate-900" />
+      <Bar w="w-5" color="bg-slate-400" />
+    </div>
+  ),
+
+  'design-pills': (
+    <div className="flex h-full flex-col items-center justify-center gap-1 bg-[#F9F9F9] p-2">
+      <Bar w="w-6" color="bg-teal-500" />
+      {[1, 2].map((i) => (
+        <div key={i} className="w-full rounded-full border border-slate-200 bg-white px-1 py-0.5">
+          <Bar w="w-5" h="h-0.5" />
+        </div>
+      ))}
+    </div>
+  ),
+
+  'hook-post': (
+    <div className="flex h-full flex-col bg-indigo-50 p-2">
+      <div className="flex justify-between border-b border-slate-200 pb-1">
+        <Bar w="w-4" h="h-0.5" />
+        <Bar w="w-3" h="h-0.5" />
+      </div>
+      <Bar w="w-8" color="bg-slate-900" />
+      <Bar w="w-5" color="bg-orange-500" />
+    </div>
+  ),
+
+  'studio-statement': (
+    <div className="flex h-full flex-col items-center justify-center bg-slate-50 p-2">
+      <Bar w="w-6" color="bg-violet-500" />
+      <div className="mt-1 flex gap-1">
+        <div className="h-2 w-5 rounded-full border border-violet-400" />
+        <div className="h-2 w-5 rounded-full border border-violet-400" />
+      </div>
+      <div className="mt-auto h-2 w-full rounded-t-full bg-gradient-to-r from-violet-400 to-blue-400 opacity-60" />
+    </div>
+  ),
 }
 
 export const TEMPLATE_GROUPS: { id: string; label: string; icon: IconName }[] = [
@@ -508,4 +614,14 @@ export const TEMPLATE_GROUP_MAP: Record<TemplateId, string> = {
   'property-compare': 'realestate',
   'home-tips': 'social',
   'team-showcase': 'business',
+  'grid-cheatsheet': 'social',
+  'glass-card': 'business',
+  'gradient-radar': 'social',
+  'serif-authority': 'business',
+  'growth-curve': 'business',
+  'minimal-pill': 'social',
+  'carousel-tip': 'social',
+  'design-pills': 'social',
+  'hook-post': 'social',
+  'studio-statement': 'social',
 }

@@ -33,6 +33,16 @@ import RentalYieldCard from './RentalYieldCard'
 import PropertyCompareCard from './PropertyCompareCard'
 import HomeTipsCard from './HomeTipsCard'
 import TeamShowcaseCard from './TeamShowcaseCard'
+import GridCheatsheetCard from './GridCheatsheetCard'
+import GlassCard from './GlassCard'
+import GradientRadarCard from './GradientRadarCard'
+import SerifAuthorityCard from './SerifAuthorityCard'
+import GrowthCurveCard from './GrowthCurveCard'
+import MinimalPillCard from './MinimalPillCard'
+import CarouselTipCard from './CarouselTipCard'
+import DesignPillsCard from './DesignPillsCard'
+import HookPostCard from './HookPostCard'
+import StudioStatementCard from './StudioStatementCard'
 import ProgressCard from './ProgressCard'
 import ReportStoryCard from './ReportStoryCard'
 import StatsDashboard from './StatsDashboard'
@@ -72,6 +82,16 @@ const TEMPLATE_MAP: Record<TemplateId, ComponentType<{ data: CreativeData; slide
   'property-compare': PropertyCompareCard,
   'home-tips': HomeTipsCard,
   'team-showcase': TeamShowcaseCard,
+  'grid-cheatsheet': GridCheatsheetCard,
+  'glass-card': GlassCard,
+  'gradient-radar': GradientRadarCard,
+  'serif-authority': SerifAuthorityCard,
+  'growth-curve': GrowthCurveCard,
+  'minimal-pill': MinimalPillCard,
+  'carousel-tip': CarouselTipCard,
+  'design-pills': DesignPillsCard,
+  'hook-post': HookPostCard,
+  'studio-statement': StudioStatementCard,
 }
 
 interface Props {

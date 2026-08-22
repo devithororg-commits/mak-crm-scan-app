@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Check, LayoutGrid } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { TEMPLATES } from '../../data/config'
-import { TEMPLATE_PRESETS } from '../../data/presets'
+import { applyTemplateSwitch } from '../../data/presets'
 import type { TemplateId } from '../../types/creative'
 import TemplateThumb, { TEMPLATE_GROUPS, TEMPLATE_GROUP_MAP } from './TemplateThumb'
 import { AppIcon } from '../icons'
@@ -14,12 +14,7 @@ export default function TemplatePicker() {
 
   const selectTemplate = (id: TemplateId) => {
     if (data.templateId === id) return
-    const preset = TEMPLATE_PRESETS[id]
-    if (preset) {
-      setData((prev) => ({ ...prev, templateId: id, ...preset }))
-    } else {
-      setData((prev) => ({ ...prev, templateId: id }))
-    }
+    setData((prev) => applyTemplateSwitch(id, prev))
   }
 
   const filtered = TEMPLATES.filter(

@@ -12,7 +12,9 @@ const VALID_TEMPLATES: TemplateId[] = [
   'testimonial', 'market-update', 'photo-gallery',
   'price-drop', 'emi-calculator', 'agent-spotlight', 'festival-wishes', 'site-visit',
   'before-after', 'neighbourhood-guide', 'investment-roi', 'project-launch', 'quote-card',
-  'rera-trust', 'rental-yield', 'property-compare', 'home-tips', 'team-showcase',
+  'rera-trust', 'rental-yield', 'property-compare',   'home-tips', 'team-showcase', 'grid-cheatsheet', 'glass-card',
+  'gradient-radar', 'serif-authority', 'growth-curve', 'minimal-pill',
+  'carousel-tip', 'design-pills', 'hook-post', 'studio-statement',
 ]
 
 export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {

@@ -51,6 +51,16 @@ export const TEMPLATES: {
   { id: 'property-compare', name: 'Property Compare', desc: 'Side-by-side A vs B comparison', preview: 'bg-slate-50 border', bestFor: 'Real Estate' },
   { id: 'home-tips', name: 'Home Tips', desc: 'Numbered tips checklist card', preview: 'bg-gradient-to-br from-amber-50 to-orange-50', bestFor: 'Education' },
   { id: 'team-showcase', name: 'Team Showcase', desc: 'Team stats & office intro', preview: 'bg-white border shadow', bestFor: 'Agency / Broker' },
+  { id: 'grid-cheatsheet', name: 'Grid Cheatsheet', desc: 'Educational carousel with dot grids', preview: 'bg-[#FAFAFA] border', bestFor: 'Social / Tips' },
+  { id: 'glass-card', name: 'Glass Card', desc: 'Frosted glass hero with highlights', preview: 'bg-gradient-to-br from-orange-50 to-white', bestFor: 'Startup / Brand' },
+  { id: 'gradient-radar', name: 'Gradient Radar', desc: 'Tech statement + radar graphic', preview: 'bg-slate-50 border', bestFor: 'Social / Tech' },
+  { id: 'serif-authority', name: 'Serif Authority', desc: 'Editorial headline + growth arrow', preview: 'bg-stone-50 border', bestFor: 'Thought Leadership' },
+  { id: 'growth-curve', name: 'Growth Curve', desc: 'Brand + gradient chart line', preview: 'bg-slate-50 border', bestFor: 'SaaS / Marketing' },
+  { id: 'minimal-pill', name: 'Minimal Pill', desc: 'Pastel blob + pill badge layout', preview: 'bg-slate-50 border', bestFor: 'Lifestyle / Brand' },
+  { id: 'carousel-tip', name: 'Carousel Tip', desc: 'Carousel slide with step badge', preview: 'bg-[#F9F9FB] border', bestFor: 'Instagram Carousel' },
+  { id: 'design-pills', name: 'Design Pills', desc: 'Serif headline + pill list', preview: 'bg-[#F9F9F9] border', bestFor: 'Design / Agency' },
+  { id: 'hook-post', name: 'Hook Post', desc: 'Bold hook + social footer', preview: 'bg-indigo-50 border', bestFor: 'Engagement' },
+  { id: 'studio-statement', name: 'Studio Statement', desc: 'Gradient title + ghost CTAs', preview: 'bg-slate-50 border', bestFor: 'Portfolio / Studio' },
 ]
 
 export const CHART_TYPES: { id: 'line' | 'bar' | 'pie' | 'area' | 'none'; label: string; icon: IconName }[] = [

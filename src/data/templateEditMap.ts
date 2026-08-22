@@ -234,6 +234,105 @@ const TEMPLATE_SPECIFIC: Partial<Record<TemplateId, QuickEditZone[]>> = {
       { key: 'location', label: 'Office Location' },
     ],
   }],
+  'grid-cheatsheet': [{
+    id: 'cheatsheet', title: 'Cheatsheet Content', subtitle: 'Title slide copy & credits', defaultOpen: true,
+    fields: [
+      { key: 'eyebrow', label: 'Brand Label', placeholder: "Instagram's" },
+      { key: 'badge', label: 'Sheet Title', placeholder: 'New Grid Cheatsheet' },
+      { key: 'subtitle', label: 'Intro Line', placeholder: 'Introducing' },
+      { key: 'title', label: 'Main Headline', placeholder: 'The New **Grid**', highlight: hl },
+      { key: 'description', label: 'Explainer', multiline: true, highlight: hl },
+      { key: 'status', label: 'CTA Line', placeholder: "Let's break it down...", highlight: hl },
+      { key: 'authorName', label: 'Author Name' },
+      { key: 'publishedDate', label: 'Date' },
+    ],
+  }],
+  'glass-card': [{
+    id: 'glass', title: 'Glass Card', subtitle: 'Brand & hero copy', defaultOpen: true,
+    fields: [
+      { key: 'companyName', label: 'Brand / Logo Text', placeholder: 'Surgent' },
+      { key: 'title', label: 'Headline', placeholder: 'Describe your **idea**...', highlight: hl, multiline: true },
+      { key: 'description', label: 'Subtext', multiline: true, highlight: hl },
+      { key: 'ctaText', label: 'Button (optional)' },
+    ],
+  }],
+  'gradient-radar': [{
+    id: 'radar', title: 'Statement', subtitle: 'Multi-line headline', defaultOpen: true,
+    fields: [
+      { key: 'eyebrow', label: 'Lead Line', placeholder: 'This tells you something:' },
+      { key: 'subtitle', label: 'Line 1', placeholder: 'Design is' },
+      { key: 'title', label: 'Line 2 (highlight)', placeholder: '**changing.**', highlight: hl },
+      { key: 'badge', label: 'Line 3 (gradient)', placeholder: '**Fast.**', highlight: hl },
+      { key: 'description', label: 'Extra Text', multiline: true },
+    ],
+  }],
+  'serif-authority': [{
+    id: 'authority', title: 'Editorial', subtitle: 'Serif headline + subtext', defaultOpen: true,
+    fields: [
+      { key: 'title', label: 'Headline', placeholder: 'Consistency Builds **Authority**.', highlight: hl, multiline: true },
+      { key: 'description', label: 'Subtext', multiline: true, highlight: hl },
+      { key: 'ctaText', label: 'Footer Line', placeholder: 'Plan smarter with **Brand**.', highlight: hl },
+    ],
+  }],
+  'growth-curve': [{
+    id: 'growth', title: 'Growth Message', subtitle: 'Brand + chart copy', defaultOpen: true,
+    fields: [
+      { key: 'companyName', label: 'Brand Name' },
+      { key: 'title', label: 'Headline', placeholder: 'Consistency Beats **Virality**.', highlight: hl },
+      { key: 'description', label: 'Subtext', multiline: true },
+      { key: 'ctaText', label: 'Footer', highlight: hl },
+    ],
+  }],
+  'minimal-pill': [{
+    id: 'minimal', title: 'Minimal Brand', subtitle: 'Pill badge + body', defaultOpen: true,
+    fields: [
+      { key: 'badge', label: 'Pill Badge', placeholder: 'FOUR' },
+      { key: 'title', label: 'Headline', highlight: hl },
+      { key: 'description', label: 'Body Text', multiline: true, highlight: hl },
+      { key: 'website', label: 'Website URL' },
+      { key: 'companyName', label: 'Brand Name' },
+    ],
+  }],
+  'carousel-tip': [{
+    id: 'tip', title: 'Carousel Slide', subtitle: 'Step + centered copy', defaultOpen: true,
+    fields: [
+      { key: 'badge', label: 'Step Number', placeholder: '02' },
+      { key: 'publishedDate', label: 'Year / Date', placeholder: '2025' },
+      { key: 'title', label: 'Headline', placeholder: 'Be **Consistent**', highlight: hl },
+      { key: 'description', label: 'Body Text', multiline: true, highlight: hl },
+      { key: 'eyebrow', label: 'Brand Handle', placeholder: 'YOUR.BRAND' },
+    ],
+  }],
+  'design-pills': [{
+    id: 'pills', title: 'Design Statement', subtitle: 'Headline + pill list', defaultOpen: true,
+    fields: [
+      { key: 'subtitle', label: 'Line 1 (italic)', placeholder: 'Every design' },
+      { key: 'comparisonLabel', label: 'Line 2 (italic)', placeholder: 'should do' },
+      { key: 'title', label: 'Accent Word', placeholder: '**something**', highlight: hl },
+      { key: 'personName', label: 'Author Name' },
+      { key: 'badge', label: 'Role / Title' },
+    ],
+  }],
+  'hook-post': [{
+    id: 'hook', title: 'Hook Post', subtitle: 'Bold headline + social footer', defaultOpen: true,
+    fields: [
+      { key: 'eyebrow', label: 'Header Left', placeholder: 'Follow for more' },
+      { key: 'socialHandle', label: 'Handle', placeholder: '@yourbrand' },
+      { key: 'title', label: 'Hook Headline', multiline: true, highlight: hl },
+      { key: 'subtitle', label: 'Sub-hook', highlight: hl },
+      { key: 'ctaText', label: 'Footer CTA', placeholder: 'Read Caption' },
+    ],
+  }],
+  'studio-statement': [{
+    id: 'studio', title: 'Studio Statement', subtitle: 'Gradient title + CTAs', defaultOpen: true,
+    fields: [
+      { key: 'companyName', label: 'Studio Name', placeholder: 'STUDIO K' },
+      { key: 'title', label: 'Main Word', placeholder: '**Simplicity.**', highlight: hl },
+      { key: 'description', label: 'Subtext', highlight: hl },
+      { key: 'ctaText', label: 'Button 1' },
+      { key: 'comparisonLabel', label: 'Button 2' },
+    ],
+  }],
 }
 
 const REAL_ESTATE_TEMPLATES: TemplateId[] = [
