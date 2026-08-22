@@ -55,7 +55,7 @@ export type TemplateId =
 export type HighlightStyle = 'accent' | 'gradient' | 'underline' | 'background' | 'bold'
 export type CaptionTone = 'professional' | 'casual' | 'sales' | 'educational'
 export type EditorTab = 'templates' | 'edit'
-export type EditSection = 'content' | 'data' | 'brand' | 'style' | 'slides'
+export type EditSection = 'content' | 'media' | 'style' | 'brand' | 'data' | 'slides'
 
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'none'
 export type AspectRatio = '1:1' | '4:5' | '9:16' | '16:9'

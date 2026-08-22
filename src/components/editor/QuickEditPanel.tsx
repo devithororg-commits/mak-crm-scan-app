@@ -7,7 +7,6 @@ import { getQuickEditZones } from '../../data/templateEditMap'
 import type { CreativeData, TemplateId } from '../../types/creative'
 import { HighlightField } from './HighlightField'
 import HighlightsEditor from './HighlightsEditor'
-import MediaEditor from './MediaEditor'
 import QuickStyleBar from './QuickStyleBar'
 import { Field, inputClass, textareaClass } from './FormUI'
 
@@ -113,7 +112,7 @@ const HIGHLIGHTS_PROMINENT: TemplateId[] = [
 ]
 
 export default function QuickEditPanel() {
-  const { data, update } = useCreative()
+  const { data, update, setEditSection } = useCreative()
   const zones = getQuickEditZones(data.templateId)
   const templateName = TEMPLATES.find((t) => t.id === data.templateId)?.name ?? 'Creative'
 
@@ -169,8 +168,14 @@ export default function QuickEditPanel() {
         <HighlightsEditor bare />
       </AccordionZone>
 
-      <AccordionZone title="Photos & Media" subtitle="Quick image toggle — full controls in Style tab" defaultOpen={false}>
-        <MediaEditor />
+      <AccordionZone title="Photos & Media" subtitle="Full photo controls in Uploads tool" defaultOpen={false}>
+        <button
+          type="button"
+          onClick={() => setEditSection('media')}
+          className="w-full rounded-xl border border-violet-200 bg-violet-50 py-3 text-[12px] font-semibold text-violet-700 transition hover:bg-violet-100"
+        >
+          Open Uploads tool →
+        </button>
       </AccordionZone>
     </div>
   )

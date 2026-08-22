@@ -2,7 +2,6 @@ import { useState, type ReactNode } from 'react'
 import { ChevronDown, Layers, Image, Type, Sparkles, Layout, PanelBottom, Eye, Wand2, QrCode, Move } from 'lucide-react'
 import CanvasSettings from './CanvasSettings'
 import TypographyEditor from './TypographyEditor'
-import MediaEditor from './MediaEditor'
 import EffectsEditor from './EffectsEditor'
 import FooterEditor from './FooterEditor'
 import LogoEditor from './LogoEditor'
@@ -94,10 +93,6 @@ export default function AdvancedControlsPanel() {
 
       <Accordion id="typography" title="Typography" subtitle="Font sizes, scale & word highlights" icon={Type} defaultOpen>
         <TypographyEditor />
-      </Accordion>
-
-      <Accordion id="image" title="Image Studio" subtitle="Upload, filters, gallery & placement" icon={Image}>
-        <MediaEditor />
       </Accordion>
 
       <Accordion id="effects" title="Visual Effects" subtitle="Opacity, borders, overlay & watermark" icon={Layers}>

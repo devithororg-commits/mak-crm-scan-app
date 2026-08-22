@@ -17,17 +17,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[var(--bg-app)]">
       {/* Top bar — minimal */}
-      <header className="glass z-20 flex h-14 shrink-0 items-center justify-between border-b border-slate-200/60 px-5">
+      <header className="glass z-20 flex h-12 shrink-0 items-center justify-between border-b border-slate-200/60 bg-white px-4">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-[12px] bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-600 shadow-lg shadow-indigo-500/30">
-            <Sparkles className="h-[18px] w-[18px] text-white" />
-            <div className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-400" />
+          <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-[#8b3dff] shadow-md shadow-violet-500/25">
+            <Sparkles className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h1 className="text-[15px] font-extrabold tracking-tight text-slate-900">
-              Creative<span className="gradient-text">Studio</span>
+            <h1 className="text-[14px] font-bold text-slate-900">
+              Creative Studio
             </h1>
-            <p className="text-[11px] font-medium text-slate-400">Pro · Social Creative Generator</p>
+            <p className="text-[10px] text-slate-400">Design · Edit · Export</p>
           </div>
         </div>
 
