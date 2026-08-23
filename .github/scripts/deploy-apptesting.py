@@ -14,9 +14,23 @@ DIST = ROOT / "dist"
 WEBROOT_CANDIDATES = (
     "domains/apptesting.in/public_html",
     "apptesting.in/public_html",
+    "home/u169457691/domains/apptesting.in/public_html",
     "public_html",
     ".",
 )
+
+
+def debug_dirs(ftp: ftplib.FTP, user: str) -> None:
+    probes = (".", "domains", "domains/apptesting.in", "public_html")
+    for probe in probes:
+        try:
+            ftp.cwd("/")
+            if probe != ".":
+                ftp.cwd(probe)
+            names = ftp.nlst()[:15]
+            print(f"  listing /{probe}: {names}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"  listing /{probe} failed: {exc}")
 
 
 def unique(items: list[str | None]) -> list[str]:
@@ -39,7 +53,9 @@ def credential_pairs() -> list[tuple[str, str]]:
     ])
     passwords = unique([
         os.environ.get("APPTESTING_FTP_PASS"),
+        os.environ.get("APPTESTING_FTP_PASSWORD"),
         os.environ.get("HOSTINGER_PASS"),
+        os.environ.get("HOSTINGER_PASSWORD"),
     ])
     if not passwords:
         return []
@@ -59,6 +75,15 @@ def connect_ftp(user: str, password: str) -> ftplib.FTP:
 
 
 def find_webroot(ftp: ftplib.FTP) -> str | None:
+    try:
+        pwd = ftp.pwd()
+        print(f"  FTP pwd after login: {pwd}")
+        ftp.nlst()
+        if pwd:
+            return pwd.lstrip("/") or "."
+    except Exception as exc:  # noqa: BLE001
+        print(f"  current pwd unusable: {exc}")
+
     for base in WEBROOT_CANDIDATES:
         try:
             ftp.cwd("/")
@@ -126,6 +151,8 @@ def deploy_with_credentials(user: str, password: str) -> int:
     ftp = connect_ftp(user, password)
     webroot = find_webroot(ftp)
     if not webroot:
+        print(f"Could not find webroot for {user}. Directory probe:")
+        debug_dirs(ftp, user)
         ftp.quit()
         raise RuntimeError(f"Connected as {user} but could not find apptesting.in webroot")
 

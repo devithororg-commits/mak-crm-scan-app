@@ -40,7 +40,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -55,6 +54,18 @@ jobs:
           npm run build
         env:
           BASE_PATH: /
+
+      - name: Preflight FTP secrets
+        env:
+          APPTESTING_FTP_PASS: ${{ secrets.APPTESTING_FTP_PASS }}
+          HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
+        run: |
+          if [ -n "$APPTESTING_FTP_PASS" ]; then echo "APPTESTING_FTP_PASS is set"; else echo "APPTESTING_FTP_PASS is missing"; fi
+          if [ -n "$HOSTINGER_PASS" ]; then echo "HOSTINGER_PASS is set"; else echo "HOSTINGER_PASS is missing"; fi
+          if [ -z "$APPTESTING_FTP_PASS" ] && [ -z "$HOSTINGER_PASS" ]; then
+            echo "Add HOSTINGER_PASS to repo secrets: https://github.com/devithororg-commits/mak-crm-scan-app/settings/secrets/actions"
+            exit 1
+          fi
 
       - name: Upload to apptesting.in (FTP)
         env:
