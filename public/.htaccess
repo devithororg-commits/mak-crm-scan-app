@@ -2,16 +2,26 @@
   RewriteEngine On
   RewriteBase /
 
+  # Pass Authorization header to PHP (Apache/CGI often strips it)
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
   RewriteRule ^api/health$ api/health.php [L,QSA]
   RewriteRule ^api/auth/send-otp$ api/auth/send-otp.php [L,QSA]
   RewriteRule ^api/auth/verify-otp$ api/auth/verify-otp.php [L,QSA]
+  RewriteRule ^api/auth/session$ api/auth/session.php [L,QSA]
   RewriteRule ^api/auth/logout$ api/auth/logout.php [L,QSA]
   RewriteRule ^api/smart-fill$ api/smart-fill.php [L,QSA]
+  RewriteRule ^api/settings$ api/settings.php [L,QSA]
 
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
+</IfModule>
+
+<IfModule mod_setenvif.c>
+  SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 </IfModule>
 
 <IfModule mod_headers.c>

@@ -92,9 +92,40 @@ def ftp_list(ftp: ftplib.FTP) -> list[str]:
         raise
 
 
-def wipe_remote(ftp: ftplib.FTP) -> None:
+PRESERVE_FILES = {"api/config.local.php"}
+PRESERVE_DIR_PREFIXES = ("api/data",)
+
+
+def remote_rel_path(base: str, name: str) -> str:
+    return f"{base}/{name}".strip("/") if base else name
+
+
+def should_preserve(rel_path: str) -> bool:
+    if rel_path in PRESERVE_FILES:
+        return True
+    return any(rel_path == prefix or rel_path.startswith(prefix + "/") for prefix in PRESERVE_DIR_PREFIXES)
+
+
+def backup_remote_file(ftp: ftplib.FTP, webroot: str, rel_path: str) -> bytes | None:
+    try:
+        goto_webroot(ftp, webroot)
+        for part in Path(rel_path).parent.parts:
+            ftp.cwd(part)
+        buffer = bytearray()
+        ftp.retrbinary(f"RETR {Path(rel_path).name}", buffer.extend)
+        print(f"  backed up {rel_path}")
+        return bytes(buffer)
+    except Exception:
+        return None
+
+
+def wipe_remote(ftp: ftplib.FTP, rel_path: str = "") -> None:
     def remove_dir() -> None:
         for name in ftp_list(ftp):
+            child = remote_rel_path(rel_path, name)
+            if should_preserve(child):
+                print(f"  kept {child}")
+                continue
             try:
                 ftp.delete(name)
                 print(f"  deleted file {name}")
@@ -118,19 +149,34 @@ def ensure_dirs(ftp: ftplib.FTP, rel_dir: Path) -> None:
             ftp.cwd(part)
 
 
-def upload_tree(ftp: ftplib.FTP, webroot: str, local_root: Path) -> int:
+def upload_tree(ftp: ftplib.FTP, webroot: str, local_root: Path, skip_files: set[str] | None = None) -> int:
+    skip_files = skip_files or set()
     count = 0
     for path in sorted(local_root.rglob("*")):
         if not path.is_file():
             continue
         rel = path.relative_to(local_root)
+        rel_posix = rel.as_posix()
+        if rel_posix in skip_files:
+            print(f"  ↷ skipped {rel_posix} (kept remote copy)")
+            continue
         goto_webroot(ftp, webroot)
         ensure_dirs(ftp, rel.parent)
         with path.open("rb") as handle:
             ftp.storbinary(f"STOR {rel.name}", handle)
-        print(f"  ↑ {rel.as_posix()}")
+        print(f"  ↑ {rel_posix}")
         count += 1
     return count
+
+
+def upload_bytes(ftp: ftplib.FTP, webroot: str, rel_path: str, payload: bytes) -> None:
+    rel = Path(rel_path)
+    goto_webroot(ftp, webroot)
+    ensure_dirs(ftp, rel.parent)
+    from io import BytesIO
+
+    ftp.storbinary(f"STOR {rel.name}", BytesIO(payload))
+    print(f"  ↑ restored {rel_path}")
 
 
 def deploy_with_credentials(user: str, password: str) -> int:
@@ -138,8 +184,12 @@ def deploy_with_credentials(user: str, password: str) -> int:
     webroot = find_webroot(ftp)
     print(f"Using FTP user {user} → /{webroot}/")
     goto_webroot(ftp, webroot)
+    config_backup = backup_remote_file(ftp, webroot, "api/config.local.php")
     wipe_remote(ftp)
-    uploaded = upload_tree(ftp, webroot, DIST)
+    skip = {"api/config.local.php"} if config_backup else set()
+    uploaded = upload_tree(ftp, webroot, DIST, skip_files=skip)
+    if config_backup:
+        upload_bytes(ftp, webroot, "api/config.local.php", config_backup)
     ftp.quit()
     return uploaded
 

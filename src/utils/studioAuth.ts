@@ -75,3 +75,28 @@ export function studioAuthHeaders(): Record<string, string> {
   const token = getStudioAuthToken()
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
+
+export class StudioAuthError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message)
+    this.name = 'StudioAuthError'
+  }
+}
+
+export async function verifyStudioSession(): Promise<{ ok: boolean; email?: string }> {
+  const base = apiBase()
+  const token = getStudioAuthToken()
+  if (!base || !token) {
+    clearStudioSession()
+    return { ok: false }
+  }
+
+  const res = await fetch(`${base}/api/auth/session`, { headers: studioAuthHeaders() })
+  const data = await res.json() as { ok?: boolean; email?: string; error?: string }
+  if (!res.ok || !data.ok) {
+    clearStudioSession()
+    return { ok: false }
+  }
+  if (data.email) saveStudioSession(token, data.email)
+  return { ok: true, email: data.email }
+}

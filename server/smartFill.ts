@@ -40,6 +40,7 @@ async function tavilySearch(query: string, apiKey: string) {
       max_results: 5,
       include_answer: true,
     }),
+    signal: AbortSignal.timeout(30000),
   })
   if (!res.ok) throw new Error(`Research failed (${res.status})`)
   return res.json() as Promise<{
@@ -48,17 +49,25 @@ async function tavilySearch(query: string, apiKey: string) {
   }>
 }
 
-async function unsplashPhoto(keywords: string, accessKey: string) {
-  const q = encodeURIComponent(keywords.slice(0, 80))
-  const res = await fetch(
-    `https://api.unsplash.com/search/photos?query=${q}&per_page=1&orientation=squarish&content_filter=high`,
-    { headers: { Authorization: `Client-ID ${accessKey}` } },
-  )
-  if (!res.ok) return null
-  const data = await res.json() as { results?: { urls?: { regular?: string }; user?: { name?: string } }[] }
-  const hit = data.results?.[0]
-  if (!hit?.urls?.regular) return null
-  return { url: `${hit.urls.regular}&w=1600&q=90`, photographer: hit.user?.name || 'Unsplash' }
+const CURATED_STOCK_PHOTOS = [
+  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=90',
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=90',
+  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=90',
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=90',
+  'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=90',
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=90',
+  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600&q=90',
+  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=90',
+  'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1600&q=90',
+  'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1600&q=90',
+]
+
+function pickCuratedStockPhoto(topic: string, keywords: string) {
+  const seed = Math.abs([...`${topic} ${keywords}`].reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0))
+  return {
+    url: CURATED_STOCK_PHOTOS[seed % CURATED_STOCK_PHOTOS.length],
+    photographer: 'Stock photo',
+  }
 }
 
 function buildSystemPrompt(dna: CompanyDna, exclude: string[], language: string) {
@@ -211,16 +220,10 @@ export async function runSmartFill(env: ServerEnv, body: SmartFillRequest) {
     dna,
   )
 
-  let imageUrl: string | undefined
-  let imageCredit: string | undefined
   const keywords = String(brief.imageKeywords || topic)
-  if (env.UNSPLASH_ACCESS_KEY) {
-    const photo = await unsplashPhoto(keywords, env.UNSPLASH_ACCESS_KEY)
-    if (photo) {
-      imageUrl = photo.url
-      imageCredit = photo.photographer
-    }
-  }
+  const photo = pickCuratedStockPhoto(topic, keywords)
+  const imageUrl = photo.url
+  const imageCredit = photo.photographer
 
   return {
     brief,

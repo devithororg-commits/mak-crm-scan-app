@@ -1,31 +1,31 @@
 import { useCallback, useState } from 'react'
-import { CheckCircle2, Loader2, Sparkles, Wand2 } from 'lucide-react'
+import { CheckCircle2, Loader2, LogIn, Sparkles, Wand2 } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
+import { useStudioAuth } from '../../context/StudioAuthContext'
 import { applyTemplateSwitch } from '../../data/presets'
 import type { TemplateId } from '../../types/creative'
 import { loadCompanyDna } from '../../utils/companyDnaStorage'
-import { isStudioLoggedIn } from '../../utils/studioAuth'
 import { checkStudioHealth, isStudioApiConfigured, requestSmartFill } from '../../utils/smartFillClient'
 import { saveStudioCaptions } from '../../utils/studioCaptions'
 import { recordTemplateUse } from '../../utils/themeEngine'
 import { Section, inputClass } from './FormUI'
-import StudioLoginPanel from './StudioLoginPanel'
 import { useToast } from '../ux/ToastProvider'
 import { TEMPLATES } from '../../data/config'
 
 export default function SmartFillPanel() {
   const { setData, setEditSection } = useCreative()
+  const { loggedIn, openLogin } = useStudioAuth()
   const { toast } = useToast()
   const [topic, setTopic] = useState('')
   const [language, setLanguage] = useState<'english' | 'telugu' | 'hinglish'>('english')
   const [loading, setLoading] = useState(false)
   const [preview, setPreview] = useState<{ template?: string; research?: string } | null>(null)
   const [confirmed, setConfirmed] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(isStudioLoggedIn())
   const configured = isStudioApiConfigured()
 
   const applyResult = useCallback(async () => {
     if (!loggedIn) {
+      openLogin()
       toast('Login with company email first', 'error')
       return
     }
@@ -42,7 +42,7 @@ export default function SmartFillPanel() {
     setPreview(null)
     try {
       const healthy = await checkStudioHealth()
-      if (!healthy) throw new Error('Studio API unreachable. Start server and set VITE_STUDIO_API_URL')
+      if (!healthy) throw new Error('Studio API unreachable')
 
       const dna = loadCompanyDna()
       const result = await requestSmartFill({ topic: topic.trim(), language, companyDna: dna })
@@ -85,15 +85,14 @@ export default function SmartFillPanel() {
     } finally {
       setLoading(false)
     }
-  }, [topic, language, confirmed, loggedIn, setData, setEditSection, toast])
+  }, [topic, language, confirmed, loggedIn, openLogin, setData, setEditSection, toast])
 
   if (!configured) {
     return (
       <Section title="Smart Fill" desc="Topic → researched poster content (Human Studio)">
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3 text-[11px] leading-relaxed text-amber-900">
-          <p className="font-bold">Setup required</p>
-          <p className="mt-1">Start the studio server and set <code className="rounded bg-white px-1">VITE_STUDIO_API_URL</code> in <code className="rounded bg-white px-1">.env</code>.</p>
-          <p className="mt-2 font-semibold">See SMART_STUDIO_SETUP.md for keys and email login setup.</p>
+          <p className="font-bold">API loading…</p>
+          <p className="mt-1">Refresh the page. If this persists, check server config on apptesting.in.</p>
         </div>
       </Section>
     )
@@ -102,7 +101,19 @@ export default function SmartFillPanel() {
   return (
     <Section title="Smart Fill" desc="Topic → layout, copy & photo — human-quality output">
       <div className="space-y-3">
-        <StudioLoginPanel onLoggedIn={() => setLoggedIn(true)} onLoggedOut={() => setLoggedIn(false)} />
+        {!loggedIn && (
+          <div className="flex items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/80 px-3.5 py-3">
+            <p className="text-[11px] text-violet-900">Login required for Smart Fill</p>
+            <button
+              type="button"
+              onClick={openLogin}
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-violet-700 px-2.5 py-1.5 text-[10px] font-bold text-white"
+            >
+              <LogIn className="h-3 w-3" />
+              Login
+            </button>
+          </div>
+        )}
 
         <div>
           <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-slate-500">Topic</label>
@@ -160,7 +171,7 @@ export default function SmartFillPanel() {
 
         <p className="flex items-center gap-1 text-[10px] text-slate-400">
           <Sparkles className="h-3 w-3" />
-          Uses real photos + your templates — not generic AI art
+          OpenAI + Tavily research — built-in estate photos (no extra API)
         </p>
       </div>
     </Section>

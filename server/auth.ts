@@ -54,8 +54,12 @@ export function isEmailAllowed(email: string, config: AuthConfig): boolean {
   const normalized = email.trim().toLowerCase()
   if (config.allowedEmails.includes(normalized)) return true
   if (config.allowedDomain) {
-    const domain = normalized.split('@')[1]
-    return domain === config.allowedDomain
+    const domain = normalized.split('@')[1] ?? ''
+    const allowedDomains = config.allowedDomain
+      .split(',')
+      .map((d) => d.trim().replace(/^@/, ''))
+      .filter(Boolean)
+    return allowedDomains.includes(domain)
   }
   return false
 }

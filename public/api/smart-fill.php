@@ -6,7 +6,7 @@ handle_api_options();
 cors_headers();
 
 $config = studio_config();
-$email = verify_session_token($_SERVER['HTTP_AUTHORIZATION'] ?? null, $config);
+$email = verify_session_token(null, $config);
 if (!$email) {
     json_response(['error' => 'Login required. Verify company email OTP first.'], 401);
 }

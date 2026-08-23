@@ -18,6 +18,31 @@ function smtp_write_payload($socket, string $payload): void
     fwrite($socket, ".\r\n");
 }
 
+function smtp_read_response($socket): array
+{
+    $lines = [];
+    while (($line = fgets($socket, 512)) !== false) {
+        $lines[] = rtrim($line, "\r\n");
+        if (strlen($line) >= 4 && $line[3] === ' ') {
+            break;
+        }
+    }
+    return $lines;
+}
+
+function smtp_expect($socket, array $codes): void
+{
+    $lines = smtp_read_response($socket);
+    if (!$lines) {
+        throw new ApiException('Mail server closed the connection.', 503);
+    }
+    $code = (int) substr($lines[0], 0, 3);
+    if (!in_array($code, $codes, true)) {
+        $detail = trim(implode(' | ', $lines));
+        throw new ApiException('Mail server error: ' . $detail, 503);
+    }
+}
+
 function studio_smtp_send(
     string $host,
     int $port,
@@ -41,44 +66,35 @@ function studio_smtp_send(
     }
 
     stream_set_timeout($socket, 25);
-    $read = fn () => fgets($socket, 512) ?: '';
     $write = fn (string $msg) => fwrite($socket, $msg . "\r\n");
 
-    $expect = function (array $codes) use ($read): void {
-        $line = $read();
-        $code = (int) substr($line, 0, 3);
-        if (!in_array($code, $codes, true)) {
-            throw new ApiException('Mail server error while sending OTP.', 503);
-        }
-    };
-
-    $expect([220]);
+    smtp_expect($socket, [220]);
     $write('EHLO apptesting.in');
-    $expect([250]);
+    smtp_expect($socket, [250]);
 
     if ($encryption === 'tls') {
         $write('STARTTLS');
-        $expect([220]);
+        smtp_expect($socket, [220]);
         if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
             throw new ApiException('Could not secure mail connection.', 503);
         }
         $write('EHLO apptesting.in');
-        $expect([250]);
+        smtp_expect($socket, [250]);
     }
 
     $write('AUTH LOGIN');
-    $expect([334]);
+    smtp_expect($socket, [334]);
     $write(base64_encode($user));
-    $expect([334]);
+    smtp_expect($socket, [334]);
     $write(base64_encode($password));
-    $expect([235]);
+    smtp_expect($socket, [235]);
 
     $write('MAIL FROM:<' . $fromEmail . '>');
-    $expect([250]);
+    smtp_expect($socket, [250]);
     $write('RCPT TO:<' . $to . '>');
-    $expect([250, 251]);
+    smtp_expect($socket, [250, 251]);
     $write('DATA');
-    $expect([354]);
+    smtp_expect($socket, [354]);
 
     $headers = [
         'From: ' . encode_mail_header($fromName) . " <{$fromEmail}>",
@@ -88,7 +104,7 @@ function studio_smtp_send(
         'Content-Type: text/plain; charset=UTF-8',
     ];
     smtp_write_payload($socket, implode("\r\n", $headers) . "\r\n\r\n" . $body);
-    $expect([250]);
+    smtp_expect($socket, [250]);
     $write('QUIT');
     fclose($socket);
 }

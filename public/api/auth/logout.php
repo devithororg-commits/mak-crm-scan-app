@@ -6,6 +6,6 @@ handle_api_options();
 cors_headers();
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    logout_session($_SERVER['HTTP_AUTHORIZATION'] ?? null, studio_config());
+    logout_session(null, studio_config());
 }
 json_response(['ok' => true]);

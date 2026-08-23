@@ -11,6 +11,7 @@ import {
   verifySessionToken,
 } from './auth'
 import { runSmartFill } from './smartFill'
+import { keysReady, readSettingsPublic, updateSettings } from './settings'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__dirname, '.env') })
@@ -19,11 +20,7 @@ const app = express()
 const port = Number(process.env.PORT || 3001)
 const authConfig = parseAuthConfig(process.env)
 
-const serverEnv = {
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
-  TAVILY_API_KEY: process.env.TAVILY_API_KEY || '',
-  UNSPLASH_ACCESS_KEY: process.env.UNSPLASH_ACCESS_KEY,
-}
+const serverEnv: NodeJS.ProcessEnv = { ...process.env }
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5180,http://127.0.0.1:5180')
   .split(',')
@@ -46,7 +43,7 @@ app.get('/api/health', (_req, res) => {
     ok: true,
     service: 'creative-studio',
     auth: Boolean(authConfig.allowedEmails.length || authConfig.allowedDomain),
-    keys: Boolean(serverEnv.OPENAI_API_KEY && serverEnv.TAVILY_API_KEY),
+    keys: keysReady(serverEnv),
   })
 })
 
@@ -84,6 +81,47 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ ok: true })
 })
 
+app.get('/api/auth/session', (req, res) => {
+  const email = verifySessionToken(req.headers.authorization, authConfig)
+  if (!email) {
+    res.status(401).json({ ok: false, error: 'Session expired. Login again.' })
+    return
+  }
+  res.json({ ok: true, email })
+})
+
+app.get('/api/settings', (req, res) => {
+  const email = verifySessionToken(req.headers.authorization, authConfig)
+  if (!email) {
+    res.status(401).json({ ok: false, error: 'Login required to open Settings.' })
+    return
+  }
+  res.json({
+    ok: true,
+    keysReady: keysReady(serverEnv),
+    settings: readSettingsPublic(serverEnv),
+  })
+})
+
+app.post('/api/settings', (req, res) => {
+  const email = verifySessionToken(req.headers.authorization, authConfig)
+  if (!email) {
+    res.status(401).json({ ok: false, error: 'Login required to open Settings.' })
+    return
+  }
+  try {
+    const result = updateSettings(req.body ?? {}, serverEnv)
+    res.json({
+      ok: true,
+      message: 'API keys saved.',
+      keysReady: result.keysReady,
+      settings: result.settings,
+    })
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e instanceof Error ? e.message : 'Could not save settings.' })
+  }
+})
+
 app.post('/api/smart-fill', async (req, res) => {
   const email = verifySessionToken(req.headers.authorization, authConfig)
   if (!email) {
@@ -92,7 +130,7 @@ app.post('/api/smart-fill', async (req, res) => {
   }
 
   try {
-    const result = await runSmartFill(serverEnv, req.body)
+    const result = await runSmartFill(serverEnv as import('./smartFill').ServerEnv, req.body)
     res.json(result)
   } catch (e) {
     res.status(500).json({ error: e instanceof Error ? e.message : 'Smart fill failed' })

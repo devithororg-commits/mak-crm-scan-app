@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { CreativeProvider, useCreative } from './store/CreativeContext'
 import { ExportBridgeProvider } from './context/ExportBridge'
 import { EditorUIProvider } from './context/EditorUIContext'
+import { StudioAuthProvider } from './context/StudioAuthContext'
 import { ToastProvider } from './components/ux/ToastProvider'
 import AppShell from './components/layout/AppShell'
 import EditorPanel from './components/editor/EditorPanel'
@@ -9,12 +10,13 @@ import PreviewPanel from './components/editor/PreviewPanel'
 import ErrorBoundary from './components/ErrorBoundary'
 import WelcomeGuide from './components/ux/WelcomeGuide'
 import HelpPanel from './components/ux/HelpPanel'
+import StudioSettingsPanel from './components/ux/StudioSettingsPanel'
 import { hasSeenOnboarding } from './utils/onboarding'
 import { useEditorUI } from './context/EditorUIContext'
 
 function AppContent() {
   const { setActiveTab, setEditSection } = useCreative()
-  const { helpOpen, setHelpOpen } = useEditorUI()
+  const { helpOpen, setHelpOpen, settingsOpen, setSettingsOpen } = useEditorUI()
   const [showWelcome, setShowWelcome] = useState(() => !hasSeenOnboarding())
 
   useEffect(() => {
@@ -26,11 +28,14 @@ function AppContent() {
         e.preventDefault()
         setHelpOpen(true)
       }
-      if (e.key === 'Escape') setHelpOpen(false)
+      if (e.key === 'Escape') {
+        setHelpOpen(false)
+        setSettingsOpen(false)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [setHelpOpen])
+  }, [setHelpOpen, setSettingsOpen])
 
   return (
     <>
@@ -50,6 +55,7 @@ function AppContent() {
         />
       )}
       <HelpPanel open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <StudioSettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
   )
 }
@@ -61,7 +67,9 @@ export default function App() {
         <CreativeProvider>
           <ExportBridgeProvider>
             <EditorUIProvider>
-              <AppContent />
+              <StudioAuthProvider>
+                <AppContent />
+              </StudioAuthProvider>
             </EditorUIProvider>
           </ExportBridgeProvider>
         </CreativeProvider>

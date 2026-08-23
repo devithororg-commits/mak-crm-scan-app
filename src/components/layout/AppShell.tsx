@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
-import { HelpCircle, Menu, PanelLeftClose, PanelLeftOpen, RotateCcw, Sparkles, Undo2, Redo2, Circle, Copy } from 'lucide-react'
+import { HelpCircle, Menu, PanelLeftClose, PanelLeftOpen, RotateCcw, Settings2, Sparkles, Undo2, Redo2, Circle, Copy } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { useEditorUI } from '../../context/EditorUIContext'
 import { useIsMobile } from '../../hooks/useMediaQuery'
 import ConfirmDialog from '../ux/ConfirmDialog'
 import WorkflowSteps from '../ux/WorkflowSteps'
+import StudioAuthButton from '../ux/StudioAuthButton'
+import StudioLoginModal from '../ux/StudioLoginModal'
 import { useToast } from '../ux/ToastProvider'
 import { saveToLibrary } from '../../utils/contentLibrary'
 
@@ -13,7 +15,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     resetAll, savedAt, undo, redo, canUndo, canRedo, activeTab, setActiveTab, setEditSection,
     data, duplicateCarouselSlide, duplicateProject, nudgeContent,
   } = useCreative()
-  const { exportOpen, setExportOpen, setHelpOpen, mobilePanelOpen, setMobilePanelOpen } = useEditorUI()
+  const { exportOpen, setExportOpen, setHelpOpen, setSettingsOpen, mobilePanelOpen, setMobilePanelOpen } = useEditorUI()
   const isMobile = useIsMobile()
   const { toast } = useToast()
   const [resetOpen, setResetOpen] = useState(false)
@@ -121,12 +123,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
           <button
             type="button"
+            onClick={() => setSettingsOpen(true)}
+            className="rounded-[12px] border border-slate-200/60 bg-white p-2 text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-violet-700"
+            title="Settings — API keys"
+          >
+            <Settings2 className="h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
             onClick={() => setHelpOpen(true)}
             className="hidden rounded-[12px] border border-slate-200/60 bg-white p-2 text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-violet-700 sm:inline-flex"
             title="Help (?)"
           >
             <HelpCircle className="h-4 w-4" />
           </button>
+
+          <StudioAuthButton />
 
           {savedAt && (
             <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1.5 text-[10px] font-semibold text-emerald-700 ring-1 ring-emerald-200/60 sm:flex sm:text-[11px] sm:px-3">
@@ -182,6 +195,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         onConfirm={handleReset}
         onCancel={() => setResetOpen(false)}
       />
+
+      <StudioLoginModal />
     </div>
   )
 }

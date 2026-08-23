@@ -13,11 +13,15 @@ final class ApiException extends Exception
     }
 }
 
+function studio_config_invalidate(): void
+{
+    $GLOBALS['studio_config_cache'] = null;
+}
+
 function studio_config(): array
 {
-    static $config = null;
-    if ($config !== null) {
-        return $config;
+    if (($GLOBALS['studio_config_cache'] ?? null) !== null) {
+        return $GLOBALS['studio_config_cache'];
     }
 
     $defaults = [
@@ -60,7 +64,142 @@ function studio_config(): array
     }
 
     $config['allowed_domain'] = strtolower(trim(str_replace('@', '', (string) $config['allowed_domain'])));
+    migrate_studio_secrets_from_config($config);
+    foreach (read_studio_secrets() as $secretKey => $secretValue) {
+        if ($secretValue !== '') {
+            $config[$secretKey] = $secretValue;
+        }
+    }
+
+    $GLOBALS['studio_config_cache'] = $config;
     return $config;
+}
+
+function studio_secret_keys(): array
+{
+    return ['openai_api_key', 'tavily_api_key', 'unsplash_access_key'];
+}
+
+function read_studio_secrets(): array
+{
+    $data = read_store('studio-secrets.json');
+    $out = [];
+    foreach (studio_secret_keys() as $key) {
+        $out[$key] = trim((string) ($data[$key] ?? ''));
+    }
+    return $out;
+}
+
+function migrate_studio_secrets_from_config(array $config): void
+{
+    $existing = read_store('studio-secrets.json');
+    if ($existing !== []) {
+        return;
+    }
+
+    $seed = [];
+    foreach (studio_secret_keys() as $key) {
+        $value = trim((string) ($config[$key] ?? ''));
+        if ($value !== '') {
+            $seed[$key] = $value;
+        }
+    }
+
+    if ($seed !== []) {
+        write_store('studio-secrets.json', $seed);
+    }
+}
+
+function write_studio_secrets(array $secrets): void
+{
+    $path = data_path('studio-secrets.json');
+    $payload = json_encode($secrets, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    if ($payload === false) {
+        throw new ApiException('Could not encode settings.', 500);
+    }
+    $written = @file_put_contents($path, $payload . "\n", LOCK_EX);
+    if ($written === false) {
+        throw new ApiException('Could not save settings. Server data folder is not writable.', 500);
+    }
+    @chmod($path, 0640);
+    studio_config_invalidate();
+}
+
+function mask_secret(string $value): array
+{
+    $value = trim($value);
+    if ($value === '') {
+        return ['set' => false, 'hint' => ''];
+    }
+    $len = strlen($value);
+    if ($len <= 4) {
+        return ['set' => true, 'hint' => str_repeat('•', $len)];
+    }
+    return ['set' => true, 'hint' => '…' . substr($value, -4)];
+}
+
+function studio_settings_public(array $config): array
+{
+    return [
+        'openaiApiKey' => mask_secret((string) ($config['openai_api_key'] ?? '')),
+        'tavilyApiKey' => mask_secret((string) ($config['tavily_api_key'] ?? '')),
+        'unsplashAccessKey' => mask_secret((string) ($config['unsplash_access_key'] ?? '')),
+    ];
+}
+
+function studio_keys_ready(array $config): bool
+{
+    return ($config['openai_api_key'] ?? '') !== '' && ($config['tavily_api_key'] ?? '') !== '';
+}
+
+function write_studio_config_file(array $config): void
+{
+    // Legacy helper — API keys are stored in api/data/studio-secrets.json instead.
+    $secrets = [];
+    foreach (studio_secret_keys() as $key) {
+        $value = trim((string) ($config[$key] ?? ''));
+        if ($value !== '') {
+            $secrets[$key] = $value;
+        }
+    }
+    write_studio_secrets(array_merge(read_studio_secrets(), $secrets));
+}
+
+function update_studio_settings(array $body, array $config): array
+{
+    $map = [
+        'openaiApiKey' => 'openai_api_key',
+        'tavilyApiKey' => 'tavily_api_key',
+        'unsplashAccessKey' => 'unsplash_access_key',
+    ];
+
+    $secrets = read_studio_secrets();
+    $changed = false;
+    foreach ($map as $inputKey => $configKey) {
+        if (!array_key_exists($inputKey, $body)) {
+            continue;
+        }
+        $value = trim((string) $body[$inputKey]);
+        if ($value === '') {
+            continue;
+        }
+        $secrets[$configKey] = $value;
+        $changed = true;
+    }
+
+    if (!$changed) {
+        throw new ApiException('Paste at least one API key to save.');
+    }
+
+    write_studio_secrets($secrets);
+    $fresh = studio_config();
+
+    return [
+        'ok' => true,
+        'message' => 'API keys saved successfully.',
+        'keysReady' => studio_keys_ready($fresh),
+        'settings' => studio_settings_public($fresh),
+    ];
 }
 
 function cors_headers(): void
@@ -141,8 +280,37 @@ function token_hash(string $token, string $secret): string
     return substr(hash_hmac('sha256', $token, $secret), 0, 32);
 }
 
+function request_auth_header(): ?string
+{
+    $candidates = [
+        $_SERVER['HTTP_AUTHORIZATION'] ?? null,
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null,
+    ];
+
+    if (function_exists('getallheaders')) {
+        $headers = getallheaders();
+        if (is_array($headers)) {
+            foreach ($headers as $name => $value) {
+                if (strcasecmp((string) $name, 'Authorization') === 0) {
+                    $candidates[] = $value;
+                }
+            }
+        }
+    }
+
+    foreach ($candidates as $header) {
+        $header = trim((string) $header);
+        if ($header !== '') {
+            return $header;
+        }
+    }
+
+    return null;
+}
+
 function verify_session_token(?string $authHeader, array $config): ?string
 {
+    $authHeader = $authHeader ?: request_auth_header();
     if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
         return null;
     }
@@ -171,7 +339,7 @@ function issue_login_otp(string $email, array $config): array
         throw new ApiException('Enter a valid company email');
     }
     if (!email_allowed($email, $config)) {
-        throw new ApiException('This email is not authorized. Use your company email.', 403);
+        throw new ApiException('This email is not authorized. Contact admin to allow your email.', 403);
     }
 
     $store = read_store('otp.json');
@@ -272,7 +440,7 @@ function http_post_json(string $url, array $payload, array $headers = []): array
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => array_merge(['Content-Type: application/json'], $headers),
         CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 120,
+        CURLOPT_TIMEOUT => 60,
     ]);
     $body = curl_exec($ch);
     $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);

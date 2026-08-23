@@ -35,6 +35,33 @@ function humanize_hashtags(string $tags): string
     return implode(' ', array_slice($out, 0, 12));
 }
 
+function curated_stock_photos(): array
+{
+    return [
+        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=90',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=90',
+        'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=90',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=90',
+        'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=90',
+        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=90',
+        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600&q=90',
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=90',
+        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1600&q=90',
+        'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1600&q=90',
+    ];
+}
+
+/** Instant stock photo — no Unsplash API (OpenAI + Tavily only). */
+function pick_curated_stock_photo(string $topic, string $keywords): array
+{
+    $photos = curated_stock_photos();
+    $seed = abs(crc32(strtolower($topic . ' ' . $keywords)));
+    return [
+        'url' => $photos[$seed % count($photos)],
+        'credit' => 'Stock photo',
+    ];
+}
+
 function run_smart_fill(array $config, array $body): array
 {
     if (empty($config['openai_api_key']) || empty($config['tavily_api_key'])) {
@@ -125,18 +152,9 @@ function run_smart_fill(array $config, array $body): array
     $imageUrl = null;
     $imageCredit = null;
     $keywords = (string) ($brief['imageKeywords'] ?? $topic);
-    if (!empty($config['unsplash_access_key'])) {
-        $q = rawurlencode(substr($keywords, 0, 80));
-        $photo = http_get_json(
-            "https://api.unsplash.com/search/photos?query={$q}&per_page=1&orientation=squarish&content_filter=high",
-            ['Authorization: Client-ID ' . $config['unsplash_access_key']],
-        );
-        $hit = $photo['results'][0] ?? null;
-        if (is_array($hit) && !empty($hit['urls']['regular'])) {
-            $imageUrl = $hit['urls']['regular'] . '&w=1600&q=90';
-            $imageCredit = $hit['user']['name'] ?? 'Unsplash';
-        }
-    }
+    $photo = pick_curated_stock_photo($topic, $keywords);
+    $imageUrl = $photo['url'];
+    $imageCredit = $photo['credit'];
 
     return [
         'brief' => $brief,
