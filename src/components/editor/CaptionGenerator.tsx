@@ -2,6 +2,7 @@ import { useCreative } from '../../store/CreativeContext'
 import { PLATFORMS } from '../../data/config'
 import type { CaptionTone, Platform } from '../../types/creative'
 import { generateCaptions, generateCaptionVariants } from '../../utils/captionGenerator'
+import { hasStudioCaptions } from '../../utils/studioCaptions'
 import { Section, inputClass } from './FormUI'
 import { useMemo, useState } from 'react'
 import { Copy, Check, RefreshCw, Zap } from 'lucide-react'
@@ -45,6 +46,11 @@ export default function CaptionGenerator() {
 
   return (
     <Section title="AI Captions & Hashtags" desc="Platform-optimized copy with A/B variants & engagement scores">
+      {hasStudioCaptions() && (
+        <p className="mb-3 rounded-lg border border-indigo-100 bg-indigo-50/80 px-3 py-2 text-[10px] text-indigo-800">
+          Smart Fill captions active — tone buttons apply to fallback copy only.
+        </p>
+      )}
       <div className="mb-3 flex gap-1.5">
         {TONES.map((t) => (
           <button

@@ -4,6 +4,7 @@ import { useCreative } from '../../store/CreativeContext'
 import { COLOR_PALETTES, FONT_OPTIONS } from '../../data/config'
 import type { FontFamily } from '../../types/creative'
 import LogoEditor from './LogoEditor'
+import CompanyDnaSection from './CompanyDnaSection'
 import { Field, Section, inputClass } from './FormUI'
 import { loadStoredCustomFont, processFontFile, saveStoredCustomFont } from '../../utils/customFont'
 import { useToast } from '../ux/ToastProvider'
@@ -40,6 +41,7 @@ export default function BrandKitEditor() {
 
   return (
     <>
+      <CompanyDnaSection />
       <Section title="Brand Lock" desc="Lock colors, fonts & logo for team consistency">
         <button
           type="button"

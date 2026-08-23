@@ -1,0 +1,51 @@
+name: Deploy to apptesting.in
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+        env:
+          BASE_PATH: /
+
+      - name: Upload to apptesting.in (FTP)
+        env:
+          APPTESTING_FTP_HOST: ${{ secrets.APPTESTING_FTP_HOST }}
+          APPTESTING_FTP_USER: ${{ secrets.APPTESTING_FTP_USER }}
+          APPTESTING_FTP_PASS: ${{ secrets.APPTESTING_FTP_PASS }}
+          HOSTINGER_FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
+          HOSTINGER_FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
+          HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
+        run: |
+          chmod +x .github/scripts/deploy-apptesting.sh
+          .github/scripts/deploy-apptesting.sh
+
+      - name: Verify live
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 25 "https://apptesting.in/")
+            if [ "$code" = "200" ]; then
+              echo "Live at https://apptesting.in/"
+              exit 0
+            fi
+            echo "Waiting... ($i/6) HTTP $code"
+            sleep 10
+          done
+          echo "Upload finished — site may need a minute for SSL/cache"
+          exit 0

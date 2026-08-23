@@ -9,6 +9,7 @@ import ListingUrlImport from './ListingUrlImport'
 import ListingImport from './ListingImport'
 import ListingQuickPack from './ListingQuickPack'
 import ListingBulkImporter from './ListingBulkImporter'
+import SmartFillPanel from './SmartFillPanel'
 import MediaEditor from './MediaEditor'
 import EffectsEditor from './EffectsEditor'
 import AdvancedControlsPanel from './AdvancedControlsPanel'
@@ -80,6 +81,7 @@ export default function CanvaToolPanel({ mode, templateName, onChangeTemplate }:
             ← {templateName}
           </button>
           <CategoryPicker />
+          <SmartFillPanel />
           <QuickEditPanel />
           <ListingUrlImport />
           <ListingImport />

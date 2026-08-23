@@ -13,6 +13,8 @@ const SHORTCUTS = [
 ]
 
 const FEATURES = [
+  { title: 'Smart Fill', tip: 'Text tab → company email login → topic → Generate. Setup: SMART_STUDIO_SETUP.md' },
+  { title: 'Company Profile', tip: 'Brand tab → save company name, phone, colors — Smart Fill uses your voice.' },
   { title: 'Templates', tip: 'Mood filters (Luxury, Trust, Urgent). Search & preview instantly.' },
   { title: 'Text & Listings', tip: 'Listing Quick Pack, Bulk CSV import (up to 20 listings), campaign ZIP export.' },
   { title: 'Design Intelligence', tip: 'Design Score, typography presets, 60-30-10 color harmony, A/B variants.' },

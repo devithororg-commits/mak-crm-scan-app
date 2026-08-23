@@ -4,6 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: process.env.GITHUB_PAGES === 'true' ? '/mak-crm-scan-app/' : '/',
+  base: process.env.BASE_PATH || (process.env.GITHUB_PAGES === 'true' ? '/mak-crm-scan-app/' : '/'),
   server: { host: true, port: 5180 },
 })
