@@ -14,12 +14,9 @@ Repo → **Settings** → **Secrets and variables** → **Actions** → New repo
 |--------|--------|
 | `APPTESTING_FTP_USER` | Hostinger FTP username (e.g. `u169457691.apptesting.in`) |
 | `APPTESTING_FTP_PASS` | FTP password for apptesting.in |
-| `APPTESTING_FTP_HOST` | *(optional)* FTP host IP — defaults to `145.79.213.39` |
+| `HOSTINGER_PASS` | *(fallback)* Same FTP password used for devithor-audit / devithorcrm deploys |
 
-If you already use shared Hostinger secrets, these also work as fallbacks:
-- `HOSTINGER_FTP_USER`
-- `HOSTINGER_PASS`
-- `HOSTINGER_FTP_HOST`
+If `audit.devithor.in` deploy already works, copy the same **`HOSTINGER_PASS`** secret into this repo — deploy will auto-find `domains/apptesting.in/public_html`.
 
 ---
 

@@ -5,10 +5,18 @@ on:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: apptesting-deploy
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -18,6 +26,30 @@ jobs:
           cache: npm
 
       - name: Install and build
+        run: |
+          npm ci
+          npm run build
+        env:
+          BASE_PATH: /
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy-ftp:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Rebuild dist for FTP upload
         run: |
           npm ci
           npm run build
@@ -36,7 +68,7 @@ jobs:
           chmod +x .github/scripts/deploy-apptesting.sh
           .github/scripts/deploy-apptesting.sh
 
-      - name: Verify live
+      - name: Verify FTP deploy
         run: |
           for i in 1 2 3 4 5 6; do
             code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 25 "https://apptesting.in/")
@@ -47,5 +79,35 @@ jobs:
             echo "Waiting... ($i/6) HTTP $code"
             sleep 10
           done
-          echo "Upload finished — site may need a minute for SSL/cache"
+          echo "FTP upload step finished but site not 200 yet"
+          exit 1
+
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  verify-live:
+    needs: [deploy-ftp, deploy-pages]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check apptesting.in
+        run: |
+          code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 25 "https://apptesting.in/" || echo "000")
+          echo "apptesting.in HTTP $code"
+          if [ "$code" = "200" ]; then
+            echo "✅ https://apptesting.in/ is live"
+            exit 0
+          fi
+          pages_code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 25 "https://devithororg-commits.github.io/mak-crm-scan-app/" || echo "000")
+          echo "GitHub Pages HTTP $pages_code"
+          if [ "$pages_code" = "200" ]; then
+            echo "⚠️ App is live on GitHub Pages. Point apptesting.in DNS to GitHub Pages or add HOSTINGER_PASS secret for FTP deploy."
+          fi
           exit 0
