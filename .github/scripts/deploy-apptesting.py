@@ -12,25 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 DIST = ROOT / "dist"
 
 WEBROOT_CANDIDATES = (
+    "public_html",
     "domains/apptesting.in/public_html",
     "apptesting.in/public_html",
-    "home/u169457691/domains/apptesting.in/public_html",
-    "public_html",
     ".",
 )
-
-
-def debug_dirs(ftp: ftplib.FTP, user: str) -> None:
-    probes = (".", "domains", "domains/apptesting.in", "public_html")
-    for probe in probes:
-        try:
-            ftp.cwd("/")
-            if probe != ".":
-                ftp.cwd(probe)
-            names = ftp.nlst()[:15]
-            print(f"  listing /{probe}: {names}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"  listing /{probe} failed: {exc}")
 
 
 def unique(items: list[str | None]) -> list[str]:
@@ -47,26 +33,24 @@ def unique(items: list[str | None]) -> list[str]:
 def credential_pairs() -> list[tuple[str, str]]:
     users = unique([
         os.environ.get("APPTESTING_FTP_USER"),
-        os.environ.get("HOSTINGER_FTP_USER"),
+        "u776633649.apptesting.in",
         "u169457691.apptesting.in",
-        "u169457691.devithor.org",
     ])
+    users = [u for u in users if "apptesting.in" in u]
     passwords = unique([
         os.environ.get("APPTESTING_FTP_PASS"),
         os.environ.get("APPTESTING_FTP_PASSWORD"),
         os.environ.get("HOSTINGER_PASS"),
         os.environ.get("HOSTINGER_PASSWORD"),
     ])
-    if not passwords:
+    if not users or not passwords:
         return []
-    pairs: list[tuple[str, str]] = []
-    for user in users:
-        for password in passwords:
-            pairs.append((user, password))
-    return pairs
+    return [(user, password) for user in users for password in passwords]
 
 
 def connect_ftp(user: str, password: str) -> ftplib.FTP:
+    if "apptesting.in" not in user:
+        raise RuntimeError(f"Refusing non-apptesting FTP user: {user}")
     ftp = ftplib.FTP(timeout=180)
     ftp.connect(HOST, 21)
     ftp.login(user, password)
@@ -74,7 +58,13 @@ def connect_ftp(user: str, password: str) -> ftplib.FTP:
     return ftp
 
 
-def find_webroot(ftp: ftplib.FTP) -> str | None:
+def goto_webroot(ftp: ftplib.FTP, webroot: str) -> None:
+    ftp.cwd("/")
+    if webroot not in (".", ""):
+        ftp.cwd(webroot)
+
+
+def find_webroot(ftp: ftplib.FTP) -> str:
     try:
         pwd = ftp.pwd()
         print(f"  FTP pwd after login: {pwd}")
@@ -86,17 +76,16 @@ def find_webroot(ftp: ftplib.FTP) -> str | None:
 
     for base in WEBROOT_CANDIDATES:
         try:
-            ftp.cwd("/")
-            ftp.cwd(base)
+            goto_webroot(ftp, base)
             return base
         except ftplib.error_perm:
             continue
-    return None
+    raise RuntimeError("Could not find apptesting.in webroot")
 
 
 def ftp_list(ftp: ftplib.FTP) -> list[str]:
     try:
-        return ftp.nlst()
+        return [name for name in ftp.nlst() if name not in (".", "..")]
     except ftplib.error_perm as exc:
         if "550" in str(exc):
             return []
@@ -106,8 +95,6 @@ def ftp_list(ftp: ftplib.FTP) -> list[str]:
 def wipe_remote(ftp: ftplib.FTP) -> None:
     def remove_dir() -> None:
         for name in ftp_list(ftp):
-            if name in (".", ".."):
-                continue
             try:
                 ftp.delete(name)
                 print(f"  deleted file {name}")
@@ -123,8 +110,6 @@ def wipe_remote(ftp: ftplib.FTP) -> None:
 
 
 def ensure_dirs(ftp: ftplib.FTP, rel_dir: Path) -> None:
-    if not rel_dir.parts:
-        return
     for part in rel_dir.parts:
         try:
             ftp.cwd(part)
@@ -133,15 +118,16 @@ def ensure_dirs(ftp: ftplib.FTP, rel_dir: Path) -> None:
             ftp.cwd(part)
 
 
-def upload_tree(ftp: ftplib.FTP, local_root: Path) -> int:
+def upload_tree(ftp: ftplib.FTP, webroot: str, local_root: Path) -> int:
     count = 0
     for path in sorted(local_root.rglob("*")):
         if not path.is_file():
             continue
         rel = path.relative_to(local_root)
+        goto_webroot(ftp, webroot)
         ensure_dirs(ftp, rel.parent)
         with path.open("rb") as handle:
-            ftp.storbinary(f"STOR {rel.as_posix()}", handle)
+            ftp.storbinary(f"STOR {rel.name}", handle)
         print(f"  ↑ {rel.as_posix()}")
         count += 1
     return count
@@ -150,19 +136,10 @@ def upload_tree(ftp: ftplib.FTP, local_root: Path) -> int:
 def deploy_with_credentials(user: str, password: str) -> int:
     ftp = connect_ftp(user, password)
     webroot = find_webroot(ftp)
-    if not webroot:
-        print(f"Could not find webroot for {user}. Directory probe:")
-        debug_dirs(ftp, user)
-        ftp.quit()
-        raise RuntimeError(f"Connected as {user} but could not find apptesting.in webroot")
-
     print(f"Using FTP user {user} → /{webroot}/")
-    ftp.cwd("/")
-    ftp.cwd(webroot)
+    goto_webroot(ftp, webroot)
     wipe_remote(ftp)
-    ftp.cwd("/")
-    ftp.cwd(webroot)
-    uploaded = upload_tree(ftp, DIST)
+    uploaded = upload_tree(ftp, webroot, DIST)
     ftp.quit()
     return uploaded
 
@@ -171,8 +148,6 @@ def main() -> None:
     pairs = credential_pairs()
     if not pairs:
         print("Missing FTP credentials.", file=sys.stderr)
-        print("Add GitHub secrets: APPTESTING_FTP_PASS or HOSTINGER_PASS", file=sys.stderr)
-        print("Optional: APPTESTING_FTP_USER or HOSTINGER_FTP_USER", file=sys.stderr)
         sys.exit(1)
     if not DIST.joinpath("index.html").is_file():
         print(f"Missing {DIST / 'index.html'} — run npm run build first", file=sys.stderr)
@@ -185,7 +160,7 @@ def main() -> None:
             uploaded = deploy_with_credentials(user, password)
             print(f"Done — {uploaded} files uploaded to https://apptesting.in/")
             return
-        except Exception as exc:  # noqa: BLE001 - collect all credential attempts
+        except Exception as exc:  # noqa: BLE001
             errors.append(f"{user}: {exc}")
             print(f"  failed: {exc}")
 
