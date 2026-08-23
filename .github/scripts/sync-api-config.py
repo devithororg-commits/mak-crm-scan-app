@@ -25,6 +25,7 @@ MAP = {
     "SMTP_USER": "smtp_user",
     "SMTP_PASS": "smtp_pass",
     "SMTP_FROM": "smtp_from",
+    "SMTP_ENCRYPTION": "smtp_encryption",
 }
 
 
@@ -68,7 +69,8 @@ def main() -> None:
         "smtp_host": "smtp.hostinger.com",
         "smtp_port": "465",
         "smtp_encryption": "ssl",
-        "smtp_from": "Creative Studio <noreply@apptesting.in>",
+        "smtp_encryption": "ssl",
+        "smtp_from": "Creative Studio <info@apptesting.in>",
     }
 
     config: dict[str, str] = {**defaults}
@@ -78,7 +80,10 @@ def main() -> None:
 
     lines = ["<?php", "/** Auto-synced from server/.env — do not commit */", "return ["]
     for key, value in config.items():
-        lines.append(f"    '{key}' => {php_value(key, value)},")
+        if key == 'smtp_encryption':
+            lines.append(f"    '{key}' => {repr(str(value))},")
+        else:
+            lines.append(f"    '{key}' => {php_value(key, value)},")
     lines.append("];")
     lines.append("")
 

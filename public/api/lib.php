@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/template-ids.php';
 require_once __DIR__ . '/smartfill_lib.php';
+require_once __DIR__ . '/smtp.php';
 
 final class ApiException extends Exception
 {
@@ -123,7 +124,14 @@ function email_allowed(string $email, array $config): bool
     }
     if ($config['allowed_domain'] !== '') {
         $parts = explode('@', $email);
-        return ($parts[1] ?? '') === $config['allowed_domain'];
+        $domain = $parts[1] ?? '';
+        $allowedDomains = array_map(
+            fn ($d) => strtolower(trim(str_replace('@', '', $d))),
+            explode(',', $config['allowed_domain']),
+        );
+        if (in_array($domain, $allowedDomains, true)) {
+            return true;
+        }
     }
     return false;
 }
@@ -153,29 +161,7 @@ function verify_session_token(?string $authHeader, array $config): ?string
 
 function send_otp_email(string $email, string $otp, array $config): void
 {
-    if (!empty($config['mock_otp'])) {
-        return;
-    }
-    if (empty($config['smtp_host']) || empty($config['smtp_user']) || empty($config['smtp_pass'])) {
-        throw new ApiException('SMTP not configured. Set smtp_* in api/config.local.php or enable mock_otp.', 503);
-    }
-
-    $subject = 'Creative Studio — Login OTP';
-    $body = "Your login code is {$otp}. Valid for {$config['otp_ttl_minutes']} minutes.";
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-type: text/plain; charset=UTF-8',
-        'From: ' . $config['smtp_from'],
-    ];
-
-    if ($config['smtp_encryption'] === 'ssl') {
-        ini_set('SMTP', $config['smtp_host']);
-        ini_set('smtp_port', (string) $config['smtp_port']);
-    }
-
-    if (!mail($email, $subject, $body, implode("\r\n", $headers))) {
-        throw new ApiException('Could not send OTP email. Check SMTP settings.', 503);
-    }
+    send_studio_otp_email($email, $otp, $config);
 }
 
 function issue_login_otp(string $email, array $config): array
@@ -204,7 +190,7 @@ function issue_login_otp(string $email, array $config): array
         'lastSentAt' => $now,
     ];
     write_store('otp.json', $store);
-    send_otp_email($email, $otp, $config);
+    send_studio_otp_email($email, $otp, $config);
 
     $result = [
         'ok' => true,
