@@ -462,6 +462,7 @@ const TEMPLATE_SPECIFIC: Partial<Record<TemplateId, QuickEditZone[]>> = {
 const REAL_ESTATE_TEMPLATES: TemplateId[] = [
   'just-listed', 'just-sold', 'open-house', 'buyer-match',
   'photo-gallery',
+  'villa-prestige', 'penthouse-sky', 'commercial-hub', 'plot-investment', 'virtual-tour', 'rental-premium', 'home-loan-pro',
 ]
 
 const PERSON_TEMPLATES: TemplateId[] = ['profile-card', 'profile-glass', 'agent-spotlight']

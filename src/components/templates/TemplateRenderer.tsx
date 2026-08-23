@@ -53,6 +53,31 @@ import SplitDiagonalCard from './SplitDiagonalCard'
 import CinematicFrameCard from './CinematicFrameCard'
 import BrutalistTypeCard from './BrutalistTypeCard'
 import AuroraMeshCard from './AuroraMeshCard'
+import VillaPrestigeCard from './VillaPrestigeCard'
+import PenthouseSkyCard from './PenthouseSkyCard'
+import CommercialHubCard from './CommercialHubCard'
+import PlotInvestmentCard from './PlotInvestmentCard'
+import VirtualTourCard from './VirtualTourCard'
+import RentalPremiumCard from './RentalPremiumCard'
+import HomeLoanProCard from './HomeLoanProCard'
+import ReelCoverCard from './ReelCoverCard'
+import LinkedinProCard from './LinkedinProCard'
+import ProductLaunchProCard from './ProductLaunchProCard'
+import StartupPitchCard from './StartupPitchCard'
+import PodcastCoverCard from './PodcastCoverCard'
+import EventPosterCard from './EventPosterCard'
+import FlashSaleCard from './FlashSaleCard'
+import BrandManifestoCard from './BrandManifestoCard'
+import QuarterlyProCard from './QuarterlyProCard'
+import KpiCommandCard from './KpiCommandCard'
+import CaseStudyProCard from './CaseStudyProCard'
+import WhitepaperProCard from './WhitepaperProCard'
+import InvestorSnapshotCard from './InvestorSnapshotCard'
+import ArtDecoLuxeCard from './ArtDecoLuxeCard'
+import SwissPosterCard from './SwissPosterCard'
+import SynthwaveRetroCard from './SynthwaveRetroCard'
+import MinimalLuxeCard from './MinimalLuxeCard'
+import HolographicProCard from './HolographicProCard'
 import ProgressCard from './ProgressCard'
 import ReportStoryCard from './ReportStoryCard'
 import StatsDashboard from './StatsDashboard'
@@ -110,6 +135,31 @@ const TEMPLATE_MAP: Record<TemplateId, ComponentType<{ data: CreativeData; slide
   'cinematic-frame': CinematicFrameCard,
   'brutalist-type': BrutalistTypeCard,
   'aurora-mesh': AuroraMeshCard,
+  'villa-prestige': VillaPrestigeCard,
+  'penthouse-sky': PenthouseSkyCard,
+  'commercial-hub': CommercialHubCard,
+  'plot-investment': PlotInvestmentCard,
+  'virtual-tour': VirtualTourCard,
+  'rental-premium': RentalPremiumCard,
+  'home-loan-pro': HomeLoanProCard,
+  'reel-cover': ReelCoverCard,
+  'linkedin-pro': LinkedinProCard,
+  'product-launch-pro': ProductLaunchProCard,
+  'startup-pitch': StartupPitchCard,
+  'podcast-cover': PodcastCoverCard,
+  'event-poster': EventPosterCard,
+  'flash-sale': FlashSaleCard,
+  'brand-manifesto': BrandManifestoCard,
+  'quarterly-pro': QuarterlyProCard,
+  'kpi-command': KpiCommandCard,
+  'case-study-pro': CaseStudyProCard,
+  'whitepaper-pro': WhitepaperProCard,
+  'investor-snapshot': InvestorSnapshotCard,
+  'art-deco-luxe': ArtDecoLuxeCard,
+  'swiss-poster': SwissPosterCard,
+  'synthwave-retro': SynthwaveRetroCard,
+  'minimal-luxe': MinimalLuxeCard,
+  'holographic-pro': HolographicProCard,
 }
 
 interface Props {
