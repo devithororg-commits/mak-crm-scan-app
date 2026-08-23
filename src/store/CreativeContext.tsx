@@ -32,6 +32,10 @@ interface CreativeContextValue {
 
 const CreativeContext = createContext<CreativeContextValue | null>(null)
 
+const BRAND_LOCK_KEYS: (keyof CreativeData)[] = [
+  'accentColor', 'secondaryColor', 'fontFamily', 'logoUrl', 'themeId', 'highlightColor',
+]
+
 export function CreativeProvider({ children }: { children: ReactNode }) {
   const [data, setDataState] = useState<CreativeData>(() => loadPersistedData())
   const [activeTab, setActiveTab] = useState<EditorTab>('templates')
@@ -74,7 +78,10 @@ export function CreativeProvider({ children }: { children: ReactNode }) {
   }, [data])
 
   const update = useCallback(<K extends keyof CreativeData>(key: K, value: CreativeData[K]) => {
-    setData((prev) => ({ ...prev, [key]: value }))
+    setData((prev) => {
+      if (prev.brandLock && key !== 'brandLock' && BRAND_LOCK_KEYS.includes(key)) return prev
+      return { ...prev, [key]: value }
+    })
   }, [setData])
 
   const applyPreset = useCallback((category: ContentCategory) => {

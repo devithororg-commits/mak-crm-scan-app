@@ -8,6 +8,8 @@ import { TEMPLATES } from '../../data/config'
 import ExportSettings from './ExportSettings'
 import CaptionGenerator from './CaptionGenerator'
 import ContentLibrary from './ContentLibrary'
+import MultiFormatPreview from './MultiFormatPreview'
+import DesignScorePanel from './DesignScorePanel'
 
 interface Props {
   onClose: () => void
@@ -64,6 +66,8 @@ export default function ExportPanel({ onClose }: Props) {
 
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <div className="space-y-4">
+          <MultiFormatPreview />
+          <DesignScorePanel />
           <ExportSettings />
           <CaptionGenerator />
           <ContentLibrary />

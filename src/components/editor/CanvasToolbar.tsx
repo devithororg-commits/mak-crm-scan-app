@@ -1,4 +1,4 @@
-import { Maximize2, Grid3X3, Minus, Plus, ChevronLeft, ChevronRight, Shield } from 'lucide-react'
+import { Maximize2, Grid3X3, Minus, Plus, ChevronLeft, ChevronRight, Shield, Columns3, Sparkles, Smartphone, CircleDot } from 'lucide-react'
 import { ASPECT_RATIOS } from '../../data/config'
 import type { AspectRatio } from '../../types/creative'
 
@@ -9,6 +9,14 @@ interface Props {
   onToggleGrid: () => void
   showSafeZone: boolean
   onToggleSafeZone: () => void
+  showThirds: boolean
+  onToggleThirds: () => void
+  showGolden: boolean
+  onToggleGolden: () => void
+  showFeedThumb: boolean
+  onToggleFeedThumb: () => void
+  showGrayscale: boolean
+  onToggleGrayscale: () => void
   aspectRatio: AspectRatio
   onAspectChange: (ar: AspectRatio) => void
   carouselEnabled?: boolean
@@ -27,6 +35,14 @@ export default function CanvasToolbar({
   onToggleGrid,
   showSafeZone,
   onToggleSafeZone,
+  showThirds,
+  onToggleThirds,
+  showGolden,
+  onToggleGolden,
+  showFeedThumb,
+  onToggleFeedThumb,
+  showGrayscale,
+  onToggleGrayscale,
   aspectRatio,
   onAspectChange,
   carouselEnabled,
@@ -97,6 +113,39 @@ export default function CanvasToolbar({
           className={`rounded-lg p-2 transition ${showSafeZone ? 'bg-violet-100 text-violet-700' : 'text-slate-500 hover:bg-slate-50'}`}
         >
           <Shield className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          title="Rule of thirds"
+          onClick={onToggleThirds}
+          className={`rounded-lg p-2 transition ${showThirds ? 'bg-cyan-100 text-cyan-700' : 'text-slate-500 hover:bg-slate-50'}`}
+        >
+          <Columns3 className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          title="Golden ratio guides"
+          onClick={onToggleGolden}
+          className={`rounded-lg p-2 transition ${showGolden ? 'bg-rose-100 text-rose-700' : 'text-slate-500 hover:bg-slate-50'}`}
+        >
+          <Sparkles className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          title="Feed thumbnail preview"
+          onClick={onToggleFeedThumb}
+          className={`rounded-lg p-2 transition ${showFeedThumb ? 'bg-violet-100 text-violet-700' : 'text-slate-500 hover:bg-slate-50'}`}
+        >
+          <Smartphone className="h-4 w-4" />
+        </button>
+
+        <button
+          type="button"
+          title="Grayscale QA — hierarchy without color"
+          onClick={onToggleGrayscale}
+          className={`rounded-lg p-2 transition ${showGrayscale ? 'bg-slate-700 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+        >
+          <CircleDot className="h-4 w-4" />
         </button>
 
         <button

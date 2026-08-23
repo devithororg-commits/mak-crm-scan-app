@@ -12,6 +12,8 @@ import { overlayQrOnImage } from '../../utils/qrCode'
 import { downloadBlob, exportSlideshowVideo } from '../../utils/videoExport'
 import TemplateRenderer from '../templates/TemplateRenderer'
 import CanvasToolbar from './CanvasToolbar'
+import CompositionGuides from './CompositionGuides'
+import FeedThumbnailPreview from './FeedThumbnailPreview'
 
 
 
@@ -67,6 +69,10 @@ export default function PreviewPanel() {
   const [zoom, setZoom] = useState(1)
   const [showGrid, setShowGrid] = useState(false)
   const [showSafeZone, setShowSafeZone] = useState(false)
+  const [showThirds, setShowThirds] = useState(false)
+  const [showGolden, setShowGolden] = useState(false)
+  const [showFeedThumb, setShowFeedThumb] = useState(false)
+  const [showGrayscale, setShowGrayscale] = useState(false)
 
 
 
@@ -443,7 +449,7 @@ export default function PreviewPanel() {
 
       {/* Canvas area */}
         <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
-        <div className="flex flex-1 items-center justify-center overflow-auto p-3 sm:p-6">
+        <div className="flex flex-1 items-center justify-center gap-4 overflow-auto p-3 sm:p-6">
           <div className="relative animate-fade-in" style={{ width: width * scale, height: height * scale }}>
             {showGrid && (
               <div className="pointer-events-none absolute inset-0 z-10 opacity-40" style={{
@@ -451,18 +457,27 @@ export default function PreviewPanel() {
                 backgroundSize: '32px 32px',
               }} />
             )}
-            {showSafeZone && (
-              <div className="pointer-events-none absolute inset-0 z-20 rounded-[20px] border-2 border-dashed border-amber-400/60" style={{ margin: '5%' }} />
-            )}
+            <CompositionGuides
+              aspectRatio={data.aspectRatio}
+              showSafeZone={showSafeZone}
+              showThirds={showThirds}
+              showGolden={showGolden}
+            />
             <div
               className="overflow-hidden rounded-[20px] shadow-[var(--shadow-lg)] ring-1 ring-slate-200/80"
-              style={{ width: width * scale, height: height * scale }}
+              style={{ width: width * scale, height: height * scale, filter: showGrayscale ? 'grayscale(1)' : undefined }}
             >
               <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', fontFamily: fontFamilyCss(data.fontFamily) }}>
                 <TemplateRenderer data={data} slideIndex={previewSlide} />
               </div>
             </div>
           </div>
+
+          {showFeedThumb && (
+            <div className="hidden shrink-0 lg:block">
+              <FeedThumbnailPreview />
+            </div>
+          )}
         </div>
 
         <CanvasToolbar
@@ -472,6 +487,14 @@ export default function PreviewPanel() {
           onToggleGrid={() => setShowGrid(!showGrid)}
           showSafeZone={showSafeZone}
           onToggleSafeZone={() => setShowSafeZone(!showSafeZone)}
+          showThirds={showThirds}
+          onToggleThirds={() => setShowThirds(!showThirds)}
+          showGolden={showGolden}
+          onToggleGolden={() => setShowGolden(!showGolden)}
+          showFeedThumb={showFeedThumb}
+          onToggleFeedThumb={() => setShowFeedThumb(!showFeedThumb)}
+          showGrayscale={showGrayscale}
+          onToggleGrayscale={() => setShowGrayscale(!showGrayscale)}
           aspectRatio={data.aspectRatio}
           onAspectChange={(ar) => update('aspectRatio', ar)}
           carouselEnabled={data.carouselEnabled}

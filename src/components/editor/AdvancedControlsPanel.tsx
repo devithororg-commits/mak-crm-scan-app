@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { ChevronDown, Layers, Image, Type, Sparkles, Layout, PanelBottom, Eye, Wand2, QrCode, Move } from 'lucide-react'
+import { ChevronDown, Layers, Image, Type, Sparkles, Layout, PanelBottom, Eye, Wand2, QrCode, Move, ClipboardCheck, CaseSensitive, Palette, FlaskConical } from 'lucide-react'
 import CanvasSettings from './CanvasSettings'
 import TypographyEditor from './TypographyEditor'
 import EffectsEditor from './EffectsEditor'
@@ -10,6 +10,10 @@ import StylePresetsBar from './StylePresetsBar'
 import LayoutVisibilityEditor from './LayoutVisibilityEditor'
 import LayoutSpacingEditor from './LayoutSpacingEditor'
 import QrCodeEditor from './QrCodeEditor'
+import DesignScorePanel from './DesignScorePanel'
+import TypographyPresetsPanel from './TypographyPresetsPanel'
+import ColorHarmonyPanel from './ColorHarmonyPanel'
+import PosterVariantPanel from './PosterVariantPanel'
 
 function Accordion({
   id,
@@ -70,6 +74,22 @@ export default function AdvancedControlsPanel() {
           </div>
         </div>
       </div>
+
+      <Accordion id="design-score" title="Design Score" subtitle="Poster QA — contrast, hierarchy, CTA checks" icon={ClipboardCheck} defaultOpen>
+        <DesignScorePanel />
+      </Accordion>
+
+      <Accordion id="typography-presets" title="Typography Presets" subtitle="Poster Bold · Corporate · Luxury scales" icon={CaseSensitive}>
+        <TypographyPresetsPanel />
+      </Accordion>
+
+      <Accordion id="color-harmony" title="Color Harmony" subtitle="60-30-10 rule from brand colors" icon={Palette}>
+        <ColorHarmonyPanel />
+      </Accordion>
+
+      <Accordion id="poster-variants" title="A/B Poster Variants" subtitle="Visual A/B/C for ad testing" icon={FlaskConical}>
+        <PosterVariantPanel />
+      </Accordion>
 
       <Accordion id="presets" title="Style Presets" subtitle="One-click looks & content density" icon={Wand2} defaultOpen>
         <StylePresetsBar />

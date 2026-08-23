@@ -5,6 +5,7 @@ import { TEMPLATES } from '../../data/config'
 import { applyTemplateSwitch } from '../../data/presets'
 import type { TemplateId } from '../../types/creative'
 import TemplateThumb, { TEMPLATE_GROUPS, TEMPLATE_GROUP_MAP } from './TemplateThumb'
+import { MOOD_FILTERS, templateMatchesMood, type TemplateMood } from '../../utils/templateMoods'
 import { AppIcon } from '../icons'
 import { Section } from './FormUI'
 import SearchInput from '../ux/SearchInput'
@@ -20,6 +21,7 @@ export default function TemplatePicker() {
   const { data, setData } = useCreative()
   const { toast } = useToast()
   const [filter, setFilter] = useState<string>('all')
+  const [moodFilter, setMoodFilter] = useState<TemplateMood | 'all'>('all')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<SortMode>('popular')
 
@@ -34,6 +36,9 @@ export default function TemplatePicker() {
     let list = TEMPLATES.filter(
       (t) => filter === 'all' || TEMPLATE_GROUP_MAP[t.id as TemplateId] === filter,
     )
+    if (moodFilter !== 'all') {
+      list = list.filter((t) => templateMatchesMood(t.id as TemplateId, moodFilter))
+    }
     const q = search.trim().toLowerCase()
     if (q) {
       list = list.filter(
@@ -56,7 +61,7 @@ export default function TemplatePicker() {
       list = [...list].sort((a, b) => a.name.localeCompare(b.name))
     }
     return list
-  }, [filter, search, sort])
+  }, [filter, moodFilter, search, sort])
 
   return (
     <Section title="Choose Template" desc="Search, filter, or tap to preview on the right" noPad>
@@ -91,6 +96,24 @@ export default function TemplatePicker() {
           >
             <AppIcon name={g.icon} size={12} className={filter === g.id ? 'text-white' : 'text-slate-500'} />
             {g.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-1.5 overflow-x-auto border-b border-slate-100 px-4 py-2">
+        {MOOD_FILTERS.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            onClick={() => setMoodFilter(m.id)}
+            className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold transition ${
+              moodFilter === m.id
+                ? 'bg-violet-600 text-white shadow-sm'
+                : 'bg-violet-50 text-violet-700 hover:bg-violet-100'
+            }`}
+          >
+            <span>{m.emoji}</span>
+            {m.label}
           </button>
         ))}
       </div>
@@ -138,7 +161,7 @@ export default function TemplatePicker() {
         <div className="flex flex-col items-center py-8 text-slate-400">
           <LayoutGrid className="mb-2 h-8 w-8 opacity-40" />
           <p className="text-xs font-medium">No templates match your search</p>
-          <button type="button" onClick={() => { setSearch(''); setFilter('all') }} className="mt-2 text-[11px] font-semibold text-violet-600 hover:underline">
+          <button type="button" onClick={() => { setSearch(''); setFilter('all'); setMoodFilter('all') }} className="mt-2 text-[11px] font-semibold text-violet-600 hover:underline">
             Clear filters
           </button>
         </div>

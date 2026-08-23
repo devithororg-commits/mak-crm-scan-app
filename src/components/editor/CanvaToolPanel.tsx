@@ -7,6 +7,7 @@ import QuickEditPanel from './QuickEditPanel'
 import CategoryPicker from './CategoryPicker'
 import ListingUrlImport from './ListingUrlImport'
 import ListingImport from './ListingImport'
+import ListingQuickPack from './ListingQuickPack'
 import MediaEditor from './MediaEditor'
 import EffectsEditor from './EffectsEditor'
 import AdvancedControlsPanel from './AdvancedControlsPanel'
@@ -81,6 +82,7 @@ export default function CanvaToolPanel({ mode, templateName, onChangeTemplate }:
           <QuickEditPanel />
           <ListingUrlImport />
           <ListingImport />
+          <ListingQuickPack />
         </>
       )}
 
