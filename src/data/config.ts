@@ -61,6 +61,14 @@ export const TEMPLATES: {
   { id: 'design-pills', name: 'Design Pills', desc: 'Serif headline + pill list', preview: 'bg-[#F9F9F9] border', bestFor: 'Design / Agency' },
   { id: 'hook-post', name: 'Hook Post', desc: 'Bold hook + social footer', preview: 'bg-indigo-50 border', bestFor: 'Engagement' },
   { id: 'studio-statement', name: 'Studio Statement', desc: 'Gradient title + ghost CTAs', preview: 'bg-slate-50 border', bestFor: 'Portfolio / Studio' },
+  { id: 'editorial-magazine', name: 'Editorial Magazine', desc: 'Vogue-style cover with serif headline', preview: 'bg-black', bestFor: 'Luxury / Editorial' },
+  { id: 'neon-cyber', name: 'Neon Cyber', desc: 'Dark neon glow + scan lines', preview: 'bg-[#050510]', bestFor: 'Tech / Launch' },
+  { id: 'blueprint-estate', name: 'Blueprint Estate', desc: 'Technical drawing floor plan style', preview: 'bg-[#0c1a3a]', bestFor: 'Real Estate / Arch' },
+  { id: 'golden-estate', name: 'Golden Estate', desc: 'Luxury gold overlay on property photo', preview: 'bg-gradient-to-br from-amber-900 to-black', bestFor: 'Premium Listings' },
+  { id: 'split-diagonal', name: 'Split Diagonal', desc: 'Asymmetric diagonal collage layout', preview: 'bg-gradient-to-br from-violet-600 to-orange-400', bestFor: 'Social / Campaign' },
+  { id: 'cinematic-frame', name: 'Cinematic Frame', desc: 'Film letterbox with grain overlay', preview: 'bg-black', bestFor: 'Story / Brand Film' },
+  { id: 'brutalist-type', name: 'Brutalist Type', desc: 'Raw oversized typography poster', preview: 'bg-[#f5f0e8] border-4 border-black', bestFor: 'Bold Statements' },
+  { id: 'aurora-mesh', name: 'Aurora Mesh', desc: 'Gradient mesh + glass metric cards', preview: 'bg-[#0f0f1a]', bestFor: 'Analytics / Social' },
 ]
 
 export const CHART_TYPES: { id: 'line' | 'bar' | 'pie' | 'area' | 'none'; label: string; icon: IconName }[] = [

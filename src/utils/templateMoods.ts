@@ -57,6 +57,14 @@ export const TEMPLATE_MOOD_MAP: Record<TemplateId, TemplateMood[]> = {
   'design-pills': ['social', 'luxury'],
   'hook-post': ['urgent', 'social'],
   'studio-statement': ['luxury', 'social'],
+  'editorial-magazine': ['luxury', 'social'],
+  'neon-cyber': ['urgent', 'social'],
+  'blueprint-estate': ['trust', 'education'],
+  'golden-estate': ['luxury', 'trust'],
+  'split-diagonal': ['social', 'urgent'],
+  'cinematic-frame': ['luxury', 'social'],
+  'brutalist-type': ['urgent', 'social'],
+  'aurora-mesh': ['social', 'education'],
 }
 
 export function templateMatchesMood(templateId: TemplateId, mood: TemplateMood | 'all'): boolean {

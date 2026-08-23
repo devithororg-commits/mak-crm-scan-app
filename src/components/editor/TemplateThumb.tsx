@@ -570,6 +570,96 @@ const THUMBS: Record<TemplateId, ReactNode> = {
       <div className="mt-auto h-2 w-full rounded-t-full bg-gradient-to-r from-violet-400 to-blue-400 opacity-60" />
     </div>
   ),
+
+  'editorial-magazine': (
+    <div className="flex h-full flex-col bg-black p-2">
+      <div className="flex justify-between">
+        <Bar w="w-4" color="bg-white/40" />
+        <Bar w="w-3" color="bg-white/20" />
+      </div>
+      <Bar w="w-8" h="h-2" color="bg-white" />
+      <Bar w="w-6" color="bg-amber-500" />
+      <div className="mt-auto h-0.5 w-full bg-gradient-to-r from-amber-500 to-rose-500" />
+    </div>
+  ),
+
+  'neon-cyber': (
+    <div className="relative flex h-full flex-col bg-[#050510] p-1.5">
+      <div className="flex flex-1 flex-col rounded border border-cyan-400/50 p-1.5 shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+        <Bar w="w-4" color="bg-cyan-400" />
+        <Bar w="w-7" h="h-1.5" color="bg-white" />
+        <div className="mt-auto grid grid-cols-3 gap-0.5">
+          {[1, 2, 3].map((i) => <div key={i} className="h-3 rounded border border-fuchsia-400/40 bg-fuchsia-500/20" />)}
+        </div>
+      </div>
+    </div>
+  ),
+
+  'blueprint-estate': (
+    <div className="relative flex h-full flex-col bg-[#0c1a3a] p-2">
+      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(#1e40af 1px, transparent 1px), linear-gradient(90deg, #1e40af 1px, transparent 1px)', backgroundSize: '8px 8px' }} />
+      <Bar w="w-5" color="bg-blue-300" />
+      <Bar w="w-8" h="h-1.5" color="bg-white" />
+      <div className="mt-1 grid grid-cols-2 gap-0.5 border border-dashed border-blue-400/40 p-0.5">
+        {[1, 2, 3, 4].map((i) => <div key={i} className="h-2 bg-blue-400/20" />)}
+      </div>
+    </div>
+  ),
+
+  'golden-estate': (
+    <div className="relative flex h-full flex-col justify-end bg-gradient-to-br from-stone-800 to-amber-950 p-2">
+      <div className="absolute inset-1 rounded border border-amber-400/40" />
+      <Bar w="w-3" color="bg-amber-400/60" />
+      <Bar w="w-8" h="h-1.5" color="bg-amber-100" />
+      <div className="mt-1 h-2 w-6 rounded bg-amber-500" />
+    </div>
+  ),
+
+  'split-diagonal': (
+    <div className="relative h-full overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-orange-400" />
+      <div className="absolute inset-0 bg-indigo-600/90" style={{ clipPath: 'polygon(0 55%, 100% 35%, 100% 100%, 0 100%)' }} />
+      <div className="absolute bottom-1 left-1">
+        <Bar w="w-6" h="h-1.5" color="bg-white" />
+      </div>
+    </div>
+  ),
+
+  'cinematic-frame': (
+    <div className="flex h-full flex-col bg-black">
+      <div className="h-[12%] bg-black" />
+      <div className="relative flex flex-1 items-center justify-center bg-gradient-to-t from-black to-slate-600">
+        <Bar w="w-6" h="h-1" color="bg-amber-400" />
+        <Bar w="w-5" color="bg-white/60" />
+      </div>
+      <div className="h-[12%] bg-black" />
+    </div>
+  ),
+
+  'brutalist-type': (
+    <div className="flex h-full flex-col border-2 border-black bg-[#f5f0e8]">
+      <div className="h-3 bg-black" />
+      <div className="flex flex-1 flex-col justify-center p-1.5">
+        <Bar w="w-full" h="h-2.5" color="bg-black" />
+        <div className="my-0.5 h-0.5 bg-black" />
+        <Bar w="w-4/5" color="bg-black/60" />
+      </div>
+    </div>
+  ),
+
+  'aurora-mesh': (
+    <div className="relative flex h-full flex-col bg-[#0f0f1a] p-1.5">
+      <div className="absolute -left-2 -top-2 h-8 w-8 rounded-full bg-violet-500/40 blur-md" />
+      <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-cyan-400/40 blur-md" />
+      <div className="relative rounded bg-white/10 p-1 backdrop-blur-sm">
+        <Bar w="w-6" color="bg-white" />
+        <Bar w="w-4" color="bg-white/40" />
+      </div>
+      <div className="relative mt-1 grid flex-1 grid-cols-2 gap-0.5">
+        {[1, 2, 3, 4].map((i) => <div key={i} className="rounded bg-white/10" />)}
+      </div>
+    </div>
+  ),
 }
 
 export const TEMPLATE_GROUPS: { id: string; label: string; icon: IconName }[] = [
@@ -624,4 +714,12 @@ export const TEMPLATE_GROUP_MAP: Record<TemplateId, string> = {
   'design-pills': 'social',
   'hook-post': 'social',
   'studio-statement': 'social',
+  'editorial-magazine': 'social',
+  'neon-cyber': 'social',
+  'blueprint-estate': 'realestate',
+  'golden-estate': 'realestate',
+  'split-diagonal': 'social',
+  'cinematic-frame': 'social',
+  'brutalist-type': 'social',
+  'aurora-mesh': 'business',
 }

@@ -45,6 +45,14 @@ import CarouselTipCard from './CarouselTipCard'
 import DesignPillsCard from './DesignPillsCard'
 import HookPostCard from './HookPostCard'
 import StudioStatementCard from './StudioStatementCard'
+import EditorialMagazineCard from './EditorialMagazineCard'
+import NeonCyberCard from './NeonCyberCard'
+import BlueprintEstateCard from './BlueprintEstateCard'
+import GoldenEstateCard from './GoldenEstateCard'
+import SplitDiagonalCard from './SplitDiagonalCard'
+import CinematicFrameCard from './CinematicFrameCard'
+import BrutalistTypeCard from './BrutalistTypeCard'
+import AuroraMeshCard from './AuroraMeshCard'
 import ProgressCard from './ProgressCard'
 import ReportStoryCard from './ReportStoryCard'
 import StatsDashboard from './StatsDashboard'
@@ -94,6 +102,14 @@ const TEMPLATE_MAP: Record<TemplateId, ComponentType<{ data: CreativeData; slide
   'design-pills': DesignPillsCard,
   'hook-post': HookPostCard,
   'studio-statement': StudioStatementCard,
+  'editorial-magazine': EditorialMagazineCard,
+  'neon-cyber': NeonCyberCard,
+  'blueprint-estate': BlueprintEstateCard,
+  'golden-estate': GoldenEstateCard,
+  'split-diagonal': SplitDiagonalCard,
+  'cinematic-frame': CinematicFrameCard,
+  'brutalist-type': BrutalistTypeCard,
+  'aurora-mesh': AuroraMeshCard,
 }
 
 interface Props {

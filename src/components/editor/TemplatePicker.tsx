@@ -12,7 +12,8 @@ import SearchInput from '../ux/SearchInput'
 import { useToast } from '../ux/ToastProvider'
 
 const POPULAR_TEMPLATES: TemplateId[] = [
-  'just-listed', 'just-sold', 'market-update', 'agent-spotlight', 'open-house', 'emi-calculator',
+  'just-listed', 'golden-estate', 'editorial-magazine', 'cinematic-frame', 'blueprint-estate', 'neon-cyber',
+  'market-update', 'agent-spotlight', 'open-house', 'emi-calculator',
 ]
 
 type SortMode = 'popular' | 'az'
