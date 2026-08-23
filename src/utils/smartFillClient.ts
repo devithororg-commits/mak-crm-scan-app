@@ -2,14 +2,15 @@ import type { CompanyDna, SmartFillResponse } from '../types/studio'
 import { getRecentTemplates } from './themeEngine'
 import { getStudioAuthToken, studioAuthHeaders } from './studioAuth'
 
-const API_URL = import.meta.env.VITE_STUDIO_API_URL || ''
-
-export function isStudioApiConfigured(): boolean {
-  return Boolean(API_URL.trim())
+export function getStudioApiUrl(): string {
+  const env = import.meta.env.VITE_STUDIO_API_URL?.replace(/\/$/, '')
+  if (env) return env
+  if (typeof window !== 'undefined') return window.location.origin
+  return ''
 }
 
-export function getStudioApiUrl(): string {
-  return API_URL.replace(/\/$/, '')
+export function isStudioApiConfigured(): boolean {
+  return Boolean(getStudioApiUrl())
 }
 
 export async function requestSmartFill(params: {
@@ -20,7 +21,7 @@ export async function requestSmartFill(params: {
 }): Promise<SmartFillResponse> {
   const base = getStudioApiUrl()
   if (!base) {
-    throw new Error('Studio API not configured. Add VITE_STUDIO_API_URL to .env')
+    throw new Error('Studio API not configured')
   }
   if (!getStudioAuthToken()) {
     throw new Error('Login required. Verify company email OTP first.')
@@ -47,7 +48,9 @@ export async function checkStudioHealth(): Promise<boolean> {
   if (!isStudioApiConfigured()) return false
   try {
     const res = await fetch(`${getStudioApiUrl()}/api/health`)
-    return res.ok
+    if (!res.ok) return false
+    const data = await res.json() as { ok?: boolean; service?: string }
+    return Boolean(data.ok && data.service === 'creative-studio')
   } catch {
     return false
   }

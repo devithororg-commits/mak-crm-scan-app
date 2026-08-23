@@ -1,6 +1,13 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  RewriteRule ^api/health$ api/health.php [L,QSA]
+  RewriteRule ^api/auth/send-otp$ api/auth/send-otp.php [L,QSA]
+  RewriteRule ^api/auth/verify-otp$ api/auth/verify-otp.php [L,QSA]
+  RewriteRule ^api/auth/logout$ api/auth/logout.php [L,QSA]
+  RewriteRule ^api/smart-fill$ api/smart-fill.php [L,QSA]
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

@@ -5,6 +5,8 @@ build/
 .env.*
 !.env.example
 server/.env
+public/api/config.local.php
+public/api/data/*.json
 *.log
 .DS_Store
 Thumbs.db

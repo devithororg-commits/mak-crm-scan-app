@@ -1,6 +1,13 @@
 const TOKEN_KEY = 'studio-auth-token'
 const EMAIL_KEY = 'studio-auth-email'
 
+function apiBase(): string {
+  const env = import.meta.env.VITE_STUDIO_API_URL?.replace(/\/$/, '')
+  if (env) return env
+  if (typeof window !== 'undefined') return window.location.origin
+  return ''
+}
+
 export function getStudioAuthToken(): string {
   return sessionStorage.getItem(TOKEN_KEY) || ''
 }
@@ -24,7 +31,7 @@ export function clearStudioSession() {
 }
 
 export async function sendStudioOtp(email: string) {
-  const base = import.meta.env.VITE_STUDIO_API_URL?.replace(/\/$/, '')
+  const base = apiBase()
   if (!base) throw new Error('Studio API not configured')
 
   const res = await fetch(`${base}/api/auth/send-otp`, {
@@ -38,7 +45,7 @@ export async function sendStudioOtp(email: string) {
 }
 
 export async function verifyStudioOtp(email: string, otp: string) {
-  const base = import.meta.env.VITE_STUDIO_API_URL?.replace(/\/$/, '')
+  const base = apiBase()
   if (!base) throw new Error('Studio API not configured')
 
   const res = await fetch(`${base}/api/auth/verify-otp`, {
@@ -53,7 +60,7 @@ export async function verifyStudioOtp(email: string, otp: string) {
 }
 
 export async function logoutStudio() {
-  const base = import.meta.env.VITE_STUDIO_API_URL?.replace(/\/$/, '')
+  const base = apiBase()
   const token = getStudioAuthToken()
   if (base && token) {
     await fetch(`${base}/api/auth/logout`, {

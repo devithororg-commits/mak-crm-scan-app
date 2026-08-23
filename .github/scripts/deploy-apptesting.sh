@@ -10,4 +10,6 @@ if [ ! -f dist/index.html ]; then
   exit 1
 fi
 
+python3 .github/scripts/sync-api-config.py
+
 python3 .github/scripts/deploy-apptesting.py
