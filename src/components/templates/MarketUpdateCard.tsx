@@ -6,7 +6,7 @@ import HighlightText from './HighlightText'
 
 export default function MarketUpdateCard({ data }: { data: CreativeData }) {
   const t = getTypography(data)
-  const location = data.location || data.state || 'Hyderabad'
+  const location = data.location || data.state || 'Your City'
   const period = data.badge || 'Q4 2025'
   const growth = data.changePercent || data.metric1Value || '+22%'
 

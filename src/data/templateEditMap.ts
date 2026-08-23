@@ -20,7 +20,7 @@ export interface QuickEditZone {
 const hl = true
 
 const HEADLINE: QuickEditField[] = [
-  { key: 'eyebrow', label: 'Label / Category', placeholder: 'MAK Projects', highlight: hl },
+  { key: 'eyebrow', label: 'Label / Category', placeholder: 'Your Brand', highlight: hl },
   { key: 'title', label: 'Headline', placeholder: 'Your main headline', highlight: hl },
   { key: 'subtitle', label: 'Subheadline', placeholder: 'Supporting line', highlight: hl },
   { key: 'badge', label: 'Badge / Tag', placeholder: 'Q4 2025' },
@@ -33,7 +33,7 @@ const BODY: QuickEditField[] = [
 const PROPERTY: QuickEditField[] = [
   { key: 'propertyTitle', label: 'Property Name', placeholder: 'Luxury 3BHK Apartment', highlight: hl },
   { key: 'propertyPrice', label: 'Price', placeholder: '₹1.25 Cr', highlight: hl },
-  { key: 'propertyAddress', label: 'Address', placeholder: 'Gachibowli, Hyderabad' },
+  { key: 'propertyAddress', label: 'Address', placeholder: 'Downtown, Your City' },
   { key: 'propertyBeds', label: 'Bedrooms', placeholder: '3' },
   { key: 'propertyBaths', label: 'Bathrooms', placeholder: '3' },
   { key: 'propertySqft', label: 'Area (sqft)', placeholder: '1,850' },
@@ -42,9 +42,9 @@ const PROPERTY: QuickEditField[] = [
 ]
 
 const PERSON: QuickEditField[] = [
-  { key: 'personName', label: 'Name', placeholder: 'Rahul Sharma', highlight: hl },
+  { key: 'personName', label: 'Name', placeholder: 'Your Name', highlight: hl },
   { key: 'personRole', label: 'Role / Title', placeholder: 'Senior Consultant' },
-  { key: 'companyName', label: 'Company', placeholder: 'MAK Projects' },
+  { key: 'companyName', label: 'Company', placeholder: 'Your Brand' },
 ]
 
 const METRICS: QuickEditField[] = [
@@ -128,7 +128,7 @@ const TEMPLATE_SPECIFIC: Partial<Record<TemplateId, QuickEditZone[]>> = {
   'neighbourhood-guide': [{
     id: 'area', title: 'Area Highlights', subtitle: 'Schools, metro & more', defaultOpen: true,
     fields: [
-      { key: 'title', label: 'Area Name', placeholder: 'Gachibowli', highlight: hl },
+      { key: 'title', label: 'Area Name', placeholder: 'Downtown', highlight: hl },
       { key: 'subtitle', label: 'Subtitle' },
       { key: 'metric1Value', label: 'Schools', placeholder: '5 within 2km' },
       { key: 'metric2Value', label: 'Hospitals', placeholder: '3 nearby' },
@@ -340,7 +340,7 @@ const TEMPLATE_SPECIFIC: Partial<Record<TemplateId, QuickEditZone[]>> = {
       { key: 'subtitle', label: 'Sub-headline', highlight: hl },
       { key: 'eyebrow', label: 'Category Label', placeholder: 'Market Intelligence' },
       { key: 'badge', label: 'Period', placeholder: 'Q4 2025' },
-      { key: 'location', label: 'City', placeholder: 'Hyderabad' },
+      { key: 'location', label: 'City', placeholder: 'Your City' },
       { key: 'changePercent', label: 'YoY Growth', placeholder: '+22%', highlight: hl },
       { key: 'metric1Label', label: 'Metric 1 Label' }, { key: 'metric1Value', label: 'Metric 1 Value', highlight: hl },
       { key: 'metric2Label', label: 'Metric 2 Label' }, { key: 'metric2Value', label: 'Metric 2 Value' },

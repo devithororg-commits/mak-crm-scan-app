@@ -38,7 +38,7 @@ export default function NeighbourhoodGuideCard({ data }: { data: CreativeData })
           </span>
         </div>
         <h2 className="mt-3 font-bold leading-tight" style={t.title}>
-          <HighlightText text={data.title || data.location || 'Gachibowli'} data={data} />
+          <HighlightText text={data.title || data.location || 'Downtown'} data={data} />
         </h2>
         <p className="mt-1 text-emerald-100" style={t.subtitle}>
           <HighlightText text={data.subtitle || data.propertyAddress || 'Neighbourhood Highlights'} data={data} />

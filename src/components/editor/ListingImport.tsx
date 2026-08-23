@@ -16,7 +16,7 @@ const FIELDS = [
   { key: 'propertyBeds' as const, label: 'Bedrooms', ph: '3' },
   { key: 'propertyBaths' as const, label: 'Bathrooms', ph: '3' },
   { key: 'propertySqft' as const, label: 'Area (sqft)', ph: '1,850' },
-  { key: 'propertyAddress' as const, label: 'Address', ph: 'Gachibowli, Hyderabad' },
+  { key: 'propertyAddress' as const, label: 'Address', ph: 'Downtown, Your City' },
   { key: 'propertyType' as const, label: 'Type', ph: 'Apartment' },
   { key: 'reraNumber' as const, label: 'RERA Number', ph: 'P02400001288' },
 ]

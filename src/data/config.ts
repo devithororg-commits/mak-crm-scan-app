@@ -113,7 +113,7 @@ export const FOOTER_STYLES = [
 
 export const CATEGORY_FIELDS: Record<ContentCategory, { key: string; label: string; placeholder?: string; multiline?: boolean; group?: string }[]> = {
   company: [
-    { key: 'companyName', label: 'Company Name', placeholder: 'MAK Projects Pvt Ltd', group: 'Identity' },
+    { key: 'companyName', label: 'Company Name', placeholder: 'Your Company Name', group: 'Identity' },
     { key: 'industry', label: 'Industry', placeholder: 'Real Estate', group: 'Identity' },
     { key: 'founded', label: 'Founded', placeholder: '2010', group: 'Identity' },
     { key: 'employeeCount', label: 'Team Size', placeholder: '250+', group: 'Identity' },
@@ -128,21 +128,21 @@ export const CATEGORY_FIELDS: Record<ContentCategory, { key: string; label: stri
     { key: 'socialHandle', label: 'Social Handle', placeholder: '@company', group: 'Contact' },
   ],
   person: [
-    { key: 'personName', label: 'Full Name', placeholder: 'Rahul Sharma', group: 'Identity' },
+    { key: 'personName', label: 'Full Name', placeholder: 'Your Name', group: 'Identity' },
     { key: 'personRole', label: 'Designation', placeholder: 'CEO & Founder', group: 'Identity' },
-    { key: 'companyName', label: 'Organization', placeholder: 'MAK Projects', group: 'Identity' },
+    { key: 'companyName', label: 'Organization', placeholder: 'Your Company', group: 'Identity' },
     { key: 'title', label: 'Headline', placeholder: 'Leading Innovation', group: 'Content' },
     { key: 'description', label: 'Bio / Summary', placeholder: 'Professional background...', multiline: true, group: 'Content' },
     { key: 'subtitle', label: 'Expertise', placeholder: '15+ years in real estate', group: 'Content' },
     { key: 'email', label: 'Email', placeholder: 'name@company.com', group: 'Contact' },
     { key: 'phone', label: 'Phone', placeholder: '+91 99999 99999', group: 'Contact' },
     { key: 'socialHandle', label: 'LinkedIn / Social', placeholder: '@username', group: 'Contact' },
-    { key: 'location', label: 'Location', placeholder: 'Hyderabad, India', group: 'Contact' },
+    { key: 'location', label: 'Location', placeholder: 'Your City, India', group: 'Contact' },
   ],
   location: [
-    { key: 'state', label: 'State', placeholder: 'Telangana', group: 'Location' },
+    { key: 'state', label: 'State', placeholder: 'Your State', group: 'Location' },
     { key: 'country', label: 'Country', placeholder: 'India', group: 'Location' },
-    { key: 'location', label: 'City / Region', placeholder: 'Hyderabad', group: 'Location' },
+    { key: 'location', label: 'City / Region', placeholder: 'Your City', group: 'Location' },
     { key: 'title', label: 'Headline', placeholder: 'Market Growth Report', group: 'Content' },
     { key: 'subtitle', label: 'Key Stat', placeholder: '+22% YoY growth', group: 'Content' },
     { key: 'description', label: 'Market Analysis', placeholder: 'Regional insights...', multiline: true, group: 'Content' },

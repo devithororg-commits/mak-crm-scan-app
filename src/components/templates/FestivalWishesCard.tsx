@@ -70,7 +70,7 @@ export default function FestivalWishesCard({ data }: { data: CreativeData }) {
         />
 
         <p className="font-medium uppercase tracking-[0.2em] text-white/80" style={t.label}>
-          <HighlightText text={data.eyebrow || data.companyName || 'MAK Projects'} data={data} />
+          <HighlightText text={data.eyebrow || data.companyName || 'Your Brand'} data={data} />
         </p>
 
         <div className="my-4 h-px w-16 bg-white/40" />

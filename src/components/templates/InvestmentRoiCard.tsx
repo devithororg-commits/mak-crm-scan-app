@@ -41,7 +41,7 @@ export default function InvestmentRoiCard({ data }: { data: CreativeData }) {
           <HighlightText text={data.eyebrow || 'Investment Opportunity'} data={data} />
         </p>
         <h2 className="mt-1 font-bold leading-tight" style={t.title}>
-          <HighlightText text={data.propertyTitle || data.title || 'Hyderabad Real Estate'} data={data} />
+          <HighlightText text={data.propertyTitle || data.title || 'Metro Real Estate'} data={data} />
         </h2>
         <p className="mt-2 text-white/50" style={t.subtitle}>{data.propertyAddress || data.location}</p>
 

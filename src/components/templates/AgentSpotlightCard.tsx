@@ -48,13 +48,13 @@ export default function AgentSpotlightCard({ data }: { data: CreativeData }) {
           </div>
 
           <h2 className="mt-4 text-center font-bold" style={t.title}>
-            <HighlightText text={data.personName || data.title || 'Rahul Sharma'} data={data} />
+            <HighlightText text={data.personName || data.title || 'Your Name'} data={data} />
           </h2>
           <p className="mt-1 text-center font-medium text-indigo-600" style={t.subtitle}>
             {data.personRole || data.subtitle || 'Senior Property Consultant'}
           </p>
           <p className="mt-1 text-center text-slate-400" style={t.label}>
-            {data.companyName} · {data.location || 'Hyderabad'}
+            {data.companyName} · {data.location || 'Your City'}
           </p>
         </div>
 

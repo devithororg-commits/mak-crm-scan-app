@@ -11,13 +11,13 @@ const ALIGN_OPTIONS: { id: FooterAlign; label: string }[] = [
 ]
 
 const FOOTER_FIELDS = [
-  { key: 'footerLine1' as const, label: 'Line 1 — Company / Name', ph: 'MAK Projects Pvt Ltd', toggle: null },
-  { key: 'footerLine2' as const, label: 'Line 2 — Website / Tagline', ph: 'www.makprojects.com', toggle: 'footerShowWebsite' as const },
-  { key: 'footerLine3' as const, label: 'Line 3 — Location', ph: 'Hyderabad · India', toggle: 'footerShowLocation' as const },
-  { key: 'footerLine4' as const, label: 'Line 4 — Extra (optional)', ph: 'RERA: P02400001288', toggle: null },
-  { key: 'footerPhone' as const, label: 'Phone', ph: '+91 99127 97979', toggle: 'footerShowPhone' as const },
-  { key: 'footerEmail' as const, label: 'Email', ph: 'info@makprojects.com', toggle: 'footerShowEmail' as const },
-  { key: 'footerWebsite' as const, label: 'Website (right side)', ph: 'www.makprojects.com', toggle: 'footerShowWebsite' as const },
+  { key: 'footerLine1' as const, label: 'Line 1 — Company / Name', ph: 'Your Company Name', toggle: null },
+  { key: 'footerLine2' as const, label: 'Line 2 — Website / Tagline', ph: 'www.yoursite.com', toggle: 'footerShowWebsite' as const },
+  { key: 'footerLine3' as const, label: 'Line 3 — Location', ph: 'Your City · India', toggle: 'footerShowLocation' as const },
+  { key: 'footerLine4' as const, label: 'Line 4 — Extra (optional)', ph: 'RERA: XXXX-XXXX', toggle: null },
+  { key: 'footerPhone' as const, label: 'Phone', ph: '+91 XXXXX XXXXX', toggle: 'footerShowPhone' as const },
+  { key: 'footerEmail' as const, label: 'Email', ph: 'hello@company.com', toggle: 'footerShowEmail' as const },
+  { key: 'footerWebsite' as const, label: 'Website (right side)', ph: 'www.yoursite.com', toggle: 'footerShowWebsite' as const },
 ]
 
 function SizeSlider({ label, value, min, max, unit, onChange }: {

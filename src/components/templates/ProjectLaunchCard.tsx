@@ -37,7 +37,7 @@ export default function ProjectLaunchCard({ data }: { data: CreativeData }) {
           <HighlightText text={data.eyebrow || 'Coming Soon'} data={data} />
         </p>
         <h2 className="relative mt-1 font-bold leading-tight" style={t.title}>
-          <HighlightText text={data.propertyTitle || data.title || 'MAK Heights'} data={data} />
+          <HighlightText text={data.propertyTitle || data.title || 'Skyline Residences'} data={data} />
         </h2>
       </div>
 

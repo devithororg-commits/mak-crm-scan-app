@@ -44,7 +44,7 @@ export default function BrandUrlImport() {
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://www.makprojects.com"
+              placeholder="https://www.yoursite.com"
               className={`${inputClass} pl-9`}
             />
           </div>

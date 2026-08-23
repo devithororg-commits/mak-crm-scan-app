@@ -27,7 +27,7 @@ export default function RentalYieldCard({ data }: { data: CreativeData }) {
           <HighlightText text={data.propertyTitle || data.title || 'Premium Rental Asset'} data={data} />
         </h2>
         <p className="mt-1 text-cyan-100" style={t.subtitle}>
-          <HighlightText text={data.propertyAddress || data.location || 'Gachibowli, Hyderabad'} data={data} />
+          <HighlightText text={data.propertyAddress || data.location || 'Downtown, Your City'} data={data} />
         </p>
       </div>
 

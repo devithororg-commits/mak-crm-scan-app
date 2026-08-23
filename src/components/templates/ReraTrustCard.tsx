@@ -35,7 +35,7 @@ export default function ReraTrustCard({ data }: { data: CreativeData }) {
           <HighlightText text={data.title || 'RERA Approved Project'} data={data} />
         </h2>
         <p className="mt-2 text-white/70" style={t.subtitle}>
-          <HighlightText text={data.companyName || data.eyebrow || 'MAK Projects Pvt Ltd'} data={data} />
+          <HighlightText text={data.companyName || data.eyebrow || 'Your Company Name'} data={data} />
         </p>
 
         <div className="my-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5">
