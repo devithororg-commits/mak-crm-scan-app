@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Layers, Loader2, Sparkles } from 'lucide-react'
+import { Layers, Loader2, Package, Sparkles } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { applyListingPreset } from '../../data/listingPresets'
 import { applyTemplateSwitch } from '../../data/presets'
 import { saveToLibrary } from '../../utils/contentLibrary'
+import { exportListingCampaignPack } from '../../utils/campaignExport'
 import type { ListingData, TemplateId } from '../../types/creative'
 import { Section } from './FormUI'
+import { useToast } from '../ux/ToastProvider'
 
 const PACK: {
   status: ListingData['listingStatus']
@@ -21,8 +23,11 @@ const PACK: {
 
 export default function ListingQuickPack() {
   const { data, setData } = useCreative()
+  const { toast } = useToast()
   const [saving, setSaving] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const [savedCount, setSavedCount] = useState(0)
+  const [progress, setProgress] = useState('')
 
   const hasListing = Boolean(data.propertyTitle.trim() || data.propertyPrice.trim())
 
@@ -46,14 +51,30 @@ export default function ListingQuickPack() {
         saveToLibrary(snapshot, undefined, `${item.label}: ${data.propertyTitle || 'Listing'}`)
         setSavedCount((n) => n + 1)
       }
+      toast('Saved 3 posters to library', 'success')
     } finally {
       setSaving(false)
       setTimeout(() => setSavedCount(0), 2500)
     }
   }
 
+  const downloadCampaign = async () => {
+    if (!hasListing) return
+    setExporting(true)
+    setProgress('Starting…')
+    try {
+      await exportListingCampaignPack(data, 'png', (msg) => setProgress(msg))
+      toast('Campaign pack downloaded!', 'success')
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Export failed', 'error')
+    } finally {
+      setExporting(false)
+      setProgress('')
+    }
+  }
+
   return (
-    <Section title="Listing Quick Pack" desc="One listing → 3 ready posters (Listed, Open House, Price Drop)">
+    <Section title="Listing Quick Pack" desc="One listing → 3 posters + full campaign ZIP">
       <div className="mb-3 grid gap-2">
         {PACK.map((item) => (
           <button
@@ -79,9 +100,19 @@ export default function ListingQuickPack() {
 
       <button
         type="button"
+        disabled={!hasListing || exporting}
+        onClick={downloadCampaign}
+        className="mb-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 py-2.5 text-[11px] font-bold text-white shadow-md transition hover:brightness-105 disabled:opacity-50"
+      >
+        {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Package className="h-4 w-4" />}
+        {exporting ? progress || 'Building campaign…' : 'Download Full Campaign ZIP'}
+      </button>
+
+      <button
+        type="button"
         disabled={!hasListing || saving}
         onClick={saveAllToLibrary}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-2.5 text-[11px] font-bold text-white shadow-md transition hover:brightness-105 disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 py-2.5 text-[11px] font-bold text-indigo-700 transition hover:bg-indigo-100 disabled:opacity-50"
       >
         {saving ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -93,7 +124,12 @@ export default function ListingQuickPack() {
 
       {!hasListing && (
         <p className="mt-2 text-center text-[10px] text-amber-700">
-          Fill property title or price above to enable bulk save
+          Fill property title or price above to enable campaign export
+        </p>
+      )}
+      {exporting && (
+        <p className="mt-2 text-center text-[10px] text-emerald-700">
+          12 posters + captions — please wait 30–60 seconds…
         </p>
       )}
     </Section>

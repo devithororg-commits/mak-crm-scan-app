@@ -169,6 +169,7 @@ export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {
   merged.layerOrder = Array.isArray(merged.layerOrder) && merged.layerOrder.length > 0 ? merged.layerOrder : defaults.layerOrder
   merged.snapToGrid = merged.snapToGrid ?? defaults.snapToGrid
   merged.brandLock = merged.brandLock ?? defaults.brandLock
+  merged.formatSyncEnabled = merged.formatSyncEnabled ?? defaults.formatSyncEnabled
 
   return merged
 }

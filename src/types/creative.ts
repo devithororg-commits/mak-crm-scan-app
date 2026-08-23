@@ -323,6 +323,7 @@ export interface CreativeData {
   layerOrder: LayerId[]
   snapToGrid: boolean
   brandLock: boolean
+  formatSyncEnabled: boolean
 }
 
 export const defaultCreativeData = (): CreativeData => ({
@@ -539,4 +540,5 @@ export const defaultCreativeData = (): CreativeData => ({
   layerOrder: ['background', 'image', 'content', 'logo', 'footer', 'watermark', 'qr'],
   snapToGrid: false,
   brandLock: false,
+  formatSyncEnabled: true,
 })

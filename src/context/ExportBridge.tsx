@@ -6,6 +6,9 @@ export interface ExportHandlers {
   saveLibrary: () => Promise<void>
   exportVideo: () => Promise<void>
   exportCarousel: (type: 'pdf' | 'zip') => Promise<void>
+  exportCampaignPack: (format: 'png' | 'jpeg') => Promise<void>
+  exportAbVariants: (format: 'png' | 'jpeg') => Promise<void>
+  exportCaptionPack: () => Promise<void>
 }
 
 interface ExportBridgeValue {

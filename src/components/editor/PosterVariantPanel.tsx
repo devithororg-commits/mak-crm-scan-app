@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
-import { FlaskConical, RotateCcw } from 'lucide-react'
+import { Download, FlaskConical, Loader2, RotateCcw } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import type { CreativeData } from '../../types/creative'
+import { exportAbVariantPack } from '../../utils/campaignExport'
 import { generatePosterVariants, type PosterVariant } from '../../utils/posterVariants'
+import { useToast } from '../ux/ToastProvider'
 
 export default function PosterVariantPanel() {
   const { data, setData } = useCreative()
+  const { toast } = useToast()
   const variants = useMemo(() => generatePosterVariants(data), [
     data.accentColor,
     data.secondaryColor,
@@ -14,6 +17,7 @@ export default function PosterVariantPanel() {
   ])
   const [activeId, setActiveId] = useState<PosterVariant['id'] | null>(null)
   const [baseline, setBaseline] = useState<CreativeData | null>(null)
+  const [exporting, setExporting] = useState(false)
 
   const applyVariant = (variant: PosterVariant) => {
     const base = baseline ?? data
@@ -28,10 +32,22 @@ export default function PosterVariantPanel() {
     setActiveId(null)
   }
 
+  const downloadAbZip = async () => {
+    setExporting(true)
+    try {
+      await exportAbVariantPack(baseline ?? data, 'png')
+      toast('A/B/C variant ZIP downloaded', 'success')
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Export failed', 'error')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <div className="space-y-3">
       <p className="text-[11px] leading-relaxed text-slate-600">
-        Visual A/B/C poster variants — test CTA style, highlight, and palette shifts before publishing.
+        Visual A/B/C poster variants — test on canvas, then export all sizes as ZIP.
       </p>
 
       <div className="space-y-2">
@@ -62,6 +78,16 @@ export default function PosterVariantPanel() {
         ))}
       </div>
 
+      <button
+        type="button"
+        disabled={exporting}
+        onClick={downloadAbZip}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-2.5 text-[11px] font-bold text-white shadow-md transition hover:brightness-105 disabled:opacity-50"
+      >
+        {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+        Export A/B/C ZIP (all sizes)
+      </button>
+
       {(activeId || baseline) && (
         <button
           type="button"
@@ -75,7 +101,7 @@ export default function PosterVariantPanel() {
 
       <p className="flex items-center gap-1 text-[10px] text-slate-400">
         <FlaskConical className="h-3 w-3" />
-        Preview updates live on canvas — pick winner then export
+        ZIP includes variant-a/b/c folders with 4 aspect ratios each
       </p>
     </div>
   )

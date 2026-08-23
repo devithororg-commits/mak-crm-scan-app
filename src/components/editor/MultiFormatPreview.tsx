@@ -9,9 +9,26 @@ export default function MultiFormatPreview() {
 
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4">
-      <div className="mb-3">
-        <p className="text-[11px] font-bold text-slate-900">All Formats Preview</p>
-        <p className="text-[10px] text-slate-500">Tap a size to sync canvas · export all via All Sizes</p>
+      <div className="mb-3 flex items-start justify-between gap-2">
+        <div>
+          <p className="text-[11px] font-bold text-slate-900">All Formats Preview</p>
+          <p className="text-[10px] text-slate-500">
+            {data.formatSyncEnabled
+              ? 'Auto-sync ON — typography & layout adapt per size'
+              : 'Auto-sync OFF — same layout on all sizes'}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => update('formatSyncEnabled', !data.formatSyncEnabled)}
+          className={`shrink-0 rounded-lg px-2.5 py-1 text-[9px] font-bold transition ${
+            data.formatSyncEnabled
+              ? 'bg-violet-600 text-white'
+              : 'border border-slate-200 bg-white text-slate-600'
+          }`}
+        >
+          {data.formatSyncEnabled ? 'SYNC ON' : 'SYNC OFF'}
+        </button>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {ASPECT_RATIOS.map((ar) => {

@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import type { CreativeData, TemplateId } from '../../types/creative'
 import { fontFamilyCss } from '../../utils/exportImage'
 import { getContentOffsetStyle, getTextEffectStyle } from '../../utils/designEffects'
+import { getFormatAdaptedData } from '../../utils/formatSync'
 import AnalyticsCard from './AnalyticsCard'
 import CarouselSlideCard from './CarouselSlideCard'
 import CommunityPostCard from './CommunityPostCard'
@@ -101,28 +102,29 @@ interface Props {
 }
 
 export default function TemplateRenderer({ data, slideIndex }: Props) {
+  const adapted = getFormatAdaptedData(data, data.aspectRatio)
   const shellStyle = {
-    fontFamily: fontFamilyCss(data.fontFamily),
-    textAlign: data.textAlign,
-    ...getTextEffectStyle(data),
+    fontFamily: fontFamilyCss(adapted.fontFamily),
+    textAlign: adapted.textAlign,
+    ...getTextEffectStyle(adapted),
   } as const
-  const offsetStyle = getContentOffsetStyle(data)
+  const offsetStyle = getContentOffsetStyle(adapted)
 
-  if (data.carouselEnabled) {
+  if (adapted.carouselEnabled) {
     return (
       <div className="h-full w-full" style={shellStyle}>
         <div className="h-full w-full" style={offsetStyle}>
-          <CarouselSlideCard data={data} slideIndex={slideIndex} />
+          <CarouselSlideCard data={adapted} slideIndex={slideIndex} />
         </div>
       </div>
     )
   }
 
-  const Component = TEMPLATE_MAP[data.templateId] ?? AnalyticsCard
+  const Component = TEMPLATE_MAP[adapted.templateId] ?? AnalyticsCard
   return (
     <div className="h-full w-full" style={shellStyle}>
       <div className="h-full w-full" style={offsetStyle}>
-        <Component data={data} slideIndex={slideIndex} />
+        <Component data={adapted} slideIndex={slideIndex} />
       </div>
     </div>
   )

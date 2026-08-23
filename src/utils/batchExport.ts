@@ -3,8 +3,10 @@ import { jsPDF } from 'jspdf'
 import { toJpeg, toPng } from 'html-to-image'
 import { ASPECT_RATIOS } from '../data/config'
 import type { AspectRatio, CreativeData } from '../types/creative'
+import { getFormatAdaptedData } from './formatSync'
 import { fontFamilyCss } from './exportImage'
 import { prepareElementForExport } from './imageEmbed'
+import { buildExportFilename } from './exportNaming'
 
 async function renderElement(
   element: HTMLElement,
@@ -12,6 +14,7 @@ async function renderElement(
   aspectRatio: AspectRatio,
   format: 'png' | 'jpeg',
 ) {
+  const adapted = getFormatAdaptedData(data, aspectRatio)
   const ratio = ASPECT_RATIOS.find((r) => r.id === aspectRatio) ?? ASPECT_RATIOS[0]
   const options = {
     pixelRatio: data.exportQuality,
@@ -22,7 +25,7 @@ async function renderElement(
       width: `${ratio.w}px`,
       height: `${ratio.h}px`,
       transform: 'none',
-      fontFamily: fontFamilyCss(data.fontFamily),
+      fontFamily: fontFamilyCss(adapted.fontFamily),
     },
   }
   await prepareElementForExport(element)
@@ -41,20 +44,19 @@ export async function exportAllSizes(
   format: 'png' | 'jpeg' = 'png',
 ) {
   const zip = new JSZip()
-  const base = slug(data)
 
   for (const ratio of ASPECT_RATIOS) {
     const el = renderFn(ratio.id)
-    const dataUrl = await renderElement(el, { ...data, aspectRatio: ratio.id }, ratio.id, format)
+    const adapted = getFormatAdaptedData(data, ratio.id)
+    const dataUrl = await renderElement(el, adapted, ratio.id, format)
     const base64 = dataUrl.split(',')[1]
-    const ext = format === 'jpeg' ? 'jpg' : 'png'
-    zip.file(`${base}-${ratio.id.replace(':', 'x')}.${ext}`, base64, { base64: true })
+    zip.file(buildExportFilename(data, ratio.id, undefined, format), base64, { base64: true })
   }
 
   const blob = await zip.generateAsync({ type: 'blob' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
-  link.download = `${base}-all-sizes.zip`
+  link.download = `${slug(data)}-all-sizes.zip`
   link.click()
   URL.revokeObjectURL(link.href)
 }

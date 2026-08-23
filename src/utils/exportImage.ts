@@ -3,6 +3,7 @@ import { ASPECT_RATIOS } from '../data/config'
 import type { CreativeData } from '../types/creative'
 import { prepareElementForExport } from './imageEmbed'
 import { overlayQrOnImage } from './qrCode'
+import { buildExportFilename } from './exportNaming'
 
 export function aspectDimensions(aspectRatio: CreativeData['aspectRatio']) {
   const ratio = ASPECT_RATIOS.find((r) => r.id === aspectRatio) ?? ASPECT_RATIOS[0]
@@ -20,8 +21,7 @@ export async function exportCreative(
   format: 'png' | 'jpeg' = 'png',
 ) {
   const ratio = ASPECT_RATIOS.find((r) => r.id === data.aspectRatio) ?? ASPECT_RATIOS[0]
-  const slug = data.title.slice(0, 40).replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() || 'creative'
-  const filename = `${slug}-${data.aspectRatio}.${format}`
+  const filename = buildExportFilename(data, data.aspectRatio, undefined, format)
 
   const options = {
     pixelRatio: data.exportQuality,

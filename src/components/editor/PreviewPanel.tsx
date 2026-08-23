@@ -10,6 +10,7 @@ import { aspectDimensions, exportCreative, fontFamilyCss, previewScale } from '.
 import { prepareElementForExport } from '../../utils/imageEmbed'
 import { overlayQrOnImage } from '../../utils/qrCode'
 import { downloadBlob, exportSlideshowVideo } from '../../utils/videoExport'
+import { exportAbVariantPack, exportCaptionPack as downloadCaptionPack, exportListingCampaignPack } from '../../utils/campaignExport'
 import TemplateRenderer from '../templates/TemplateRenderer'
 import CanvasToolbar from './CanvasToolbar'
 import CompositionGuides from './CompositionGuides'
@@ -387,6 +388,50 @@ export default function PreviewPanel() {
 
         }
 
+      },
+
+      exportCampaignPack: async (format) => {
+        setExporting('campaign')
+        setExportError('')
+        try {
+          await exportListingCampaignPack(dataRef.current, format, (msg) => {
+            setSavedMsg(msg)
+          })
+          setSavedMsg('Campaign pack downloaded!')
+          setTimeout(() => setSavedMsg(''), 2500)
+        } catch (e) {
+          setExportError(e instanceof Error ? e.message : 'Campaign export failed')
+        } finally {
+          setExporting('')
+        }
+      },
+
+      exportAbVariants: async (format) => {
+        setExporting('ab')
+        setExportError('')
+        try {
+          await exportAbVariantPack(dataRef.current, format)
+          setSavedMsg('A/B variants downloaded!')
+          setTimeout(() => setSavedMsg(''), 2500)
+        } catch (e) {
+          setExportError(e instanceof Error ? e.message : 'A/B export failed')
+        } finally {
+          setExporting('')
+        }
+      },
+
+      exportCaptionPack: async () => {
+        setExporting('captions')
+        setExportError('')
+        try {
+          await downloadCaptionPack(dataRef.current)
+          setSavedMsg('Caption pack downloaded!')
+          setTimeout(() => setSavedMsg(''), 2500)
+        } catch (e) {
+          setExportError(e instanceof Error ? e.message : 'Caption export failed')
+        } finally {
+          setExporting('')
+        }
       },
 
     })
