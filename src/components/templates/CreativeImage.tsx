@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import type { CreativeData } from '../../types/creative'
 import { buildImageCssFilter } from '../../utils/imageFilters'
 import { getImageDimensions } from '../../utils/imageLayout'
+import { getImageTransformStyle } from '../../utils/designEffects'
 
 const OBJECT_POS_MAP: Record<CreativeData['imageObjectPosition'], string> = {
   center: 'center center',
@@ -32,7 +33,7 @@ function ImageWithEffects({ data, style }: { data: CreativeData; style: CSSPrope
   const gradientStrength = safeNum(data.imageGradientStrength, 50)
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" style={getImageTransformStyle(data)}>
       <img
         src={data.imageUrl}
         alt=""

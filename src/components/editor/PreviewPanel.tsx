@@ -479,6 +479,8 @@ export default function PreviewPanel() {
           slideCount={data.carouselSlides.length}
           onPrevSlide={() => setActiveCarouselSlide(Math.max(0, data.activeCarouselSlide - 1))}
           onNextSlide={() => setActiveCarouselSlide(Math.min(data.carouselSlides.length - 1, data.activeCarouselSlide + 1))}
+          snapToGrid={data.snapToGrid}
+          onToggleSnap={() => update('snapToGrid', !data.snapToGrid)}
         />
       </div>
 

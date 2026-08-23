@@ -4,6 +4,10 @@ const SHORTCUTS = [
   { keys: 'Ctrl + Z', action: 'Undo last change' },
   { keys: 'Ctrl + Y', action: 'Redo' },
   { keys: 'Ctrl + Shift + Z', action: 'Redo (alternate)' },
+  { keys: 'Ctrl + D', action: 'Save copy to content library' },
+  { keys: 'Ctrl + Shift + D', action: 'Duplicate carousel slide' },
+  { keys: 'Arrow keys', action: 'Nudge text content 1px' },
+  { keys: 'Shift + Arrow', action: 'Nudge text content 10px' },
   { keys: '?', action: 'Open this help panel' },
   { keys: 'Esc', action: 'Close panels / dialogs' },
 ]
@@ -11,8 +15,9 @@ const SHORTCUTS = [
 const FEATURES = [
   { title: 'Templates', tip: 'Filter by Real Estate, Business, or Social. Search by name. Click to preview instantly.' },
   { title: 'Text', tip: 'Smart fields change per template. Use **word** syntax to highlight important text.' },
-  { title: 'Uploads', tip: 'Add photos, apply filters (Luxury, Modern, B&W), and control placement.' },
-  { title: 'Design', tip: 'Colors, spacing, effects, QR code, and layout visibility — all in one place.' },
+  { title: 'Uploads', tip: 'Add photos, apply filters (Luxury, Modern, B&W), flip, rotate, and control placement.' },
+  { title: 'Design', tip: 'Colors, spacing, effects, themes, and QR code — full pro controls.' },
+  { title: 'Position', tip: 'Canva-style layers panel, align text, nudge pixels, flip/rotate photos, text shadow & outline.' },
   { title: 'Brand', tip: 'Save logo, fonts, and brand colors. Import from website URL.' },
   { title: 'Charts', tip: 'Add metrics or import CSV data for analytics-style posts.' },
   { title: 'Pages', tip: 'Build carousel slides for Instagram multi-image posts.' },

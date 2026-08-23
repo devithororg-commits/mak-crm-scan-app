@@ -16,12 +16,14 @@ import BrandKitEditor from './BrandKitEditor'
 import CsvImporter from './CsvImporter'
 import MetricsEditor from './MetricsEditor'
 import CarouselEditor from './CarouselEditor'
+import PositionEditor from './PositionEditor'
 
 const PANEL_TITLES: Record<EditSection | 'templates', string> = {
   templates: 'Templates',
   content: 'Text',
   media: 'Uploads',
   style: 'Design',
+  position: 'Position',
   brand: 'Brand',
   data: 'Charts & Data',
   slides: 'Pages',
@@ -31,6 +33,7 @@ const PANEL_TIPS: Partial<Record<EditSection, string>> = {
   content: 'Edit headline & details — changes appear live on the canvas. Use **word** to highlight text.',
   media: 'Upload property photos or pick stock images. Apply filters for a polished look.',
   style: 'Fine-tune colors, spacing, effects, and QR code placement.',
+  position: 'Reorder layers, align text, flip photos, and nudge elements pixel-perfect.',
   brand: 'Set logo, fonts, and brand colors once — they apply across templates.',
   data: 'Add numbers for charts or import CSV for analytics-style posts.',
   slides: 'Build multi-slide carousels for Instagram — each page edits separately.',
@@ -89,6 +92,10 @@ export default function CanvaToolPanel({ mode, templateName, onChangeTemplate }:
       )}
 
       {mode === 'style' && <AdvancedControlsPanel />}
+
+      {mode === 'position' && (
+        <PositionEditor onOpenTool={(tool) => setEditSection(tool)} />
+      )}
 
       {mode === 'brand' && (
         <>

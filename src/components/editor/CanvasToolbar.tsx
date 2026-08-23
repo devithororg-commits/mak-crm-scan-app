@@ -16,6 +16,8 @@ interface Props {
   slideCount?: number
   onPrevSlide?: () => void
   onNextSlide?: () => void
+  snapToGrid?: boolean
+  onToggleSnap?: () => void
 }
 
 export default function CanvasToolbar({
@@ -32,6 +34,8 @@ export default function CanvasToolbar({
   slideCount = 1,
   onPrevSlide,
   onNextSlide,
+  snapToGrid,
+  onToggleSnap,
 }: Props) {
   const platform = ASPECT_RATIOS.find((r) => r.id === aspectRatio)
 
@@ -95,9 +99,16 @@ export default function CanvasToolbar({
           <Shield className="h-4 w-4" />
         </button>
 
-        <div className="mx-0.5 h-5 w-px bg-slate-200" />
+        <button
+          type="button"
+          title="Snap to grid"
+          onClick={onToggleSnap}
+          className={`rounded-lg px-2 py-1.5 text-[10px] font-bold transition ${snapToGrid ? 'bg-violet-100 text-violet-700' : 'text-slate-500 hover:bg-slate-50'}`}
+        >
+          SNAP
+        </button>
 
-        {/* Zoom */}
+        <div className="mx-0.5 h-5 w-px bg-slate-200" />
         <button type="button" onClick={() => onZoomChange(Math.max(0.4, zoom - 0.1))} className="rounded-lg p-2 text-slate-500 hover:bg-slate-50">
           <Minus className="h-4 w-4" />
         </button>

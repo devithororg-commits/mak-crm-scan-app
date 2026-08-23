@@ -1,5 +1,5 @@
 import {
-  LayoutGrid, Type, ImageUp, Palette, Briefcase, BarChart3, Layers, Download,
+  LayoutGrid, Type, ImageUp, Palette, Briefcase, BarChart3, Layers, Download, Move,
 } from 'lucide-react'
 import type { EditSection, EditorTab } from '../../types/creative'
 
@@ -15,6 +15,7 @@ export const CANVA_TOOLS: ToolItem[] = [
   { id: 'content', label: 'Text', icon: Type, group: 'main' },
   { id: 'media', label: 'Uploads', icon: ImageUp, group: 'main' },
   { id: 'style', label: 'Design', icon: Palette, group: 'main' },
+  { id: 'position', label: 'Position', icon: Move, group: 'main' },
   { id: 'brand', label: 'Brand', icon: Briefcase, group: 'main' },
   { id: 'data', label: 'Charts', icon: BarChart3, group: 'extra' },
   { id: 'slides', label: 'Pages', icon: Layers, group: 'extra' },
@@ -25,6 +26,7 @@ const TOOL_DESCRIPTIONS: Record<string, string> = {
   content: 'Headlines, copy & highlights',
   media: 'Photos, filters & placement',
   style: 'Colors, effects & spacing',
+  position: 'Layers, align, flip & nudge',
   brand: 'Logo, colors & fonts',
   data: 'Metrics, charts & CSV',
   slides: 'Carousel page editor',

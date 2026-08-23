@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
-import { HelpCircle, Menu, PanelLeftClose, PanelLeftOpen, RotateCcw, Sparkles, Undo2, Redo2, Circle } from 'lucide-react'
+import { HelpCircle, Menu, PanelLeftClose, PanelLeftOpen, RotateCcw, Sparkles, Undo2, Redo2, Circle, Copy } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
 import { useEditorUI } from '../../context/EditorUIContext'
 import { useIsMobile } from '../../hooks/useMediaQuery'
 import ConfirmDialog from '../ux/ConfirmDialog'
 import WorkflowSteps from '../ux/WorkflowSteps'
 import { useToast } from '../ux/ToastProvider'
+import { saveToLibrary } from '../../utils/contentLibrary'
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  const { resetAll, savedAt, undo, redo, canUndo, canRedo, activeTab, setActiveTab, setEditSection } = useCreative()
+  const {
+    resetAll, savedAt, undo, redo, canUndo, canRedo, activeTab, setActiveTab, setEditSection,
+    data, duplicateCarouselSlide, nudgeContent,
+  } = useCreative()
   const { exportOpen, setExportOpen, setHelpOpen, mobilePanelOpen, setMobilePanelOpen } = useEditorUI()
   const isMobile = useIsMobile()
   const { toast } = useToast()
@@ -16,12 +20,37 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (e.target as HTMLElement)?.isContentEditable
+
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo() }
       if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo() }
+
+      if (typing) return
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault()
+        if (e.shiftKey && data.carouselEnabled) {
+          duplicateCarouselSlide()
+          toast('Carousel slide duplicated', 'success')
+        } else {
+          saveToLibrary(data)
+          toast('Creative saved to library', 'success')
+        }
+      }
+
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault()
+        const coarse = e.shiftKey
+        if (e.key === 'ArrowUp') nudgeContent(0, -1, coarse)
+        if (e.key === 'ArrowDown') nudgeContent(0, 1, coarse)
+        if (e.key === 'ArrowLeft') nudgeContent(-1, 0, coarse)
+        if (e.key === 'ArrowRight') nudgeContent(1, 0, coarse)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [undo, redo])
+  }, [undo, redo, duplicateCarouselSlide, nudgeContent, data, toast])
 
   const handleReset = () => {
     resetAll()
@@ -102,6 +131,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               Saved {savedAt}
             </span>
           )}
+
+          <button
+            type="button"
+            onClick={() => {
+              saveToLibrary(data)
+              toast('Saved to content library', 'success')
+            }}
+            className="hidden items-center gap-1.5 rounded-[12px] border border-slate-200/60 bg-white px-2.5 py-2 text-[11px] font-semibold text-slate-600 shadow-sm transition hover:border-violet-300 hover:text-violet-700 sm:flex"
+            title="Save copy to library (Ctrl+D)"
+          >
+            <Copy className="h-3.5 w-3.5" />
+            <span className="hidden md:inline">Save copy</span>
+          </button>
 
           <button
             type="button"

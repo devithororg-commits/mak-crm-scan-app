@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { CreativeData, TemplateId } from '../../types/creative'
 import { fontFamilyCss } from '../../utils/exportImage'
+import { getContentOffsetStyle, getTextEffectStyle } from '../../utils/designEffects'
 import AnalyticsCard from './AnalyticsCard'
 import CarouselSlideCard from './CarouselSlideCard'
 import CommunityPostCard from './CommunityPostCard'
@@ -100,18 +101,29 @@ interface Props {
 }
 
 export default function TemplateRenderer({ data, slideIndex }: Props) {
+  const shellStyle = {
+    fontFamily: fontFamilyCss(data.fontFamily),
+    textAlign: data.textAlign,
+    ...getTextEffectStyle(data),
+  } as const
+  const offsetStyle = getContentOffsetStyle(data)
+
   if (data.carouselEnabled) {
     return (
-      <div className="h-full w-full" style={{ fontFamily: fontFamilyCss(data.fontFamily), textAlign: data.textAlign }}>
-        <CarouselSlideCard data={data} slideIndex={slideIndex} />
+      <div className="h-full w-full" style={shellStyle}>
+        <div className="h-full w-full" style={offsetStyle}>
+          <CarouselSlideCard data={data} slideIndex={slideIndex} />
+        </div>
       </div>
     )
   }
 
   const Component = TEMPLATE_MAP[data.templateId] ?? AnalyticsCard
   return (
-    <div className="h-full w-full" style={{ fontFamily: fontFamilyCss(data.fontFamily), textAlign: data.textAlign }}>
-      <Component data={data} slideIndex={slideIndex} />
+    <div className="h-full w-full" style={shellStyle}>
+      <div className="h-full w-full" style={offsetStyle}>
+        <Component data={data} slideIndex={slideIndex} />
+      </div>
     </div>
   )
 }

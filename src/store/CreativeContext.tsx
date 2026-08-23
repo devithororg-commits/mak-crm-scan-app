@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { applyCategoryPreset } from '../data/presets'
 import { defaultCreativeData, type CarouselSlide, type ContentCategory, type CreativeData, type EditorTab, type EditSection } from '../types/creative'
+import { snapValue } from '../utils/designEffects'
 import { clearPersistedData, loadPersistedData, savePersistedData } from '../utils/persistence'
 
 const MAX_HISTORY = 40
@@ -25,6 +26,8 @@ interface CreativeContextValue {
   addCarouselSlide: () => void
   removeCarouselSlide: (index: number) => void
   setActiveCarouselSlide: (index: number) => void
+  duplicateCarouselSlide: () => void
+  nudgeContent: (dx: number, dy: number, coarse?: boolean) => void
 }
 
 const CreativeContext = createContext<CreativeContextValue | null>(null)
@@ -151,12 +154,37 @@ export function CreativeProvider({ children }: { children: ReactNode }) {
     update('activeCarouselSlide', index)
   }, [update])
 
+  const duplicateCarouselSlide = useCallback(() => {
+    setData((prev) => {
+      if (!prev.carouselEnabled || prev.carouselSlides.length >= 10) return prev
+      const src = prev.carouselSlides[prev.activeCarouselSlide]
+      if (!src) return prev
+      const copy = { ...src, id: crypto.randomUUID(), title: `${src.title} (copy)` }
+      const slides = [...prev.carouselSlides]
+      slides.splice(prev.activeCarouselSlide + 1, 0, copy)
+      return { ...prev, carouselSlides: slides, activeCarouselSlide: prev.activeCarouselSlide + 1 }
+    })
+  }, [setData])
+
+  const nudgeContent = useCallback((dx: number, dy: number, coarse = false) => {
+    setData((prev) => {
+      const step = coarse ? 10 : 1
+      const apply = (v: number, d: number) => (prev.snapToGrid ? snapValue(v + d * step) : v + d * step)
+      return {
+        ...prev,
+        contentOffsetX: apply(prev.contentOffsetX, dx),
+        contentOffsetY: apply(prev.contentOffsetY, dy),
+      }
+    })
+  }, [setData])
+
   return (
     <CreativeContext.Provider
       value={{
         data, setData, update, activeTab, setActiveTab, editSection, setEditSection, applyPreset, resetAll, savedAt,
         undo, redo, canUndo, canRedo, loadProject,
         updateCarouselSlide, addCarouselSlide, removeCarouselSlide, setActiveCarouselSlide,
+        duplicateCarouselSlide, nudgeContent,
       }}
     >
       {children}

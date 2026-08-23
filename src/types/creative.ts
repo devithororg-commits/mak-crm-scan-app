@@ -55,7 +55,10 @@ export type TemplateId =
 export type HighlightStyle = 'accent' | 'gradient' | 'underline' | 'background' | 'bold'
 export type CaptionTone = 'professional' | 'casual' | 'sales' | 'educational'
 export type EditorTab = 'templates' | 'edit'
-export type EditSection = 'content' | 'media' | 'style' | 'brand' | 'data' | 'slides'
+export type EditSection = 'content' | 'media' | 'style' | 'brand' | 'data' | 'slides' | 'position'
+export type LayerId = 'background' | 'image' | 'content' | 'logo' | 'footer' | 'watermark' | 'qr'
+export type TextTransform = 'none' | 'uppercase' | 'capitalize' | 'lowercase'
+export type ImageRotate = 0 | 90 | 180 | 270
 
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'none'
 export type AspectRatio = '1:1' | '4:5' | '9:16' | '16:9'
@@ -297,6 +300,28 @@ export interface CreativeData {
   qrCodeUrl: string
   themeId: string
   listingUrl: string
+
+  textShadowEnabled: boolean
+  textShadowBlur: number
+  textShadowOffsetX: number
+  textShadowOffsetY: number
+  textShadowColor: string
+  textOutlineEnabled: boolean
+  textOutlineWidth: number
+  textOutlineColor: string
+  textTransform: TextTransform
+  contentOpacity: number
+
+  imageFlipX: boolean
+  imageFlipY: boolean
+  imageRotate: ImageRotate
+  contentOffsetX: number
+  contentOffsetY: number
+  imageOffsetX: number
+  imageOffsetY: number
+
+  layerOrder: LayerId[]
+  snapToGrid: boolean
 }
 
 export const defaultCreativeData = (): CreativeData => ({
@@ -490,4 +515,26 @@ export const defaultCreativeData = (): CreativeData => ({
   qrCodeUrl: '',
   themeId: 'indigo-pro',
   listingUrl: '',
+
+  textShadowEnabled: false,
+  textShadowBlur: 8,
+  textShadowOffsetX: 0,
+  textShadowOffsetY: 2,
+  textShadowColor: 'rgba(0,0,0,0.35)',
+  textOutlineEnabled: false,
+  textOutlineWidth: 1,
+  textOutlineColor: '#ffffff',
+  textTransform: 'none',
+  contentOpacity: 100,
+
+  imageFlipX: false,
+  imageFlipY: false,
+  imageRotate: 0,
+  contentOffsetX: 0,
+  contentOffsetY: 0,
+  imageOffsetX: 0,
+  imageOffsetY: 0,
+
+  layerOrder: ['background', 'image', 'content', 'logo', 'footer', 'watermark', 'qr'],
+  snapToGrid: false,
 })

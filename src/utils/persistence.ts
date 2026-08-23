@@ -142,6 +142,33 @@ export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {
   merged.themeId = merged.themeId || defaults.themeId
   merged.listingUrl = merged.listingUrl ?? defaults.listingUrl
 
+  merged.textShadowEnabled = merged.textShadowEnabled ?? defaults.textShadowEnabled
+  merged.textShadowBlur = Number(merged.textShadowBlur) || defaults.textShadowBlur
+  merged.textShadowOffsetX = Number(merged.textShadowOffsetX) ?? defaults.textShadowOffsetX
+  merged.textShadowOffsetY = Number(merged.textShadowOffsetY) ?? defaults.textShadowOffsetY
+  merged.textShadowColor = merged.textShadowColor || defaults.textShadowColor
+  merged.textOutlineEnabled = merged.textOutlineEnabled ?? defaults.textOutlineEnabled
+  merged.textOutlineWidth = Number(merged.textOutlineWidth) || defaults.textOutlineWidth
+  merged.textOutlineColor = merged.textOutlineColor || defaults.textOutlineColor
+  merged.textTransform = (['none', 'uppercase', 'capitalize', 'lowercase'] as const).includes(
+    merged.textTransform as 'none' | 'uppercase' | 'capitalize' | 'lowercase',
+  )
+    ? merged.textTransform
+    : defaults.textTransform
+  merged.contentOpacity = Number(merged.contentOpacity) || defaults.contentOpacity
+
+  merged.imageFlipX = merged.imageFlipX ?? defaults.imageFlipX
+  merged.imageFlipY = merged.imageFlipY ?? defaults.imageFlipY
+  merged.imageRotate = ([0, 90, 180, 270] as const).includes(merged.imageRotate as 0)
+    ? merged.imageRotate
+    : defaults.imageRotate
+  merged.contentOffsetX = Number(merged.contentOffsetX) ?? defaults.contentOffsetX
+  merged.contentOffsetY = Number(merged.contentOffsetY) ?? defaults.contentOffsetY
+  merged.imageOffsetX = Number(merged.imageOffsetX) ?? defaults.imageOffsetX
+  merged.imageOffsetY = Number(merged.imageOffsetY) ?? defaults.imageOffsetY
+  merged.layerOrder = Array.isArray(merged.layerOrder) && merged.layerOrder.length > 0 ? merged.layerOrder : defaults.layerOrder
+  merged.snapToGrid = merged.snapToGrid ?? defaults.snapToGrid
+
   return merged
 }
 
