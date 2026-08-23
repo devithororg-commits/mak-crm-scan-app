@@ -442,8 +442,8 @@ export default function PreviewPanel() {
 
 
       {/* Canvas area */}
-      <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
-        <div className="flex flex-1 items-center justify-center overflow-auto p-6">
+        <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
+        <div className="flex flex-1 items-center justify-center overflow-auto p-3 sm:p-6">
           <div className="relative animate-fade-in" style={{ width: width * scale, height: height * scale }}>
             {showGrid && (
               <div className="pointer-events-none absolute inset-0 z-10 opacity-40" style={{
@@ -482,11 +482,11 @@ export default function PreviewPanel() {
         />
       </div>
 
-      <div className="relative z-10 px-6 pb-2 text-center">
-        <p className="text-[11px] font-medium text-slate-400">
+      <div className="relative z-10 px-3 pb-2 text-center sm:px-6">
+        <p className="text-[10px] font-medium text-slate-400 sm:text-[11px]">
           {activeTab === 'templates'
-            ? 'Click a template to preview · Press Start Editing when ready'
-            : <>Use left tools like Canva — <span className="text-violet-600">Text</span> · <span className="text-violet-600">Uploads</span> · <span className="text-violet-600">Design</span></>}
+            ? 'Tap a template to preview · Start Editing when ready'
+            : <>Left tools: <span className="text-violet-600">Text</span> · <span className="text-violet-600">Uploads</span> · <span className="text-violet-600">Design</span> · Press <kbd className="rounded border border-slate-200 bg-white px-1 text-[9px]">?</kbd> for help</>}
         </p>
       </div>
 

@@ -65,7 +65,9 @@ export default function CanvaToolRail({
             <button
               key={tool.id}
               type="button"
-              title={tool.label}
+              title={`${tool.label} — ${getToolDescription(tool.id)}`}
+              aria-label={tool.label}
+              aria-current={active ? 'page' : undefined}
               onClick={() => {
                 if (isTemplates) onSelectTemplates()
                 else onSelectTool(tool.id as EditSection)

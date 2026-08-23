@@ -27,6 +27,23 @@ const PANEL_TITLES: Record<EditSection | 'templates', string> = {
   slides: 'Pages',
 }
 
+const PANEL_TIPS: Partial<Record<EditSection, string>> = {
+  content: 'Edit headline & details — changes appear live on the canvas. Use **word** to highlight text.',
+  media: 'Upload property photos or pick stock images. Apply filters for a polished look.',
+  style: 'Fine-tune colors, spacing, effects, and QR code placement.',
+  brand: 'Set logo, fonts, and brand colors once — they apply across templates.',
+  data: 'Add numbers for charts or import CSV for analytics-style posts.',
+  slides: 'Build multi-slide carousels for Instagram — each page edits separately.',
+}
+
+function PanelTip({ text }: { text: string }) {
+  return (
+    <div className="rounded-xl border border-violet-100 bg-gradient-to-r from-violet-50/90 to-indigo-50/60 px-3.5 py-2.5 text-[11px] leading-relaxed text-violet-900">
+      <span className="font-bold text-violet-700">Tip · </span>{text}
+    </div>
+  )
+}
+
 interface Props {
   mode: 'templates' | EditSection
   templateName: string
@@ -46,6 +63,8 @@ export default function CanvaToolPanel({ mode, templateName, onChangeTemplate }:
 
   return (
     <div className="space-y-4">
+      {PANEL_TIPS[mode] && <PanelTip text={PANEL_TIPS[mode]!} />}
+
       {mode === 'content' && (
         <>
           <button
