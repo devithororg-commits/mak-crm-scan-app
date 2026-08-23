@@ -10,6 +10,8 @@ import CaptionGenerator from './CaptionGenerator'
 import ContentLibrary from './ContentLibrary'
 import MultiFormatPreview from './MultiFormatPreview'
 import DesignScorePanel from './DesignScorePanel'
+import ShareToolsPanel from './ShareToolsPanel'
+import ExportProgressBar from './ExportProgressBar'
 
 interface Props {
   onClose: () => void
@@ -26,7 +28,7 @@ function loadExportFormat(): 'png' | 'jpeg' {
 
 export default function ExportPanel({ onClose }: Props) {
   const { data } = useCreative()
-  const { handlers, exporting, exportError, savedMsg } = useExportBridge()
+  const { handlers, exporting, exportError, savedMsg, exportProgress } = useExportBridge()
   const [exportFormat, setExportFormat] = useState<'png' | 'jpeg'>(loadExportFormat)
 
   const setFormat = (format: 'png' | 'jpeg') => {
@@ -67,6 +69,7 @@ export default function ExportPanel({ onClose }: Props) {
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <div className="space-y-4">
           <MultiFormatPreview />
+          <ShareToolsPanel />
           <DesignScorePanel />
 
           <div className="rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-teal-50/50 p-4">
@@ -109,6 +112,7 @@ export default function ExportPanel({ onClose }: Props) {
       </div>
 
       <div className="shrink-0 border-t border-slate-200 bg-white p-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+        <ExportProgressBar progress={exportProgress} />
         {exportError && (
           <div className="mb-3 flex items-center gap-2 rounded-[12px] border border-red-200 bg-red-50 px-3 py-2.5 text-[12px] font-medium text-red-700">
             <AlertCircle className="h-4 w-4 shrink-0" />{exportError}

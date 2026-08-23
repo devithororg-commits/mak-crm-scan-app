@@ -170,6 +170,10 @@ export function migrateCreativeData(raw: Partial<CreativeData>): CreativeData {
   merged.snapToGrid = merged.snapToGrid ?? defaults.snapToGrid
   merged.brandLock = merged.brandLock ?? defaults.brandLock
   merged.formatSyncEnabled = merged.formatSyncEnabled ?? defaults.formatSyncEnabled
+  merged.customFontName = merged.customFontName ?? defaults.customFontName
+  if (!['Poppins', 'Inter', 'DM Sans', 'Playfair Display', 'Custom'].includes(merged.fontFamily)) {
+    merged.fontFamily = defaults.fontFamily
+  }
 
   return merged
 }

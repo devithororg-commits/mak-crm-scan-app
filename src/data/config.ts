@@ -92,6 +92,7 @@ export const FONT_OPTIONS: { id: FontFamily; label: string; sample: string }[] =
   { id: 'Inter', label: 'Inter', sample: 'Tech & SaaS' },
   { id: 'DM Sans', label: 'DM Sans', sample: 'Friendly & Bold' },
   { id: 'Playfair Display', label: 'Playfair', sample: 'Luxury & Editorial' },
+  { id: 'Custom', label: 'Custom Upload', sample: 'Your brand font file' },
 ]
 
 export const COLOR_PALETTES = [

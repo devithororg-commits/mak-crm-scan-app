@@ -63,7 +63,7 @@ export type ImageRotate = 0 | 90 | 180 | 270
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'none'
 export type AspectRatio = '1:1' | '4:5' | '9:16' | '16:9'
 export type FooterStyle = 'minimal' | 'branded' | 'full'
-export type FontFamily = 'Poppins' | 'Inter' | 'DM Sans' | 'Playfair Display'
+export type FontFamily = 'Poppins' | 'Inter' | 'DM Sans' | 'Playfair Display' | 'Custom'
 export type Platform = 'instagram' | 'linkedin' | 'twitter' | 'whatsapp' | 'facebook' | 'custom'
 export type ImagePosition = 'top' | 'bottom' | 'left' | 'right' | 'background' | 'cover'
 export type ImageFit = 'cover' | 'contain'
@@ -183,6 +183,7 @@ export interface CreativeData {
   accentColor: string
   secondaryColor: string
   fontFamily: FontFamily
+  customFontName: string
   imageUrl: string
   logoUrl: string
   tags: string
@@ -395,6 +396,7 @@ export const defaultCreativeData = (): CreativeData => ({
   accentColor: '#4F46E5',
   secondaryColor: '#818CF8',
   fontFamily: 'Poppins',
+  customFontName: '',
   imageUrl: '',
   logoUrl: '',
   tags: 'Real Estate, Growth, Your City',

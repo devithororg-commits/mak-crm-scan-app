@@ -11,7 +11,7 @@ import { saveToLibrary } from '../../utils/contentLibrary'
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const {
     resetAll, savedAt, undo, redo, canUndo, canRedo, activeTab, setActiveTab, setEditSection,
-    data, duplicateCarouselSlide, nudgeContent,
+    data, duplicateCarouselSlide, duplicateProject, nudgeContent,
   } = useCreative()
   const { exportOpen, setExportOpen, setHelpOpen, mobilePanelOpen, setMobilePanelOpen } = useEditorUI()
   const isMobile = useIsMobile()
@@ -33,6 +33,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         if (e.shiftKey && data.carouselEnabled) {
           duplicateCarouselSlide()
           toast('Carousel slide duplicated', 'success')
+        } else if (e.shiftKey) {
+          duplicateProject()
+          toast('Project duplicated — edit the copy', 'success')
         } else {
           saveToLibrary(data)
           toast('Creative saved to library', 'success')
@@ -50,7 +53,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [undo, redo, duplicateCarouselSlide, nudgeContent, data, toast])
+  }, [undo, redo, duplicateCarouselSlide, duplicateProject, nudgeContent, data, toast])
 
   const handleReset = () => {
     resetAll()

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Layers, Loader2, Package, Sparkles } from 'lucide-react'
 import { useCreative } from '../../store/CreativeContext'
+import { useExportBridge } from '../../context/ExportBridge'
 import { applyListingPreset } from '../../data/listingPresets'
 import { applyTemplateSwitch } from '../../data/presets'
 import { saveToLibrary } from '../../utils/contentLibrary'
@@ -23,6 +24,7 @@ const PACK: {
 
 export default function ListingQuickPack() {
   const { data, setData } = useCreative()
+  const { setExportProgress } = useExportBridge()
   const { toast } = useToast()
   const [saving, setSaving] = useState(false)
   const [exporting, setExporting] = useState(false)
@@ -62,14 +64,19 @@ export default function ListingQuickPack() {
     if (!hasListing) return
     setExporting(true)
     setProgress('Starting…')
+    setExportProgress({ message: 'Building campaign pack…', percent: 0 })
     try {
-      await exportListingCampaignPack(data, 'png', (msg) => setProgress(msg))
+      await exportListingCampaignPack(data, 'png', (msg, pct) => {
+        setProgress(msg)
+        setExportProgress({ message: msg, percent: pct })
+      })
       toast('Campaign pack downloaded!', 'success')
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Export failed', 'error')
     } finally {
       setExporting(false)
       setProgress('')
+      setTimeout(() => setExportProgress(null), 1200)
     }
   }
 

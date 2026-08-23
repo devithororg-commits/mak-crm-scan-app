@@ -11,49 +11,53 @@ export interface ExportHandlers {
   exportCaptionPack: () => Promise<void>
 }
 
+export interface ExportProgress {
+  message: string
+  percent: number
+}
+
 interface ExportBridgeValue {
   exportRef: RefObject<HTMLDivElement | null>
   handlers: ExportHandlers | null
   exporting: string
   exportError: string
   savedMsg: string
+  exportProgress: ExportProgress | null
   registerHandlers: (handlers: ExportHandlers) => void
   setExporting: (v: string) => void
   setExportError: (v: string) => void
   setSavedMsg: (v: string) => void
+  setExportProgress: (v: ExportProgress | null) => void
 }
 
 const ExportBridgeContext = createContext<ExportBridgeValue | null>(null)
 
 export function ExportBridgeProvider({ children }: { children: ReactNode }) {
   const exportRef = useRef<HTMLDivElement | null>(null)
-  const handlersRef = useRef<ExportHandlers | null>(null)
-  const handlersReadyRef = useRef(false)
-  const [, setHandlersReady] = useState(false)
+  const [handlers, setHandlers] = useState<ExportHandlers | null>(null)
   const [exporting, setExporting] = useState('')
   const [exportError, setExportError] = useState('')
   const [savedMsg, setSavedMsg] = useState('')
+  const [exportProgress, setExportProgress] = useState<ExportProgress | null>(null)
 
   const registerHandlers = useCallback((h: ExportHandlers) => {
-    handlersRef.current = h
-    if (!handlersReadyRef.current) {
-      handlersReadyRef.current = true
-      setHandlersReady(true)
-    }
+    setHandlers(() => h)
   }, [])
 
   return (
     <ExportBridgeContext.Provider
       value={{
         exportRef,
-        handlers: handlersRef.current,
+        handlers,
         exporting,
         exportError,
         savedMsg,
+        exportProgress,
         registerHandlers,
         setExporting,
         setExportError,
         setSavedMsg,
+        setExportProgress,
       }}
     >
       {children}

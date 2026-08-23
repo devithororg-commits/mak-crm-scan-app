@@ -67,12 +67,25 @@ export async function exportCreative(
   document.body.removeChild(link)
 }
 
-export function fontFamilyCss(font: CreativeData['fontFamily']) {
-  const map: Record<CreativeData['fontFamily'], string> = {
+export function fontFamilyCss(font: CreativeData['fontFamily'], customName?: string) {
+  if (font === 'Custom' && customName) {
+    return `"${customName}", sans-serif`
+  }
+  const map: Record<Exclude<CreativeData['fontFamily'], 'Custom'>, string> = {
     Poppins: '"Poppins", sans-serif',
     Inter: '"Inter", sans-serif',
     'DM Sans': '"DM Sans", sans-serif',
     'Playfair Display': '"Playfair Display", serif',
+  }
+  if (font === 'Custom') {
+    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('creative-studio-custom-font') : null
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as { name: string }
+        if (parsed.name) return `"${parsed.name}", sans-serif`
+      } catch { /* ignore */ }
+    }
+    return '"Poppins", sans-serif'
   }
   return map[font]
 }

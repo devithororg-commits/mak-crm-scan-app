@@ -61,7 +61,7 @@ function HiddenCanvas({
 export default function PreviewPanel() {
   const { data, activeTab, update, setActiveCarouselSlide } = useCreative()
 
-  const { exportRef, registerHandlers, setExporting, setExportError, setSavedMsg } = useExportBridge()
+  const { exportRef, registerHandlers, setExporting, setExportError, setSavedMsg, setExportProgress } = useExportBridge()
 
   const batchRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
@@ -393,9 +393,10 @@ export default function PreviewPanel() {
       exportCampaignPack: async (format) => {
         setExporting('campaign')
         setExportError('')
+        setExportProgress({ message: 'Starting campaign pack…', percent: 0 })
         try {
-          await exportListingCampaignPack(dataRef.current, format, (msg) => {
-            setSavedMsg(msg)
+          await exportListingCampaignPack(dataRef.current, format, (msg, pct) => {
+            setExportProgress({ message: msg, percent: pct })
           })
           setSavedMsg('Campaign pack downloaded!')
           setTimeout(() => setSavedMsg(''), 2500)
@@ -403,20 +404,25 @@ export default function PreviewPanel() {
           setExportError(e instanceof Error ? e.message : 'Campaign export failed')
         } finally {
           setExporting('')
+          setTimeout(() => setExportProgress(null), 1200)
         }
       },
 
       exportAbVariants: async (format) => {
         setExporting('ab')
         setExportError('')
+        setExportProgress({ message: 'Rendering A/B variants…', percent: 0 })
         try {
-          await exportAbVariantPack(dataRef.current, format)
+          await exportAbVariantPack(dataRef.current, format, (msg, pct) => {
+            setExportProgress({ message: msg, percent: pct })
+          })
           setSavedMsg('A/B variants downloaded!')
           setTimeout(() => setSavedMsg(''), 2500)
         } catch (e) {
           setExportError(e instanceof Error ? e.message : 'A/B export failed')
         } finally {
           setExporting('')
+          setTimeout(() => setExportProgress(null), 1200)
         }
       },
 
@@ -436,7 +442,7 @@ export default function PreviewPanel() {
 
     })
 
-  }, [exportRef, registerHandlers, setExportError, setExporting, setSavedMsg])
+  }, [exportRef, registerHandlers, setExportError, setExporting, setSavedMsg, setExportProgress])
 
 
 

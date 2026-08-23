@@ -1,12 +1,42 @@
-import { Lock, Unlock } from 'lucide-react'
+import { Lock, Unlock, Upload, X } from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useCreative } from '../../store/CreativeContext'
 import { COLOR_PALETTES, FONT_OPTIONS } from '../../data/config'
 import type { FontFamily } from '../../types/creative'
 import LogoEditor from './LogoEditor'
 import { Field, Section, inputClass } from './FormUI'
+import { loadStoredCustomFont, processFontFile, saveStoredCustomFont } from '../../utils/customFont'
+import { useToast } from '../ux/ToastProvider'
 
 export default function BrandKitEditor() {
   const { data, update } = useCreative()
+  const { toast } = useToast()
+  const fontInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const storedFont = loadStoredCustomFont()
+
+  const handleFontUpload = async (file: File) => {
+    if (data.brandLock) return
+    setUploading(true)
+    try {
+      const record = await processFontFile(file)
+      saveStoredCustomFont(record)
+      update('fontFamily', 'Custom')
+      update('customFontName', record.name)
+      toast(`Custom font "${record.name}" applied`, 'success')
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Font upload failed', 'error')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const clearCustomFont = () => {
+    saveStoredCustomFont(null)
+    update('customFontName', '')
+    if (data.fontFamily === 'Custom') update('fontFamily', 'Poppins')
+    toast('Custom font removed', 'info')
+  }
 
   return (
     <>
@@ -80,22 +110,72 @@ export default function BrandKitEditor() {
       </Section>
 
       <Section title="Font Family">
+        <input
+          ref={fontInputRef}
+          type="file"
+          accept=".ttf,.otf,.woff,.woff2"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            if (f) handleFontUpload(f)
+            e.target.value = ''
+          }}
+        />
+        <div className="mb-3 rounded-xl border border-dashed border-violet-200 bg-violet-50/40 p-3">
+          <p className="text-[10px] font-bold text-violet-800">Custom brand font</p>
+          <p className="mt-0.5 text-[9px] text-violet-700/80">TTF, OTF, WOFF, WOFF2 — stored locally in your browser</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={data.brandLock || uploading}
+              onClick={() => fontInputRef.current?.click()}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-1.5 text-[10px] font-bold text-white disabled:opacity-50"
+            >
+              <Upload className="h-3.5 w-3.5" />
+              {uploading ? 'Uploading…' : 'Upload Font'}
+            </button>
+            {storedFont && (
+              <button
+                type="button"
+                disabled={data.brandLock}
+                onClick={clearCustomFont}
+                className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600"
+              >
+                <X className="h-3 w-3" /> Remove
+              </button>
+            )}
+          </div>
+          {storedFont && (
+            <p className="mt-2 text-[10px] font-medium text-slate-700" style={{ fontFamily: `"${storedFont.name}", sans-serif` }}>
+              Active: {storedFont.name}
+            </p>
+          )}
+        </div>
         <div className="grid grid-cols-2 gap-2">
           {FONT_OPTIONS.map((font) => (
             <button
               key={font.id}
               type="button"
-              onClick={() => !data.brandLock && update('fontFamily', font.id as FontFamily)}
-              disabled={data.brandLock}
+              onClick={() => {
+                if (data.brandLock) return
+                update('fontFamily', font.id as FontFamily)
+                if (font.id !== 'Custom') update('customFontName', '')
+              }}
+              disabled={data.brandLock || (font.id === 'Custom' && !storedFont)}
               className={`rounded-xl border p-3 text-left transition ${
-                data.brandLock ? 'cursor-not-allowed opacity-50' : ''
+                data.brandLock || (font.id === 'Custom' && !storedFont) ? 'cursor-not-allowed opacity-50' : ''
               } ${
                 data.fontFamily === font.id
                   ? 'border-indigo-500 bg-indigo-50'
                   : 'border-slate-200 bg-slate-50 hover:border-slate-300'
               }`}
             >
-              <p className="text-sm font-semibold text-slate-900" style={{ fontFamily: font.id }}>{font.label}</p>
+              <p
+                className="text-sm font-semibold text-slate-900"
+                style={{ fontFamily: font.id === 'Custom' && storedFont ? `"${storedFont.name}", sans-serif` : font.id }}
+              >
+                {font.id === 'Custom' && data.customFontName ? data.customFontName : font.label}
+              </p>
               <p className="text-[10px] text-slate-500">{font.sample}</p>
             </button>
           ))}

@@ -5,7 +5,7 @@ const SHORTCUTS = [
   { keys: 'Ctrl + Y', action: 'Redo' },
   { keys: 'Ctrl + Shift + Z', action: 'Redo (alternate)' },
   { keys: 'Ctrl + D', action: 'Save copy to content library' },
-  { keys: 'Ctrl + Shift + D', action: 'Duplicate carousel slide' },
+  { keys: 'Ctrl + Shift + D', action: 'Duplicate carousel slide OR duplicate project' },
   { keys: 'Arrow keys', action: 'Nudge text content 1px' },
   { keys: 'Shift + Arrow', action: 'Nudge text content 10px' },
   { keys: '?', action: 'Open this help panel' },
@@ -13,15 +13,14 @@ const SHORTCUTS = [
 ]
 
 const FEATURES = [
-  { title: 'Templates', tip: 'Filter by Real Estate, Business, or Social. Search by name. Click to preview instantly.' },
-  { title: 'Text', tip: 'Smart fields change per template. Use **word** syntax to highlight important text.' },
-  { title: 'Uploads', tip: 'Add photos, apply filters (Luxury, Modern, B&W), flip, rotate, and control placement.' },
-  { title: 'Design', tip: 'Colors, spacing, effects, themes, and QR code — full pro controls.' },
-  { title: 'Position', tip: 'Canva-style layers panel, align text, nudge pixels, flip/rotate photos, text shadow & outline.' },
-  { title: 'Brand', tip: 'Save logo, fonts, and brand colors. Import from website URL.' },
-  { title: 'Charts', tip: 'Add metrics or import CSV data for analytics-style posts.' },
-  { title: 'Pages', tip: 'Build carousel slides for Instagram multi-image posts.' },
-  { title: 'Export', tip: 'PNG/JPEG, all sizes, reel video, PDF/ZIP carousel, captions & content library.' },
+  { title: 'Templates', tip: 'Mood filters (Luxury, Trust, Urgent). Search & preview instantly.' },
+  { title: 'Text & Listings', tip: 'Listing Quick Pack, Bulk CSV import (up to 20 listings), campaign ZIP export.' },
+  { title: 'Design Intelligence', tip: 'Design Score, typography presets, 60-30-10 color harmony, A/B variants.' },
+  { title: 'Composition', tip: 'Canvas toolbar: safe zone, rule of thirds, golden ratio, grayscale QA, feed thumbnail.' },
+  { title: 'Brand', tip: 'Upload custom font (TTF/OTF/WOFF), Brand Lock, logo & colors from URL.' },
+  { title: 'Export', tip: 'Smart file naming, all sizes sync, campaign pack, A/B ZIP, caption pack.' },
+  { title: 'Share', tip: 'WhatsApp share, native mobile share (poster + caption), copy all captions.' },
+  { title: 'Offline', tip: 'Install as app (PWA) — works offline after first load.' },
 ]
 
 interface Props {
@@ -69,7 +68,7 @@ export default function HelpPanel({ open, onClose }: Props) {
             </div>
             <div className="overflow-hidden rounded-xl border border-slate-200">
               {SHORTCUTS.map((s, i) => (
-                <div key={s.keys} className={`flex items-center justify-between px-3.5 py-2.5 ${i > 0 ? 'border-t border-slate-100' : ''}`}>
+                <div key={`${s.keys}-${i}`} className={`flex items-center justify-between px-3.5 py-2.5 ${i > 0 ? 'border-t border-slate-100' : ''}`}>
                   <span className="text-[12px] text-slate-600">{s.action}</span>
                   <kbd className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-700">{s.keys}</kbd>
                 </div>

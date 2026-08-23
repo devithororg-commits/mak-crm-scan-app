@@ -1,0 +1,19 @@
+{
+  "name": "Creative Studio Pro",
+  "short_name": "Studio Pro",
+  "description": "Professional social poster generator for real estate and marketing",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#8b3dff",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

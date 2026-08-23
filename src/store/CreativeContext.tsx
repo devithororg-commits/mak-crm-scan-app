@@ -27,13 +27,14 @@ interface CreativeContextValue {
   removeCarouselSlide: (index: number) => void
   setActiveCarouselSlide: (index: number) => void
   duplicateCarouselSlide: () => void
+  duplicateProject: () => void
   nudgeContent: (dx: number, dy: number, coarse?: boolean) => void
 }
 
 const CreativeContext = createContext<CreativeContextValue | null>(null)
 
 const BRAND_LOCK_KEYS: (keyof CreativeData)[] = [
-  'accentColor', 'secondaryColor', 'fontFamily', 'logoUrl', 'themeId', 'highlightColor',
+  'accentColor', 'secondaryColor', 'fontFamily', 'logoUrl', 'themeId', 'highlightColor', 'customFontName',
 ]
 
 export function CreativeProvider({ children }: { children: ReactNode }) {
@@ -173,6 +174,13 @@ export function CreativeProvider({ children }: { children: ReactNode }) {
     })
   }, [setData])
 
+  const duplicateProject = useCallback(() => {
+    setData((prev) => ({
+      ...prev,
+      title: prev.title ? `${prev.title.replace(/\s*\(copy\)$/i, '')} (copy)` : 'Untitled (copy)',
+    }))
+  }, [setData])
+
   const nudgeContent = useCallback((dx: number, dy: number, coarse = false) => {
     setData((prev) => {
       const step = coarse ? 10 : 1
@@ -191,7 +199,7 @@ export function CreativeProvider({ children }: { children: ReactNode }) {
         data, setData, update, activeTab, setActiveTab, editSection, setEditSection, applyPreset, resetAll, savedAt,
         undo, redo, canUndo, canRedo, loadProject,
         updateCarouselSlide, addCarouselSlide, removeCarouselSlide, setActiveCarouselSlide,
-        duplicateCarouselSlide, nudgeContent,
+        duplicateCarouselSlide, duplicateProject, nudgeContent,
       }}
     >
       {children}
