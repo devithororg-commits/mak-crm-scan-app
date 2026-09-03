@@ -697,6 +697,10 @@
     } catch (e) { toast('Could not load project'); }
   }
 
+  function loadProjectData(data) {
+    openProjectData(data);
+  }
+
   function thumbnail() {
     try {
       return canvas.toDataURL({ format: 'jpeg', quality: 0.55, multiplier: Math.min(0.25, 260 / STATE.W) });
@@ -1260,6 +1264,7 @@
   window.AuroraPro = {
     saveProject: saveProject,
     loadProject: loadProject,
+    loadProjectData: loadProjectData,
     distribute: distribute,
     groupSel: groupSel,
     ungroupSel: ungroupSel,
@@ -1269,6 +1274,7 @@
     autoLayoutStack: autoLayoutStack,
     clipToShapeBelow: clipToShapeBelow,
     togglePen: togglePen,
-    projectJSON: projectJSON
+    projectJSON: projectJSON,
+    commitPage: commitPage
   };
 })();
