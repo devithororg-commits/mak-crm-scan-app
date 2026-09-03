@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OBSIDIAN Studio — Ultra-Premium Graphic Design Workspace</title>
-<meta name="description" content="Futuristic dark glassmorphism design studio: rich text editing, Photoshop-style layers, smart guides, SVG shapes, effects and 4K print-ready export." />
+<title>AURORA.STUDIO — Ultra-Premium Graphic Design Workspace</title>
+<meta name="description" content="AURORA.STUDIO — futuristic design studio with rich text editing, Photoshop-style layers, smart guides, SVG shapes, effects and 4K print-ready export. Provided by Devithor.org." />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,10 +55,10 @@
   <header class="glass flex shrink-0 items-center gap-2.5 rounded-2xl px-3.5 py-2.5">
     <button id="toggleLeft" class="tr grid h-9 w-9 place-items-center rounded-xl chip" title="Toggle asset drawer">☰</button>
     <div class="flex items-center gap-2.5">
-      <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-cyan-400 to-orange-400 text-[15px] font-black text-slate-950">O</span>
+      <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-cyan-400 to-orange-400 text-[15px] font-black text-slate-950">A</span>
       <div class="leading-tight">
-        <p class="text-[13px] font-extrabold tracking-tight">OBSIDIAN<span class="text-cyan-400">.</span>STUDIO</p>
-        <p class="text-[9px] uppercase tracking-[.2em] text-slate-500">Canvas Engine · Pro</p>
+        <p class="text-[13px] font-extrabold tracking-tight">AURORA<span class="text-cyan-400">.</span>STUDIO</p>
+        <p class="text-[9px] uppercase tracking-[.2em] text-slate-500">Provided by Devithor.org</p>
       </div>
     </div>
     <span class="mx-1 h-7 w-px bg-white/10"></span>
@@ -2478,7 +2478,7 @@ const EXPORT = {
     }
     ENGINE.applyZoom(prevZoom);
     const a=document.createElement('a');
-    a.href=url; a.download=`obsidian-${STATE.W}x${STATE.H}${fmt==='png'||fmt==='jpeg'?'@'+mult+'x':''}.${ext}`;
+    a.href=url; a.download=`aurora-studio-${STATE.W}x${STATE.H}${fmt==='png'||fmt==='jpeg'?'@'+mult+'x':''}.${ext}`;
     a.click();
     toast(`Exported ${ext.toUpperCase()} · ${STATE.W*(fmt==='svg'||fmt==='json'?1:mult)}×${STATE.H*(fmt==='svg'||fmt==='json'?1:mult)}`);
   }
@@ -2566,7 +2566,7 @@ function boot(){
     stroke:'rgba(148,163,184,.25)',strokeWidth:2,objectName:'Glass card'});
   const cardT = new fabric.Textbox('Double-click any text, highlight a word, then restyle only that selection.',
     {left:150,top:940,width:780,fontSize:34,lineHeight:1.4,fontFamily:'Inter',fontWeight:'600',fill:'#e2e8f0',objectName:'Card copy'});
-  const foot = new fabric.Textbox('obsidian.studio',{left:100,top:1230,width:600,fontSize:26,fontFamily:'JetBrains Mono',
+  const foot = new fabric.Textbox('aurora.studio',{left:100,top:1230,width:600,fontSize:26,fontFamily:'JetBrains Mono',
     fill:'#64748b',objectName:'Footer'});
   [kicker,head,sub,rule,card,cardT,foot].forEach(o=>canvas.add(o));
 

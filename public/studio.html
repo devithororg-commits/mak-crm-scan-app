@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aurora Studio — Next-Gen Poster Design Studio</title>
+<title>AURORA.STUDIO — Next-Gen Poster Design Studio</title>
+<meta name="description" content="AURORA.STUDIO — next-gen poster design studio. Provided by Devithor.org." />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -84,7 +85,7 @@ tailwind.config = {
       <div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-flame-500 to-flame-300 font-display text-[15px] font-extrabold text-white glow">A</div>
       <div class="min-w-0 leading-tight">
         <div class="font-display text-[13px] font-bold tracking-tight">AURORA<span class="text-flame-400">.</span>STUDIO</div>
-        <div class="text-[9px] uppercase tracking-[.18em] text-navy-200">Design Engine v2</div>
+        <div class="text-[9px] uppercase tracking-[.18em] text-navy-200">Provided by Devithor.org</div>
       </div>
     </div>
 
@@ -148,7 +149,7 @@ tailwind.config = {
       <button data-tab="uploads"   class="dock-btn tt grid h-10 w-10 place-items-center rounded-xl text-navy-100" data-tt="Uploads">⬆</button>
       <button data-tab="bg"        class="dock-btn tt grid h-10 w-10 place-items-center rounded-xl text-navy-100" data-tt="Background">◐</button>
       <button data-tab="canvas"    class="dock-btn tt grid h-10 w-10 place-items-center rounded-xl text-navy-100" data-tt="Artboard">⬚</button>
-      <div class="mt-auto text-[9px] uppercase tracking-widest text-navy-200/60" style="writing-mode:vertical-rl">Aurora</div>
+      <div class="mt-auto text-[9px] uppercase tracking-widest text-navy-200/60" style="writing-mode:vertical-rl">AURORA</div>
     </nav>
 
     <!-- left panel -->
@@ -2432,7 +2433,7 @@ function doExport(kind){
       [[bl,bl,-1,-1],[bl+baseW,bl,1,-1],[bl,bl+baseH,-1,1],[bl+baseW,bl+baseH,1,1]].forEach(([x,y,sx,sy])=>{
         pdf.line(x,y+sy*4,x,y+sy*mk); pdf.line(x+sx*4,y,x+sx*mk,y);
       });
-      pdf.setFontSize(7); pdf.text(`Aurora Studio · ${baseW}×${baseH}px · ${$('#expDpi').value} DPI · ${bl}px bleed`,6,10);
+      pdf.setFontSize(7); pdf.text(`AURORA.STUDIO · ${baseW}×${baseH}px · ${$('#expDpi').value} DPI · ${bl}px bleed`,6,10);
       pdf.save('aurora-print-ready.pdf'); toast('Print-ready PDF with bleed marks');
     }
     else if(kind==='allpdf'){ restoreZ(); exportAllPages(m); return; }
