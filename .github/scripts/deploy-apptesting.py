@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wipe apptesting.in webroot and upload Creative Studio dist via FTP."""
+"""Wipe apptesting.in webroot and upload Poster Studio Pro dist via FTP."""
 from __future__ import annotations
 
 import ftplib

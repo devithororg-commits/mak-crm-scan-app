@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NOVA Builder — Drag &amp; Drop Presentation Studio</title>
+<meta name="description" content="Futuristic drag-and-drop landing page and presentation builder with premium widgets, live inspector and code export." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script>
+tailwind.config = { theme: { extend: {
+  colors:{
+    ink:{900:'#05070f',800:'#080c18',700:'#0d1324',600:'#131b32',500:'#1b2542',400:'#28345a'},
+    mist:{100:'#e8edf9',200:'#c3cde6',300:'#93a1c4',400:'#6b7aa1'},
+    volt:{300:'#7ff3e4',400:'#35e2c8',500:'#0fd3b6',600:'#06a892'},
+    gold:{300:'#ffdf95',400:'#f5c452',500:'#e0a92c'}
+  },
+  fontFamily:{ sans:['Inter','system-ui','sans-serif'] }
+}}}
+</script>
+<style>
+  body{background:#05070f;color:#e8edf9;font-family:Inter,sans-serif;overflow:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(760px 520px at 8% 4%, rgba(15,211,182,.13), transparent 62%),
+               radial-gradient(760px 560px at 94% 96%, rgba(245,196,82,.10), transparent 62%)}
+  .glass{background:rgba(13,19,36,.66);backdrop-filter:blur(22px) saturate(160%);border:1px solid rgba(255,255,255,.08);box-shadow:0 22px 60px -28px rgba(0,0,0,.9)}
+  .glass-soft{background:rgba(19,27,50,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.07)}
+  .tr{transition:all .24s cubic-bezier(.22,1,.36,1)}
+  *{scrollbar-width:thin;scrollbar-color:rgba(147,161,196,.28) transparent}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:rgba(147,161,196,.22);border-radius:99px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(53,226,200,.55)}
+  /* library cards */
+  .wcard{cursor:grab;transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s,border-color .22s}
+  .wcard:hover{transform:translateY(-3px);border-color:rgba(53,226,200,.5);box-shadow:0 18px 40px -22px rgba(15,211,182,.85)}
+  .wcard:active{cursor:grabbing}
+  .sortable-ghost{opacity:.35;filter:grayscale(.4)}
+  .sortable-drag{transform:rotate(1.2deg);box-shadow:0 30px 70px -24px rgba(0,0,0,.95)}
+  /* canvas blocks */
+  .block{position:relative;border:1px solid transparent;border-radius:1.25rem;transition:border-color .2s,box-shadow .2s}
+  .block:hover{border-color:rgba(53,226,200,.35)}
+  .block.sel{border-color:rgba(53,226,200,.85);box-shadow:0 0 0 1px rgba(53,226,200,.35),0 0 46px -14px rgba(15,211,182,.8)}
+  .block .tools{opacity:0;transform:translateY(-6px);transition:.2s cubic-bezier(.22,1,.36,1)}
+  .block:hover .tools,.block.sel .tools{opacity:1;transform:none}
+  .handle{cursor:grab}.handle:active{cursor:grabbing}
+  .drop-hint{transition:opacity .25s}
+  .col-star{background:linear-gradient(180deg,rgba(15,211,182,.16),rgba(15,211,182,.05));box-shadow:inset 1px 0 0 rgba(53,226,200,.45),inset -1px 0 0 rgba(53,226,200,.45)}
+  .col-star-gold{background:linear-gradient(180deg,rgba(245,196,82,.18),rgba(245,196,82,.05));box-shadow:inset 1px 0 0 rgba(245,196,82,.5),inset -1px 0 0 rgba(245,196,82,.5)}
+  .fld{width:100%;border-radius:.65rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);padding:7px 10px;font-size:12px;color:#e8edf9}
+  .fld:focus{outline:none;border-color:rgba(53,226,200,.7);box-shadow:0 0 0 3px rgba(15,211,182,.15)}
+  .panel-in{animation:fu .3s cubic-bezier(.22,1,.36,1)}
+  @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  /* preview mode collapses chrome */
+  body.preview #libPanel,body.preview #inspPanel,body.preview .tools,body.reveal-none .tools{display:none!important}
+  body.preview .block{border-color:transparent!important;box-shadow:none!important}
+  body.preview #canvasWrap{padding:0}
+  [contenteditable]:focus{outline:2px dashed rgba(53,226,200,.55);outline-offset:3px;border-radius:6px}
+</style>
+</head>
+<body class="antialiased">
+<div class="relative z-10 flex h-screen w-screen flex-col gap-3 p-3">
+
+  <!-- ══════════ TOP BAR ══════════ -->
+  <header class="glass flex shrink-0 items-center gap-3 rounded-2xl px-4 py-2.5">
+    <div class="flex items-center gap-2.5">
+      <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-volt-400 to-volt-600 text-[15px] font-black text-ink-900">N</span>
+      <div class="leading-tight">
+        <p class="text-[13px] font-extrabold tracking-tight">NOVA<span class="text-volt-400">.</span>BUILDER</p>
+        <p class="text-[9px] uppercase tracking-[.18em] text-mist-400">Presentation Studio</p>
+      </div>
+    </div>
+    <span class="mx-1 h-7 w-px bg-white/10"></span>
+    <span id="blockCount" class="rounded-lg bg-white/6 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">0 blocks</span>
+    <div class="ml-auto flex items-center gap-2">
+      <button id="btnClear" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-rose-400/50 hover:text-rose-300">Clear</button>
+      <button id="btnSave" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-volt-400/60 hover:text-volt-300">Save draft</button>
+      <button id="btnPreview" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-200 hover:border-volt-400/60 hover:text-volt-300">👁 Preview</button>
+      <button id="btnExport" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[12px] font-bold text-ink-900 hover:brightness-110" style="box-shadow:0 14px 34px -14px rgba(15,211,182,.9)">⤓ Export Code</button>
+    </div>
+  </header>
+
+  <!-- ══════════ WORKSPACE ══════════ -->
+  <div class="flex min-h-0 flex-1 gap-3">
+
+    <!-- LEFT — element library -->
+    <aside id="libPanel" class="glass flex w-64 shrink-0 flex-col rounded-2xl p-3">
+      <p class="px-1 pb-2 text-[10px] font-bold uppercase tracking-[.18em] text-mist-400">Elements library</p>
+      <div id="library" class="min-h-0 flex-1 space-y-2.5 overflow-y-auto pr-1"></div>
+      <p class="mt-2 rounded-xl bg-white/5 px-3 py-2 text-[10.5px] leading-relaxed text-mist-400">Drag a widget onto the canvas, or click it to append.</p>
+    </aside>
+
+    <!-- CENTER — canvas -->
+    <main id="canvasWrap" class="min-w-0 flex-1 overflow-y-auto rounded-2xl">
+      <div class="mx-auto max-w-5xl px-2 pb-24">
+        <div id="canvas" class="min-h-[70vh] space-y-4 rounded-2xl py-4"></div>
+        <div id="dropHint" class="drop-hint mt-2 grid place-items-center rounded-2xl border-2 border-dashed border-white/12 py-16 text-center">
+          <p class="text-[13px] font-semibold text-mist-300">Drop widgets here</p>
+          <p class="mt-1 text-[11px] text-mist-400">Reorder by dragging · click a block to edit it</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT — properties inspector -->
+    <aside id="inspPanel" class="glass flex w-72 shrink-0 flex-col rounded-2xl p-3">
+      <p class="px-1 pb-2 text-[10px] font-bold uppercase tracking-[.18em] text-mist-400">Properties</p>
+      <div id="inspector" class="min-h-0 flex-1 overflow-y-auto pr-1"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- exit-preview floating pill -->
+<button id="exitPreview" class="glass tr fixed bottom-5 left-1/2 z-50 hidden -translate-x-1/2 rounded-full px-5 py-2.5 text-[12px] font-bold text-volt-300">✕ Exit preview</button>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   NOVA BUILDER
+   Model → DOM. `blocks` is a plain array of {id,type,props} objects,
+   directly JSON-serialisable into a MySQL `pages.layout` column.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── 1. ICONS ── */
+const ICONS={
+  battery:'<path d="M3 8h13a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Z"/><path d="M21 11v2"/>',
+  range:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bolt:'<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>',
+  speed:'<path d="M12 20a8 8 0 1 1 8-8"/><path d="m12 12 5-3"/>',
+  charge:'<path d="M7 3h10l-1 7h4l-9 11 2-8H8l-1-10Z"/>',
+  shield:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/>',
+  drive:'<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/>',
+  screen:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m4 18 5-5 4 4 3-3 4 4"/>',
+  quote:'<path d="M7 7h4v6a4 4 0 0 1-4 4"/><path d="M15 7h4v6a4 4 0 0 1-4 4"/>',
+  cta:'<rect x="3" y="7" width="18" height="10" rx="4"/><path d="M9 12h6"/>'
+};
+const svg=(k,c='h-4 w-4')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="${c}">${ICONS[k]||''}</svg>`;
+
+/* ── 2. WIDGET DEFINITIONS ──
+   Each widget: default props + render(props) + fields(props) for the inspector. */
+const WIDGETS = {
+
+  /* Widget 1 — Premium comparison table */
+  table:{
+    label:'Premium Comparison Table', icon:'grid',
+    hint:'Spec matrix with highlighted column',
+    defaults:()=>({
+      title:'Compare the line-up',
+      subtitle:'Specification matrix',
+      accent:'volt',
+      highlight:4,
+      columns:['Core','Long Range','Performance','Signature'],
+      prices:['$41,900','$52,400','$63,900','$78,500'],
+      rows:[
+        {icon:'battery',name:'Battery capacity',values:['62 kWh','84 kWh','96 kWh','108 kWh']},
+        {icon:'range',  name:'Range (WLTP)',    values:['412 km','548 km','571 km','612 km']},
+        {icon:'bolt',   name:'Peak power',      values:['210 kW','290 kW','440 kW','570 kW']},
+        {icon:'speed',  name:'0 – 100 km/h',    values:['6.8 s','5.4 s','3.6 s','3.1 s']},
+        {icon:'charge', name:'DC charge 10→80%',values:['31 min','26 min','21 min','18 min']},
+        {icon:'shield', name:'Battery warranty',values:['6 yrs','8 yrs','8 yrs','10 yrs']}
+      ]
+    }),
+    render(p){
+      const star = p.accent==='gold' ? 'col-star-gold' : 'col-star';
+      const acc  = p.accent==='gold' ? 'text-gold-300' : 'text-volt-300';
+      const head = p.columns.map((c,i)=>`
+        <th class="px-5 py-5 text-left ${i+1===+p.highlight?star+' '+acc:''}">
+          ${i+1===+p.highlight?`<span class="mb-1.5 inline-block rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.16em]">Top model</span><br>`:''}
+          <span class="text-[15px] font-extrabold">${esc(c)}</span>
+          <span class="mt-1 block text-[12px] font-medium ${i+1===+p.highlight?acc:'text-mist-400'}">${esc(p.prices[i]||'')}</span>
+        </th>`).join('');
+      const body = p.rows.map(r=>`
+        <tr class="border-b border-white/6 last:border-0 hover:bg-white/[.04]">
+          <th scope="row" class="px-6 py-4 text-left text-[13px] font-semibold text-mist-200">
+            <span class="flex items-center gap-3">
+              <span class="grid h-8 w-8 place-items-center rounded-xl border border-white/10 bg-white/5 ${acc}">${svg(r.icon)}</span>${esc(r.name)}
+            </span>
+          </th>
+          ${r.values.map((v,j)=>`<td class="px-5 py-4 text-[13.5px] text-mist-200 ${j+1===+p.highlight?star+' font-bold '+acc:''}">${esc(v)}</td>`).join('')}
+        </tr>`).join('');
+      return `<section class="glass overflow-hidden rounded-[1.5rem]">
+        <div class="px-6 pt-6">
+          <p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc}">${esc(p.subtitle)}</p>
+          <h2 class="mt-1.5 text-[26px] font-black tracking-tight">${esc(p.title)}</h2>
+        </div>
+        <div class="mt-5 overflow-x-auto">
+          <table class="w-full min-w-[760px] border-collapse">
+            <thead><tr class="border-b border-white/10"><th class="w-[26%] px-6 py-5 text-left text-[11px] font-bold uppercase tracking-[.18em] text-mist-400">Specification</th>${head}</tr></thead>
+            <tbody>${body}</tbody>
+          </table>
+        </div>
+      </section>`;
+    },
+    fields(p){ return [
+      f('text','title','Heading',p.title),
+      f('text','subtitle','Eyebrow',p.subtitle),
+      f('select','accent','Accent',p.accent,[['volt','Cyan glow'],['gold','Premium gold']]),
+      f('select','highlight','Highlighted column',p.highlight,p.columns.map((c,i)=>[i+1,c])),
+      f('list','columns','Column titles',p.columns),
+      f('list','prices','Column prices',p.prices),
+      f('rows','rows','Specification rows',p.rows)
+    ];}
+  },
+
+  /* Widget 2 — Hero image split */
+  hero:{
+    label:'Hero Image Split', icon:'image',
+    hint:'Product visual + futuristic type',
+    defaults:()=>({
+      eyebrow:'2026 Platform',
+      title:'Engineered light. Driven further.',
+      body:'A dual-motor architecture built on an 800 V skateboard chassis, tuned for range and thermal headroom.',
+      cta:'Configure yours',
+      image:'https://images.unsplash.com/photo-1554744512-d6c603f27c54?auto=format&fit=crop&w=1200&q=80',
+      side:'left', accent:'volt'
+    }),
+    render(p){
+      const acc = p.accent==='gold' ? 'from-gold-300 to-gold-500 text-ink-900' : 'from-volt-400 to-volt-600 text-ink-900';
+      const eye = p.accent==='gold' ? 'text-gold-300 border-gold-400/30 bg-gold-500/10' : 'text-volt-300 border-volt-400/30 bg-volt-500/10';
+      const img = `<div class="glass overflow-hidden rounded-[1.5rem] p-3 ${p.side==='right'?'md:order-2':''}">
+          <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" class="aspect-[4/3] w-full rounded-[1.1rem] object-cover" />
+        </div>`;
+      const txt = `<div class="${p.side==='right'?'md:order-1':''}">
+          <span class="inline-flex rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[.18em] ${eye}">${esc(p.eyebrow)}</span>
+          <h1 class="mt-4 text-[34px] font-black leading-[1.05] tracking-tight">${esc(p.title)}</h1>
+          <p class="mt-4 text-[14px] leading-relaxed text-mist-300">${esc(p.body)}</p>
+          <a href="#" class="mt-6 inline-block rounded-2xl bg-gradient-to-r ${acc} px-6 py-3.5 text-[13px] font-bold">${esc(p.cta)}</a>
+        </div>`;
+      return `<section class="glass grid items-center gap-8 rounded-[1.5rem] p-6 md:grid-cols-2 md:p-9">${img}${txt}</section>`;
+    },
+    fields(p){ return [
+      f('text','eyebrow','Eyebrow',p.eyebrow),
+      f('text','title','Headline',p.title),
+      f('area','body','Body copy',p.body),
+      f('text','cta','Button label',p.cta),
+      f('text','image','Image URL',p.image),
+      f('select','side','Image side',p.side,[['left','Left'],['right','Right']]),
+      f('select','accent','Accent',p.accent,[['volt','Cyan glow'],['gold','Premium gold']])
+    ];}
+  },
+
+  /* Widget 3 — Feature badges */
+  badges:{
+    label:'Feature Badges', icon:'shield',
+    hint:'Row of icon + label chips',
+    defaults:()=>({
+      title:'Standard across the range', accent:'volt', cols:4,
+      items:[
+        {icon:'shield',title:'Reliable Warranty',sub:'Up to 10 years'},
+        {icon:'charge',title:'Fast Charging',sub:'350 kW capable'},
+        {icon:'battery',title:'LFP Cell Pack',sub:'Thermally managed'},
+        {icon:'screen',title:'OTA Updates',sub:'Lifetime, free'}
+      ]
+    }),
+    render(p){
+      const acc = p.accent==='gold'?'text-gold-300':'text-volt-300';
+      return `<section class="glass rounded-[1.5rem] p-6 md:p-8">
+        <h3 class="text-[20px] font-black tracking-tight">${esc(p.title)}</h3>
+        <div class="mt-5 grid gap-3" style="grid-template-columns:repeat(${+p.cols||4},minmax(0,1fr))">
+          ${p.items.map(b=>`<div class="glass-soft rounded-2xl px-4 py-5 text-center">
+            <span class="mx-auto grid h-11 w-11 place-items-center rounded-2xl bg-white/6 ${acc}">${svg(b.icon,'h-5 w-5')}</span>
+            <p class="mt-3 text-[12.5px] font-bold">${esc(b.title)}</p>
+            <p class="mt-0.5 text-[11px] text-mist-400">${esc(b.sub)}</p>
+          </div>`).join('')}
+        </div>
+      </section>`;
+    },
+    fields(p){ return [
+      f('text','title','Heading',p.title),
+      f('select','accent','Accent',p.accent,[['volt','Cyan glow'],['gold','Premium gold']]),
+      f('num','cols','Columns',p.cols),
+      f('items','items','Badges',p.items)
+    ];}
+  },
+
+  /* Bonus widgets */
+  heading:{
+    label:'Section Heading', icon:'quote', hint:'Eyebrow + title + copy',
+    defaults:()=>({eyebrow:'Specification',title:'Built for the long route',body:'Every variant shares the same safety cell and thermal platform.',align:'left',accent:'volt'}),
+    render(p){
+      const acc=p.accent==='gold'?'text-gold-300':'text-volt-300';
+      return `<section class="glass rounded-[1.5rem] p-8 text-${esc(p.align)}">
+        <p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc}">${esc(p.eyebrow)}</p>
+        <h2 class="mt-2 text-[28px] font-black tracking-tight">${esc(p.title)}</h2>
+        <p class="mt-3 max-w-2xl text-[14px] text-mist-300 ${p.align==='center'?'mx-auto':''}">${esc(p.body)}</p>
+      </section>`;
+    },
+    fields(p){ return [
+      f('text','eyebrow','Eyebrow',p.eyebrow), f('text','title','Title',p.title),
+      f('area','body','Body',p.body),
+      f('select','align','Alignment',p.align,[['left','Left'],['center','Center']]),
+      f('select','accent','Accent',p.accent,[['volt','Cyan glow'],['gold','Premium gold']])
+    ];}
+  },
+
+  cta:{
+    label:'Call To Action', icon:'cta', hint:'Closing conversion band',
+    defaults:()=>({title:'Reserve your build slot',body:'Fully refundable within 14 days.',button:'Start configuration',accent:'volt'}),
+    render(p){
+      const acc=p.accent==='gold'?'from-gold-300 to-gold-500':'from-volt-400 to-volt-600';
+      return `<section class="glass flex flex-wrap items-center justify-between gap-5 rounded-[1.5rem] p-8">
+        <div><h3 class="text-[22px] font-black tracking-tight">${esc(p.title)}</h3>
+        <p class="mt-1.5 text-[13px] text-mist-300">${esc(p.body)}</p></div>
+        <a href="#" class="rounded-2xl bg-gradient-to-r ${acc} px-6 py-3.5 text-[13px] font-bold text-ink-900">${esc(p.button)}</a>
+      </section>`;
+    },
+    fields(p){ return [
+      f('text','title','Title',p.title), f('text','body','Sub copy',p.body),
+      f('text','button','Button label',p.button),
+      f('select','accent','Accent',p.accent,[['volt','Cyan glow'],['gold','Premium gold']])
+    ];}
+  }
+};
+
+/* ── 3. HELPERS ── */
+function esc(s){ return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function f(type,key,label,value,options){ return {type,key,label,value,options}; }
+const uid = ()=> 'b'+Math.random().toString(36).slice(2,9);
+const $  = s=>document.querySelector(s);
+
+/* ── 4. STATE ── */
+let blocks = [];          // ← serialise this to MySQL
+let selectedId = null;
+const LS='nova.builder.v1';
+
+/* ── 5. LIBRARY (drag source) ── */
+function renderLibrary(){
+  $('#library').innerHTML = Object.entries(WIDGETS).map(([type,w])=>`
+    <div class="wcard glass-soft rounded-2xl p-3" data-type="${type}">
+      <div class="flex items-start gap-3">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-volt-500/25 to-gold-400/15 text-volt-300">${svg(w.icon)}</span>
+        <div class="min-w-0">
+          <p class="text-[12.5px] font-bold leading-tight">${w.label}</p>
+          <p class="mt-0.5 text-[10.5px] leading-snug text-mist-400">${w.hint}</p>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── 6. CANVAS RENDER ── */
+function renderCanvas(){
+  $('#canvas').innerHTML = blocks.map(b=>`
+    <div class="block ${b.id===selectedId?'sel':''}" data-id="${b.id}">
+      <div class="tools absolute right-3 top-3 z-20 flex items-center gap-1 rounded-xl border border-white/10 bg-ink-900/85 p-1 backdrop-blur">
+        <button class="handle tr grid h-7 w-7 place-items-center rounded-lg text-mist-300 hover:bg-white/10" title="Drag to reorder">⠿</button>
+        <button data-act="up"  class="tr grid h-7 w-7 place-items-center rounded-lg text-mist-300 hover:bg-white/10" title="Move up">↑</button>
+        <button data-act="down" class="tr grid h-7 w-7 place-items-center rounded-lg text-mist-300 hover:bg-white/10" title="Move down">↓</button>
+        <button data-act="dup"  class="tr grid h-7 w-7 place-items-center rounded-lg text-volt-300 hover:bg-volt-500/20" title="Duplicate">⧉</button>
+        <button data-act="del"  class="tr grid h-7 w-7 place-items-center rounded-lg text-rose-300 hover:bg-rose-500/20" title="Delete">🗑</button>
+      </div>
+      ${WIDGETS[b.type].render(b.props)}
+    </div>`).join('');
+  $('#dropHint').style.opacity = blocks.length ? '0' : '1';
+  $('#dropHint').style.height  = blocks.length ? '0px' : '';
+  $('#dropHint').style.overflow= 'hidden';
+  $('#blockCount').textContent = blocks.length + (blocks.length===1?' block':' blocks');
+  renderInspector();
+  persist();
+}
+
+/* ── 7. INSPECTOR ── */
+function renderInspector(){
+  const b = blocks.find(x=>x.id===selectedId);
+  const box = $('#inspector');
+  if(!b){
+    box.innerHTML = `<div class="grid h-full place-items-center px-4 text-center">
+      <div><p class="text-[12.5px] font-semibold text-mist-300">No element selected</p>
+      <p class="mt-1 text-[11px] text-mist-400">Click a block on the canvas to edit its content and styling.</p></div></div>`;
+    return;
+  }
+  const w = WIDGETS[b.type];
+  box.innerHTML = `<div class="panel-in space-y-3">
+    <div class="glass-soft rounded-xl px-3 py-2.5">
+      <p class="text-[12px] font-bold">${w.label}</p>
+      <p class="text-[10px] text-mist-400">id: ${b.id}</p>
+    </div>
+    ${w.fields(b.props).map(fld=>renderField(fld)).join('')}
+    <div class="grid grid-cols-2 gap-2 pt-1">
+      <button data-act="dup" data-target="${b.id}" class="tr rounded-xl border border-white/10 py-2 text-[11.5px] font-semibold text-volt-300 hover:bg-volt-500/15">Duplicate</button>
+      <button data-act="del" data-target="${b.id}" class="tr rounded-xl border border-white/10 py-2 text-[11.5px] font-semibold text-rose-300 hover:bg-rose-500/15">Delete</button>
+    </div>
+  </div>`;
+}
+
+function renderField(fl){
+  const L = `<label class="mb-1 block text-[10px] font-bold uppercase tracking-[.14em] text-mist-400">${fl.label}</label>`;
+  if(fl.type==='text'||fl.type==='num')
+    return `<div>${L}<input class="fld" type="${fl.type==='num'?'number':'text'}" data-prop="${fl.key}" value="${esc(fl.value)}" /></div>`;
+  if(fl.type==='area')
+    return `<div>${L}<textarea class="fld" rows="3" data-prop="${fl.key}">${esc(fl.value)}</textarea></div>`;
+  if(fl.type==='select')
+    return `<div>${L}<select class="fld" data-prop="${fl.key}">${fl.options.map(([v,t])=>
+      `<option value="${esc(v)}" ${String(v)===String(fl.value)?'selected':''}>${esc(t)}</option>`).join('')}</select></div>`;
+  if(fl.type==='list')
+    return `<div>${L}<div class="space-y-1.5">${fl.value.map((v,i)=>
+      `<input class="fld" data-prop="${fl.key}" data-idx="${i}" value="${esc(v)}" />`).join('')}</div></div>`;
+  if(fl.type==='rows')
+    return `<div>${L}<div class="space-y-2">${fl.value.map((r,i)=>`
+      <div class="glass-soft space-y-1.5 rounded-xl p-2">
+        <input class="fld" data-prop="rows" data-idx="${i}" data-sub="name" value="${esc(r.name)}" />
+        <div class="grid grid-cols-2 gap-1.5">${r.values.map((v,j)=>
+          `<input class="fld" data-prop="rows" data-idx="${i}" data-sub="values" data-j="${j}" value="${esc(v)}" />`).join('')}</div>
+      </div>`).join('')}</div></div>`;
+  if(fl.type==='items')
+    return `<div>${L}<div class="space-y-2">${fl.value.map((it,i)=>`
+      <div class="glass-soft space-y-1.5 rounded-xl p-2">
+        <input class="fld" data-prop="items" data-idx="${i}" data-sub="title" value="${esc(it.title)}" />
+        <input class="fld" data-prop="items" data-idx="${i}" data-sub="sub" value="${esc(it.sub)}" />
+        <select class="fld" data-prop="items" data-idx="${i}" data-sub="icon">${Object.keys(ICONS).map(k=>
+          `<option value="${k}" ${k===it.icon?'selected':''}>${k}</option>`).join('')}</select>
+      </div>`).join('')}</div></div>`;
+  return '';
+}
+
+/* Inspector → model (live, non-destructive re-render) */
+$('#inspector').addEventListener('input', e=>{
+  const el = e.target.closest('[data-prop]'); if(!el) return;
+  const b = blocks.find(x=>x.id===selectedId); if(!b) return;
+  const key = el.dataset.prop, idx = el.dataset.idx, sub = el.dataset.sub, j = el.dataset.j;
+  if(idx === undefined)              b.props[key] = el.value;
+  else if(sub === undefined)         b.props[key][+idx] = el.value;
+  else if(j !== undefined)           b.props[key][+idx][sub][+j] = el.value;
+  else                               b.props[key][+idx][sub] = el.value;
+  // repaint just the block body so focus stays in the field
+  const host = document.querySelector(`.block[data-id="${b.id}"] > section`);
+  if(host) host.outerHTML = WIDGETS[b.type].render(b.props);
+  persist();
+});
+
+/* ── 8. BLOCK ACTIONS ── */
+function addBlock(type, index){
+  const b = { id:uid(), type, props:WIDGETS[type].defaults() };
+  index == null ? blocks.push(b) : blocks.splice(index,0,b);
+  selectedId = b.id; renderCanvas();
+}
+function act(action, id){
+  const i = blocks.findIndex(b=>b.id===id); if(i<0) return;
+  if(action==='del'){ blocks.splice(i,1); if(selectedId===id) selectedId=null; }
+  if(action==='dup'){ const c=structuredClone(blocks[i]); c.id=uid(); blocks.splice(i+1,0,c); selectedId=c.id; }
+  if(action==='up'   && i>0)               blocks.splice(i-1,0,blocks.splice(i,1)[0]);
+  if(action==='down' && i<blocks.length-1) blocks.splice(i+1,0,blocks.splice(i,1)[0]);
+  renderCanvas();
+}
+$('#canvas').addEventListener('click', e=>{
+  if(document.body.classList.contains('preview')) return;
+  const btn = e.target.closest('[data-act]');
+  const blk = e.target.closest('.block'); if(!blk) return;
+  if(btn){ e.stopPropagation(); return act(btn.dataset.act, blk.dataset.id); }
+  selectedId = blk.dataset.id; renderCanvas();
+});
+$('#inspector').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-act]'); if(btn) act(btn.dataset.act, btn.dataset.target);
+});
+
+/* ── 9. DRAG & DROP (SortableJS) ── */
+Sortable.create($('#library'), {
+  group:{ name:'nova', pull:'clone', put:false },
+  sort:false, animation:220, ghostClass:'sortable-ghost', dragClass:'sortable-drag'
+});
+Sortable.create($('#canvas'), {
+  group:{ name:'nova', pull:true, put:true },
+  handle:'.handle, .block', filter:'[data-act], input, textarea, select',
+  animation:240, easing:'cubic-bezier(.22,1,.36,1)',
+  ghostClass:'sortable-ghost', dragClass:'sortable-drag',
+  onAdd(evt){
+    // a library clone landed on the canvas → replace it with a real block
+    const type = evt.item.dataset.type;
+    evt.item.remove();
+    if(WIDGETS[type]) addBlock(type, evt.newIndex);
+  },
+  onEnd(evt){
+    if(evt.from !== evt.to) return;
+    const { oldIndex, newIndex } = evt;
+    if(oldIndex === newIndex) return;
+    blocks.splice(newIndex, 0, blocks.splice(oldIndex,1)[0]);
+    renderCanvas();
+  }
+});
+// click a library card to append
+$('#library').addEventListener('click', e=>{
+  const card = e.target.closest('[data-type]'); if(card) addBlock(card.dataset.type);
+});
+
+/* ── 10. PREVIEW MODE ── */
+function setPreview(on){
+  document.body.classList.toggle('preview', on);
+  $('#exitPreview').classList.toggle('hidden', !on);
+  if(on){ selectedId=null; renderCanvas(); }
+}
+$('#btnPreview').addEventListener('click',()=>setPreview(!document.body.classList.contains('preview')));
+$('#exitPreview').addEventListener('click',()=>setPreview(false));
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') setPreview(false);
+  if(e.key==='Delete' && selectedId) act('del', selectedId);
+});
+
+/* ── 11. EXPORT — clean standalone HTML of the canvas only ── */
+function canvasHTML(){
+  return blocks.map(b=>WIDGETS[b.type].render(b.props)).join('\n\n');
+}
+function exportCode(){
+  const doc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NOVA Exported Page</title>
+<script src="https://cdn.tailwindcss.com"><\/script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  body{background:#05070f;color:#e8edf9;font-family:Inter,sans-serif}
+  .glass{background:rgba(13,19,36,.66);backdrop-filter:blur(22px) saturate(160%);border:1px solid rgba(255,255,255,.08);box-shadow:0 22px 60px -28px rgba(0,0,0,.9)}
+  .glass-soft{background:rgba(19,27,50,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.07)}
+  .col-star{background:linear-gradient(180deg,rgba(15,211,182,.16),rgba(15,211,182,.05));box-shadow:inset 1px 0 0 rgba(53,226,200,.45),inset -1px 0 0 rgba(53,226,200,.45)}
+  .col-star-gold{background:linear-gradient(180deg,rgba(245,196,82,.18),rgba(245,196,82,.05));box-shadow:inset 1px 0 0 rgba(245,196,82,.5),inset -1px 0 0 rgba(245,196,82,.5)}
+  .text-mist-200{color:#c3cde6}.text-mist-300{color:#93a1c4}.text-mist-400{color:#6b7aa1}
+  .text-volt-300{color:#7ff3e4}.text-gold-300{color:#ffdf95}
+  .from-volt-400{--tw-gradient-from:#35e2c8}.to-volt-600{--tw-gradient-to:#06a892}
+  .from-gold-300{--tw-gradient-from:#ffdf95}.to-gold-500{--tw-gradient-to:#e0a92c}
+  .text-ink-900{color:#05070f}
+</style>
+</head>
+<body class="antialiased">
+<main class="mx-auto max-w-5xl space-y-4 px-4 py-10">
+${canvasHTML()}
+</main>
+</body>
+</html>`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([doc],{type:'text/html'}));
+  a.download = 'nova-page.html'; a.click(); URL.revokeObjectURL(a.href);
+}
+$('#btnExport').addEventListener('click', exportCode);
+
+/* ── 12. PERSISTENCE — localStorage stand-in for MySQL ── */
+function persist(){ try{ localStorage.setItem(LS, JSON.stringify(blocks)); }catch(_){} }
+function restore(){
+  try{ const raw = localStorage.getItem(LS); if(raw){ const p = JSON.parse(raw); if(Array.isArray(p)) blocks = p; } }catch(_){}
+}
+$('#btnSave').addEventListener('click',()=>{
+  persist();
+  const b = $('#btnSave'), t = b.textContent;
+  b.textContent = '✓ Saved'; setTimeout(()=>b.textContent = t, 1400);
+});
+$('#btnClear').addEventListener('click',()=>{ blocks=[]; selectedId=null; renderCanvas(); });
+
+/* ── 13. BOOT ── */
+renderLibrary();
+restore();
+if(!blocks.length){ ['hero','table','badges'].forEach(t=>blocks.push({id:uid(),type:t,props:WIDGETS[t].defaults()})); }
+renderCanvas();
+</script>
+</body>
+</html>

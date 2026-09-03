@@ -1,28 +1,31 @@
-# Creative Studio
+# Poster Studio Pro
 
-Social media creative generator — enter your data, pick a Dribbble-style template, preview live, download HD PNG.
+Ultra-premium graphic design workspaces — static HTML studios with Fabric.js canvas, layers, effects, and 4K export.
 
-## Features
+## Studios
 
-- **6 content types:** Company, Person, Location, Marketing Research, Growth, News
-- **10 template styles** inspired by modern UI cards
-- **Dynamic charts:** Line, Bar, Pie, Area — from your numbers
-- **Custom footer:** Add company name, website, phone, location
-- **Export sizes:** 1:1, 4:5, 9:16, 16:9 (1080p+ at 3× resolution)
+| Studio | File | Description |
+|--------|------|-------------|
+| **OBSIDIAN** (recommended) | `obsidian.html` | Full design workspace — layers, text, shapes, effects |
+| **Aurora** | `studio.html` | Poster studio with templates |
+| **NOVA Builder** | `builder.html` | Fast layout builder |
+| **VOLTA X** | `showcase.html` | Template showcase |
 
-## Run
+## Local dev
 
 ```bash
-npm install
 npm run dev
 ```
 
-Open http://localhost:5180
+Open http://localhost:5173
 
-## Build
+## Build & deploy
 
 ```bash
 npm run build
 ```
 
-Standalone project — not linked to older repos.
+Output goes to `dist/`. Push to `master` deploys automatically to:
+
+- https://apptesting.in/
+- https://devithororg-commits.github.io/mak-crm-scan-app/

@@ -1,42 +1,12 @@
 {
-  "name": "mak-crm-scan-app",
+  "name": "poster-studio-pro",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "server:dev": "tsx watch server/index.ts",
-    "server:start": "tsx server/index.ts",
-    "deploy:apptesting": "npm run build && python3 .github/scripts/sync-api-config.py && bash .github/scripts/deploy-apptesting.sh"
-  },
-  "dependencies": {
-    "html-to-image": "^1.11.13",
-    "jspdf": "^4.2.1",
-    "jszip": "^3.10.1",
-    "lucide-react": "^0.511.0",
-    "qrcode": "^1.5.4",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "recharts": "^2.15.3"
-  },
-  "devDependencies": {
-    "@tailwindcss/vite": "^4.1.7",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.3",
-    "@types/nodemailer": "^6.4.17",
-    "@types/qrcode": "^1.5.6",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "nodemailer": "^7.0.3",
-    "tailwindcss": "^4.1.7",
-    "tsx": "^4.19.4",
-    "typescript": "~5.8.3",
-    "vite": "^6.3.5"
+    "dev": "npx --yes serve public -l 5173",
+    "build": "node scripts/build-static.mjs",
+    "preview": "npx --yes serve dist -l 4173",
+    "deploy:apptesting": "npm run build && python .github/scripts/deploy-apptesting.py"
   }
 }

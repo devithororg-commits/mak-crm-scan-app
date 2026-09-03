@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poster Studio Pro — Design Workspace</title>
+  <meta name="description" content="Ultra-premium poster and graphic design studios — OBSIDIAN, Aurora, NOVA Builder, and VOLTA X showcase." />
+  <link rel="icon" href="favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --neon: #22d3ee; --amber: #fb923c; }
+    html, body { height: 100%; }
+    body {
+      background: #020617;
+      color: #e2e8f0;
+      font-family: Inter, system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(900px 620px at 10% 0%, rgba(34,211,238,.14), transparent 60%),
+        radial-gradient(880px 640px at 92% 100%, rgba(251,146,60,.12), transparent 62%),
+        radial-gradient(700px 700px at 60% 40%, rgba(99,102,241,.08), transparent 65%);
+    }
+    .glass {
+      background: rgba(15,23,42,.62);
+      backdrop-filter: blur(26px) saturate(165%);
+      border: 1px solid rgba(148,163,184,.14);
+      box-shadow: 0 26px 70px -34px rgba(0,0,0,.95);
+    }
+    .card {
+      transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s, border-color .25s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(34,211,238,.45);
+      box-shadow: 0 0 0 1px rgba(34,211,238,.35), 0 24px 48px -20px rgba(34,211,238,.25);
+    }
+    .card.featured:hover {
+      border-color: rgba(251,146,60,.5);
+      box-shadow: 0 0 0 1px rgba(251,146,60,.4), 0 24px 48px -20px rgba(251,146,60,.3);
+    }
+  </style>
+</head>
+<body class="min-h-full">
+  <div class="relative z-10 mx-auto flex min-h-full max-w-6xl flex-col px-5 py-10 sm:px-8 sm:py-14">
+    <header class="mb-12 text-center">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-cyan-400/80">Poster Studio Pro</p>
+      <h1 class="font-[Sora] text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+        Choose your studio
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-base text-slate-400 sm:text-lg">
+        Four premium design workspaces — layers, effects, smart guides, and print-ready 4K export.
+      </p>
+    </header>
+
+    <main class="grid flex-1 gap-5 sm:grid-cols-2">
+      <a href="obsidian.html" class="card featured glass group relative overflow-hidden rounded-2xl p-6 sm:col-span-2 sm:p-8">
+        <div class="absolute right-0 top-0 rounded-bl-2xl bg-amber-500/20 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-amber-300">
+          Recommended
+        </div>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="font-[Sora] text-2xl font-bold text-white sm:text-3xl">OBSIDIAN Studio</h2>
+            <p class="mt-2 max-w-xl text-sm text-slate-400 sm:text-base">
+              Ultra-premium dark workspace — rich text, Photoshop-style layers, SVG shapes, effects, and 4K export.
+            </p>
+          </div>
+          <span class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-cyan-500/15 px-5 py-3 text-sm font-semibold text-cyan-300 ring-1 ring-cyan-400/30 group-hover:bg-cyan-500/25">
+            Open studio →
+          </span>
+        </div>
+      </a>
+
+      <a href="studio.html" class="card glass rounded-2xl p-6">
+        <h2 class="font-[Sora] text-xl font-bold text-white">Aurora Studio</h2>
+        <p class="mt-2 text-sm text-slate-400">Full-featured poster studio with templates and brand tools.</p>
+        <span class="mt-5 inline-block text-sm font-medium text-cyan-400">Launch →</span>
+      </a>
+
+      <a href="builder.html" class="card glass rounded-2xl p-6">
+        <h2 class="font-[Sora] text-xl font-bold text-white">NOVA Builder</h2>
+        <p class="mt-2 text-sm text-slate-400">Fast layout builder for social posts and marketing creatives.</p>
+        <span class="mt-5 inline-block text-sm font-medium text-cyan-400">Launch →</span>
+      </a>
+
+      <a href="showcase.html" class="card glass rounded-2xl p-6 sm:col-span-2">
+        <h2 class="font-[Sora] text-xl font-bold text-white">VOLTA X Showcase</h2>
+        <p class="mt-2 text-sm text-slate-400">Template gallery and design showcase preview.</p>
+        <span class="mt-5 inline-block text-sm font-medium text-cyan-400">View showcase →</span>
+      </a>
+    </main>
+
+    <footer class="mt-12 text-center text-xs text-slate-500">
+      Poster Studio Pro · apptesting.in
+    </footer>
+  </div>
+</body>
+</html>
