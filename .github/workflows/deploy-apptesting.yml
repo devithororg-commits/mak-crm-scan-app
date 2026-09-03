@@ -58,7 +58,17 @@ jobs:
             exit 1
           fi
 
-      - name: Upload to apptesting.in (FTP)
+      - name: Upload critical files first (hotfix)
+        env:
+          APPTESTING_FTP_HOST: ${{ secrets.APPTESTING_FTP_HOST }}
+          APPTESTING_FTP_USER: ${{ secrets.APPTESTING_FTP_USER }}
+          APPTESTING_FTP_PASS: ${{ secrets.APPTESTING_FTP_PASS }}
+          HOSTINGER_FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
+          HOSTINGER_FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
+          HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
+        run: python3 .github/scripts/deploy-hotfix.py
+
+      - name: Upload full site to apptesting.in (FTP)
         env:
           APPTESTING_FTP_HOST: ${{ secrets.APPTESTING_FTP_HOST }}
           APPTESTING_FTP_USER: ${{ secrets.APPTESTING_FTP_USER }}
@@ -68,17 +78,19 @@ jobs:
           HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
         run: |
           chmod +x .github/scripts/deploy-apptesting.sh
-          .github/scripts/deploy-apptesting.sh || python3 .github/scripts/deploy-hotfix.py
+          .github/scripts/deploy-apptesting.sh || echo "Full FTP deploy skipped or failed — hotfix already uploaded critical files"
 
-      - name: Verify builder redirect
+      - name: Verify homepage and builder
         run: |
-          body=$(curl -sS --max-time 25 "https://apptesting.in/builder.html" || true)
-          if echo "$body" | grep -q "github.io/mak-crm-scan-app/builder.html"; then
-            echo "builder.html redirect is live"
-            exit 0
+          home=$(curl -sS --max-time 25 "https://apptesting.in/" || true)
+          if echo "$home" | grep -q "hero-scene\|60 seconds\|500+"; then
+            echo "✅ New landing page is live on apptesting.in"
+          else
+            echo "⚠️ Homepage may still be cached or FTP pending"
           fi
+          body=$(curl -sS --max-time 25 "https://apptesting.in/builder.html" || true)
           if echo "$body" | grep -q "const \$\$="; then
-            echo "nova-builder full app is live"
+            echo "✅ builder.html is live"
             exit 0
           fi
           echo "builder.html still outdated — check FTP"
