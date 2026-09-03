@@ -7,7 +7,15 @@ import os
 import sys
 from pathlib import Path
 
-HOST = os.environ.get("APPTESTING_FTP_HOST", os.environ.get("HOSTINGER_FTP_HOST", "145.79.213.39"))
+def env_first(*keys: str, default: str = "") -> str:
+    for key in keys:
+        value = (os.environ.get(key) or "").strip()
+        if value:
+            return value
+    return default
+
+
+HOST = env_first("APPTESTING_FTP_HOST", "HOSTINGER_FTP_HOST", default="145.79.213.39")
 ROOT = Path(__file__).resolve().parents[2]
 DIST = ROOT / "dist"
 
@@ -32,16 +40,13 @@ def unique(items: list[str | None]) -> list[str]:
 
 def credential_pairs() -> list[tuple[str, str]]:
     users = unique([
-        os.environ.get("APPTESTING_FTP_USER"),
+        env_first("APPTESTING_FTP_USER", "HOSTINGER_FTP_USER"),
         "u776633649.apptesting.in",
         "u169457691.apptesting.in",
     ])
     users = [u for u in users if "apptesting.in" in u]
     passwords = unique([
-        os.environ.get("APPTESTING_FTP_PASS"),
-        os.environ.get("APPTESTING_FTP_PASSWORD"),
-        os.environ.get("HOSTINGER_PASS"),
-        os.environ.get("HOSTINGER_PASSWORD"),
+        env_first("APPTESTING_FTP_PASS", "APPTESTING_FTP_PASSWORD", "HOSTINGER_PASS", "HOSTINGER_PASSWORD"),
     ])
     if not users or not passwords:
         return []
