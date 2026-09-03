@@ -47,9 +47,10 @@
   @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .drawer-collapsed{width:0!important;padding:0!important;border:0!important;overflow:hidden!important;opacity:0}
 </style>
+<link rel="stylesheet" href="assets/aurora-responsive.css" />
 </head>
-<body class="antialiased">
-<div class="relative z-10 flex h-screen w-screen flex-col gap-2.5 p-2.5">
+<body class="antialiased obsidian-app">
+<div class="obsidian-shell relative z-10 flex h-screen w-screen flex-col gap-2.5 p-2.5">
 
   <!-- ══════════════ TOP BAR ══════════════ -->
   <header class="glass flex shrink-0 items-center gap-2.5 rounded-2xl px-3.5 py-2.5">
@@ -72,14 +73,15 @@
       <button id="zoomFit" class="tr chip rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">FIT</button>
     </div>
     <span class="mx-1 h-7 w-px bg-white/10"></span>
-    <label class="flex cursor-pointer items-center gap-1.5 text-[11px] text-slate-400">
+    <label class="obsidian-hide-tablet flex cursor-pointer items-center gap-1.5 text-[11px] text-slate-400">
       <input id="snapToggle" type="checkbox" checked class="accent-cyan-400" /> Smart guides
     </label>
-    <div class="ml-auto flex items-center gap-2">
-      <select id="expFormat" class="fld w-24">
+    <button id="toggleRight" type="button" class="aurora-mobile-only tr items-center justify-center rounded-xl chip px-2.5 py-1.5 text-[12px]" title="Toggle inspector">◨</button>
+    <div class="ml-auto flex flex-wrap items-center gap-2">
+      <select id="expFormat" class="fld obsidian-hide-mobile w-24">
         <option value="png">PNG</option><option value="jpeg">JPEG</option><option value="svg">SVG</option><option value="json">JSON</option>
       </select>
-      <select id="expScale" class="fld w-28">
+      <select id="expScale" class="fld obsidian-hide-mobile w-28">
         <option value="1">1× Screen</option>
         <option value="2">2× Retina</option>
         <option value="3" selected>3× Print</option>
@@ -93,7 +95,7 @@
   <div class="flex min-h-0 flex-1 gap-2.5">
 
     <!-- rail -->
-    <nav class="glass flex w-[62px] shrink-0 flex-col items-center gap-1.5 rounded-2xl py-3">
+    <nav class="obsidian-rail glass flex w-[62px] shrink-0 flex-col items-center gap-1.5 rounded-2xl py-3">
       <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="templates" title="Templates">▦</button>
       <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="text" title="Text">T</button>
       <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="shapes" title="Shapes">◆</button>
@@ -129,7 +131,7 @@
     </main>
 
     <!-- RIGHT inspector -->
-    <aside class="glass flex w-[320px] shrink-0 flex-col rounded-2xl p-3">
+    <aside id="rightInspector" class="glass flex w-[320px] shrink-0 flex-col rounded-2xl p-3">
       <div class="flex items-center justify-between px-1 pb-2">
         <p class="text-[10px] font-bold uppercase tracking-[.2em] text-slate-500">Inspector</p>
         <span class="rounded-md bg-cyan-400/15 px-2 py-0.5 text-[9px] font-bold tracking-widest text-cyan-300">PRO</span>
@@ -148,6 +150,7 @@
     </aside>
   </div>
 </div>
+<div class="aurora-panel-overlay" aria-hidden="true"></div>
 
 <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" multiple class="hidden" />
 <div id="toast" class="glass pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full px-5 py-2.5 text-[12px] font-semibold opacity-0 transition-opacity duration-300"></div>
@@ -2579,5 +2582,6 @@ function boot(){
 document.fonts ? document.fonts.ready.then(boot) : boot();
 window.addEventListener('resize',()=>{ CTX.update(); });
 </script>
+<script src="assets/aurora-responsive.js"></script>
 </body>
 </html>

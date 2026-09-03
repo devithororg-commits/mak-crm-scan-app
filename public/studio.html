@@ -75,9 +75,10 @@ tailwind.config = {
   .tt{position:relative}
   .tt:hover::after{content:attr(data-tt);position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:#0a1424;color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:60}
 </style>
+<link rel="stylesheet" href="assets/aurora-responsive.css" />
 </head>
-<body class="font-body">
-<div class="relative z-10 flex h-screen w-screen flex-col">
+<body class="font-body studio-app">
+<div class="studio-shell relative z-10 flex h-screen w-screen flex-col">
 
   <!-- ══ HEADER ══ -->
   <header class="glass-dark m-3 mb-0 flex shrink-0 items-center gap-3 rounded-2xl px-3 py-2 text-white">
@@ -111,10 +112,10 @@ tailwind.config = {
       <span id="syncChip" class="hidden items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1.5 text-[10px] font-semibold text-navy-100 md:flex">
         <i id="syncDot" class="h-1.5 w-1.5 rounded-full bg-emerald-400"></i><span id="syncTxt">Cloud synced</span>
       </span>
-      <button id="btnDesigns" class="dock-btn rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-navy-100">☁ My Designs</button>
+      <button id="btnDesigns" class="dock-btn studio-hide-mobile rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-navy-100">☁ My Designs</button>
       <button id="btnSave" class="dock-btn rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-navy-100">💾 Save</button>
-      <button id="tglLeft" class="dock-btn hidden rounded-lg px-2.5 py-1.5 text-[11px] text-navy-100 lg:block">◧ Library</button>
-      <button id="tglRight" class="dock-btn hidden rounded-lg px-2.5 py-1.5 text-[11px] text-navy-100 lg:block">Inspector ◨</button>
+      <button id="tglLeft" class="dock-btn flex rounded-lg px-2.5 py-1.5 text-[11px] text-navy-100">◧ <span class="studio-hide-mobile ml-1">Library</span></button>
+      <button id="tglRight" class="dock-btn flex rounded-lg px-2.5 py-1.5 text-[11px] text-navy-100"><span class="studio-hide-mobile mr-1">Inspector</span>◨</button>
       <div class="relative">
         <button id="btnExport" class="tr flex items-center gap-2 rounded-xl bg-gradient-to-r from-flame-500 to-flame-400 px-4 py-2 text-[12px] font-bold text-white glow hover:brightness-110">Export ▾</button>
         <div id="expMenu" class="glass absolute right-0 top-11 z-50 hidden w-72 rounded-2xl p-2 text-navy-700 panel-enter">
@@ -139,10 +140,10 @@ tailwind.config = {
   </header>
 
   <!-- ══ BODY ══ -->
-  <div class="flex min-h-0 flex-1 gap-3 p-3">
+  <div class="studio-body flex min-h-0 flex-1 gap-3 p-3">
 
     <!-- rail -->
-    <nav class="glass-dark flex w-14 shrink-0 flex-col items-center gap-1.5 rounded-2xl py-3">
+    <nav class="studio-rail glass-dark flex w-14 shrink-0 flex-col items-center gap-1.5 rounded-2xl py-3">
       <button data-tab="templates" class="dock-btn tt active grid h-10 w-10 place-items-center rounded-xl text-navy-100" data-tt="Templates">▦</button>
       <button data-tab="text"      class="dock-btn tt grid h-10 w-10 place-items-center rounded-xl text-navy-100 font-display font-bold" data-tt="Typography">T</button>
       <button data-tab="elements"  class="dock-btn tt grid h-10 w-10 place-items-center rounded-xl text-navy-100" data-tt="Elements">◈</button>
@@ -277,6 +278,7 @@ tailwind.config = {
     </aside>
   </div>
 </div>
+<div class="aurora-panel-overlay" aria-hidden="true"></div>
 
 <input id="fileInput" type="file" accept="image/*" multiple class="hidden" />
 
@@ -2284,7 +2286,7 @@ function wireInspector(o){
   on('#pDash','input',live(v=>o.set('strokeDashArray',+v?[+v,+v]:null)));
   const shadow=()=>{o.set('shadow',new fabric.Shadow({offsetX:+$('#pSX').value,offsetY:+$('#pSY').value,blur:+$('#pSB').value,color:$('#pSC').value}));canvas.requestRenderAll()};
   ['#pSX','#pSY','#pSB','#pSC'].forEach(i=>on(i,'input',shadow));
-  $$('[data-glow]').forEach(b=>b.addEventListener('click',()=>{
+  $$('#inspBody [data-glow]').forEach(b=>b.addEventListener('click',()=>{
     const k=b.dataset.glow;
     const presets={neon:{offsetX:0,offsetY:0,blur:55,color:'#ff7a18'},ice:{offsetX:0,offsetY:0,blur:48,color:'#7dd3fc'},inner:{offsetX:0,offsetY:0,blur:26,color:'rgba(10,20,36,.85)'}};
     o.set('shadow',k==='none'?null:new fabric.Shadow(presets[k]));
@@ -2605,8 +2607,21 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-$('#tglLeft').onclick=()=>$('#leftPanel').classList.toggle('collapsed');
-$('#tglRight').onclick=()=>$('#rightPanel').classList.toggle('collapsed');
+function toggleStudioPanel(side){
+  const mobile=window.matchMedia('(max-width:1023px)').matches;
+  if(mobile){
+    const leftOn=side==='left'?document.body.classList.toggle('studio-panel-left'):false;
+    const rightOn=side==='right'?document.body.classList.toggle('studio-panel-right'):false;
+    if(side==='left'&&document.body.classList.contains('studio-panel-left'))document.body.classList.remove('studio-panel-right');
+    if(side==='right'&&document.body.classList.contains('studio-panel-right'))document.body.classList.remove('studio-panel-left');
+    document.body.classList.toggle('aurora-panel-open',document.body.classList.contains('studio-panel-left')||document.body.classList.contains('studio-panel-right'));
+  }else{
+    if(side==='left')$('#leftPanel').classList.toggle('collapsed');
+    else $('#rightPanel').classList.toggle('collapsed');
+  }
+}
+$('#tglLeft').onclick=()=>toggleStudioPanel('left');
+$('#tglRight').onclick=()=>toggleStudioPanel('right');
 window.addEventListener('resize',()=>{drawRulers();paintGrid()});
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();saveDesign('Aurora Poster '+new Date().toLocaleTimeString())}
@@ -2752,19 +2767,9 @@ document.addEventListener('keydown',e=>{
   const mod=e.ctrlKey||e.metaKey, k=e.key.toLowerCase();
   if(mod&&k==='c'){e.preventDefault();copySel()}
   else if(mod&&k==='v'){e.preventDefault();pasteClip()}
-  else if(mod&&k==='d'){e.preventDefault();duplicateSel()}
-  else if(mod&&k==='g'){e.preventDefault();groupSel()}
   else if(mod&&k==='a'){e.preventDefault();canvas.discardActiveObject();
     const s=new fabric.ActiveSelection(canvas.getObjects().filter(x=>x.selectable!==false),{canvas});
     canvas.setActiveObject(s);canvas.requestRenderAll()}
-  else if((e.key==='Delete'||e.key==='Backspace')&&o){e.preventDefault();
-    many(o)?o.forEachObject(x=>canvas.remove(x)):canvas.remove(o); canvas.discardActiveObject(); done()}
-  else if(e.key.startsWith('Arrow')&&o){
-    e.preventDefault(); const d=e.shiftKey?10:1;
-    if(e.key==='ArrowLeft')o.left-=d; if(e.key==='ArrowRight')o.left+=d;
-    if(e.key==='ArrowUp')o.top-=d;   if(e.key==='ArrowDown')o.top+=d;
-    o.setCoords(); canvas.requestRenderAll(); clearTimeout(window._nudge); window._nudge=setTimeout(snapshot,400);
-  }
 });
 
 /* ══════════════ B. TEXT & EFFECTS ══════════════ */
@@ -3117,5 +3122,6 @@ renderPins();
 readOnlyBoot();
 })();
 </script>
+<script src="assets/aurora-responsive.js"></script>
 </body>
 </html>

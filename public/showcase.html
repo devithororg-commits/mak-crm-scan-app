@@ -49,6 +49,7 @@ tailwind.config = {
   .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent)}
   table td,table th{transition:background .22s ease}
 </style>
+<link rel="stylesheet" href="assets/aurora-responsive.css" />
 </head>
 <body class="antialiased">
 <div class="relative z-10">
@@ -67,9 +68,19 @@ tailwind.config = {
       </div>
       <div class="ml-auto flex items-center gap-2">
         <a href="/builder.html" class="tr hidden rounded-xl border border-white/10 px-3.5 py-2 text-[12px] font-semibold text-mist-200 hover:border-volt-400/60 hover:text-volt-300 sm:block">Page Builder</a>
-        <a href="#compare" class="tr cta-glow rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[12px] font-bold text-ink-900 hover:brightness-110">Configure</a>
+        <a href="#compare" class="tr cta-glow hidden rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[12px] font-bold text-ink-900 hover:brightness-110 sm:inline-flex">Configure</a>
+        <button id="showcaseMenuBtn" type="button" class="showcase-mobile-only tr grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-mist-200" aria-label="Menu">☰</button>
       </div>
     </nav>
+    <div id="showcaseMobileMenu" class="showcase-mobile-menu glass border-x-0 border-t-0 md:hidden">
+      <nav class="flex flex-col gap-1 px-5 pb-4 text-[13px]">
+        <a class="tr rounded-lg px-3 py-2.5 text-mist-300 hover:bg-white/5" href="#specs">Specifications</a>
+        <a class="tr rounded-lg px-3 py-2.5 text-mist-300 hover:bg-white/5" href="#compare">Compare</a>
+        <a class="tr rounded-lg px-3 py-2.5 text-mist-300 hover:bg-white/5" href="#features">Features</a>
+        <a href="/builder.html" class="tr mt-1 rounded-xl border border-white/10 px-4 py-3 text-center font-semibold text-mist-200">Page Builder</a>
+        <a href="#compare" class="tr mt-1 rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-3 text-center font-bold text-ink-900">Configure</a>
+      </nav>
+    </div>
   </header>
 
   <!-- ══════════ HERO — split screen ══════════ -->
@@ -127,6 +138,7 @@ tailwind.config = {
         <h2 class="mt-2 text-[30px] font-black tracking-tight sm:text-[38px]">Compare the line-up</h2>
       </div>
       <!-- Toggle: highlight column (JS-driven, DB-friendly indices) -->
+      <div class="showcase-hl-wrap">
       <div class="glass-soft flex items-center gap-1 rounded-2xl p-1.5">
         <span class="px-2 text-[11px] font-semibold uppercase tracking-wider text-mist-400">Highlight</span>
         <button class="hl-btn tr rounded-xl px-3 py-1.5 text-[12px] font-semibold text-mist-300 hover:text-mist-100" data-col="1">Core</button>
@@ -134,10 +146,12 @@ tailwind.config = {
         <button class="hl-btn tr rounded-xl px-3 py-1.5 text-[12px] font-semibold text-mist-300 hover:text-mist-100" data-col="3">Performance</button>
         <button class="hl-btn tr rounded-xl px-3 py-1.5 text-[12px] font-semibold text-mist-300 hover:text-mist-100" data-col="4">Signature</button>
       </div>
+      </div>
     </div>
 
     <!-- Clean semantic table => trivially rendered from a MySQL result set -->
     <div class="reveal glass overflow-hidden rounded-[1.75rem]">
+      <div class="showcase-scroll-hint">← Swipe table to compare variants →</div>
       <div class="overflow-x-auto">
         <table id="specTable" class="w-full min-w-[820px] border-collapse text-left">
           <caption class="sr-only">VOLTA X variant specification comparison</caption>
@@ -312,5 +326,6 @@ const statIO = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .5 });
 document.querySelectorAll('[data-count]').forEach(el => statIO.observe(el));
 </script>
+<script src="assets/aurora-responsive.js"></script>
 </body>
 </html>

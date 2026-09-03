@@ -1,0 +1,206 @@
+/* Aurora Studio — shared responsive layer (all screen sizes) */
+
+.aurora-panel-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  background: rgba(2, 6, 23, .52);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity .28s ease;
+  pointer-events: none;
+}
+body.aurora-panel-open .aurora-panel-overlay {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.aurora-mobile-only { display: none !important; }
+.aurora-desktop-only { display: revert; }
+
+/* ── Landing (index.html) ── */
+@media (max-width: 639px) {
+  .hero-scene { height: 300px !important; overflow: hidden; }
+  .float-card-1, .float-card-2, .float-card-4 { display: none; }
+  .float-card-3 {
+    width: 72px !important;
+    height: 72px !important;
+    bottom: 8% !important;
+    left: 6% !important;
+    opacity: .85;
+  }
+  .hero-main-card {
+    width: min(78vw, 200px) !important;
+    transform: translateZ(60px) rotateX(2deg) !important;
+  }
+  .hero-3d-wrap { animation: none; }
+}
+@media (max-width: 380px) {
+  .hero-scene { height: 260px !important; }
+  .float-card-3 { display: none; }
+  .hero-main-card { width: 86vw !important; }
+}
+
+/* ── NOVA Builder ── */
+@media (max-width: 1024px) {
+  .nova-compact-toolbar .nova-hide-lg { display: none !important; }
+}
+@media (max-width: 768px) {
+  .aurora-mobile-only { display: inline-flex !important; }
+  .aurora-desktop-only.nova-hide-mobile { display: none !important; }
+
+  body.nova-app { overflow: auto; }
+  body.nova-app .nova-shell { height: auto; min-height: 100dvh; }
+
+  body.nova-app #libPanel,
+  body.nova-app #inspPanel {
+    position: fixed;
+    z-index: 90;
+    top: 4.75rem;
+    bottom: .75rem;
+    width: min(88vw, 18rem) !important;
+    transform: translateX(-112%);
+    transition: transform .32s cubic-bezier(.22, 1, .36, 1);
+    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .85);
+  }
+  body.nova-app #inspPanel {
+    right: .75rem;
+    left: auto;
+    transform: translateX(112%);
+  }
+  body.nova-app.panel-left-open #libPanel { transform: none; }
+  body.nova-app.panel-right-open #inspPanel { transform: none; }
+  body.nova-app #canvasWrap { min-height: 58dvh; }
+
+  .nova-header-actions { flex-wrap: wrap; gap: .35rem; }
+  .nova-header-actions .nova-action-secondary { display: none; }
+}
+
+@media (max-width: 480px) {
+  body.nova-app #deviceGroup { display: none; }
+  body.nova-app .nova-header-brand p:last-child { display: none; }
+}
+
+/* ── AURORA Studio ── */
+@media (max-width: 1023px) {
+  body.studio-app { overflow: auto; }
+  body.studio-app .studio-shell { height: auto; min-height: 100dvh; }
+
+  body.studio-app #leftPanel,
+  body.studio-app #rightPanel {
+    position: fixed !important;
+    z-index: 90;
+    top: 5.25rem;
+    bottom: .75rem;
+    width: min(88vw, 20rem) !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    transition: transform .32s cubic-bezier(.22, 1, .36, 1);
+    box-shadow: 0 24px 60px -20px rgba(16, 29, 54, .45);
+  }
+  body.studio-app #leftPanel {
+    left: .75rem;
+    transform: translateX(-112%);
+  }
+  body.studio-app #rightPanel {
+    right: .75rem;
+    left: auto;
+    transform: translateX(112%);
+  }
+  body.studio-app #leftPanel.collapsed,
+  body.studio-app #rightPanel.collapsed {
+    width: min(88vw, 20rem) !important;
+    min-width: 0 !important;
+    padding: initial !important;
+    border: initial !important;
+    overflow: hidden !important;
+  }
+  body.studio-app.studio-panel-left #leftPanel { transform: none !important; }
+  body.studio-app.studio-panel-right #rightPanel { transform: none !important; }
+
+  body.studio-app .studio-rail { width: 3rem; }
+  body.studio-app .studio-rail .dock-btn { height: 2.25rem; width: 2.25rem; font-size: .85rem; }
+  body.studio-app .studio-hide-tablet { display: none !important; }
+  body.studio-app header.glass-dark { flex-wrap: wrap; gap: .5rem; margin: .5rem; padding: .5rem .65rem; }
+  body.studio-app #zoomRange { width: 4.5rem; }
+}
+
+@media (max-width: 640px) {
+  body.studio-app .studio-hide-mobile { display: none !important; }
+  body.studio-app .studio-rail { display: none; }
+  body.studio-app .studio-body { padding: .5rem; gap: .5rem; }
+}
+
+/* ── Obsidian Pro ── */
+@media (max-width: 1023px) {
+  body.obsidian-app { overflow: auto; }
+  body.obsidian-app .obsidian-shell { height: auto; min-height: 100dvh; }
+  body.obsidian-app #toggleRight { display: inline-flex !important; align-items: center; justify-content: center; }
+
+  body.obsidian-app #leftDrawer {
+    position: fixed !important;
+    z-index: 90;
+    top: 4.75rem;
+    bottom: .75rem;
+    left: .75rem;
+    width: min(88vw, 18rem) !important;
+    transform: translateX(-112%);
+    transition: transform .32s cubic-bezier(.22, 1, .36, 1);
+    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .9);
+  }
+  body.obsidian-app #leftDrawer:not(.drawer-collapsed) { transform: none; }
+  body.obsidian-app #leftDrawer.drawer-collapsed { transform: translateX(-112%); }
+
+  body.obsidian-app #rightInspector {
+    position: fixed !important;
+    z-index: 90;
+    top: 4.75rem;
+    bottom: .75rem;
+    right: .75rem;
+    width: min(88vw, 18rem) !important;
+    transform: translateX(112%);
+    transition: transform .32s cubic-bezier(.22, 1, .36, 1);
+    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .9);
+  }
+  body.obsidian-app.obsidian-panel-right #rightInspector { transform: none; }
+
+  body.obsidian-app .obsidian-rail { width: 3rem; }
+  body.obsidian-app .obsidian-rail .railBtn { height: 2.35rem; width: 2.35rem; font-size: .9rem; }
+  body.obsidian-app .obsidian-hide-tablet { display: none !important; }
+  body.obsidian-app header.glass { flex-wrap: wrap; }
+}
+
+@media (max-width: 640px) {
+  body.obsidian-app .obsidian-rail { display: none; }
+  body.obsidian-app .obsidian-hide-mobile { display: none !important; }
+  body.obsidian-app #stagePad { padding: 1rem !important; }
+}
+
+/* ── VOLTA Showcase ── */
+@media (max-width: 767px) {
+  .showcase-mobile-only { display: grid !important; }
+  .showcase-mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  .showcase-mobile-menu.open { max-height: 360px; }
+  .showcase-hl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .showcase-hl-wrap .glass-soft { flex-wrap: nowrap; min-width: max-content; }
+  .showcase-scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .5rem 1rem;
+    font-size: 10px;
+    color: rgba(147, 161, 196, .9);
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+  }
+}
+@media (min-width: 768px) {
+  .showcase-scroll-hint { display: none; }
+  .showcase-mobile-only { display: none !important; }
+}

@@ -80,7 +80,7 @@ tailwind.config = { theme: { extend: {
   .layer-row.active{background:rgba(53,226,200,.12);border-color:rgba(53,226,200,.35)}
   [contenteditable]:focus{outline:2px dashed rgba(53,226,200,.55);outline-offset:3px;border-radius:6px}
   .export-menu{opacity:0;visibility:hidden;transform:translateY(-6px);transition:.2s}
-  .export-wrap:focus-within .export-menu,.export-wrap:hover .export-menu{opacity:1;visibility:visible;transform:none}
+  .export-wrap:focus-within .export-menu,.export-wrap:hover .export-menu,.export-wrap.export-open .export-menu{opacity:1;visibility:visible;transform:none}
   .faq-panel{max-height:0;overflow:hidden;transition:max-height .35s ease}
   .faq-item.open .faq-panel{max-height:400px}
   .faq-item.open .faq-chev{transform:rotate(180deg)}
@@ -181,21 +181,14 @@ tailwind.config = { theme: { extend: {
   body.preview #deviceFrame.is-sim{border:none;box-shadow:none;background:transparent}
   body.preview #deviceScaler{transform:none!important}
   @media(max-width:1024px){#libPanel,#inspPanel{width:14rem}}
-  @media(max-width:768px){
-    body{overflow:auto}
-    .relative.z-10.flex.h-screen{height:auto;min-height:100dvh}
-    #libPanel,#inspPanel{position:fixed;z-index:90;top:4.5rem;bottom:.75rem;width:min(88vw,18rem);transform:translateX(-110%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
-    #inspPanel{right:.75rem;left:auto;transform:translateX(110%)}
-    body.panel-left-open #libPanel{transform:none}
-    body.panel-right-open #inspPanel{transform:none}
-    #canvasWrap{min-height:60dvh}
-  }
 </style>
+<link rel="stylesheet" href="assets/aurora-responsive.css" />
 </head>
-<body class="antialiased">
-<div class="relative z-10 flex h-screen w-screen flex-col gap-3 p-3">
-  <header class="glass top-tools flex shrink-0 flex-wrap items-center gap-2 rounded-2xl px-4 py-2.5">
-    <div class="flex items-center gap-2.5">
+<body class="antialiased nova-app">
+<div class="nova-shell relative z-10 flex h-screen w-screen flex-col gap-3 p-3">
+  <header class="glass top-tools nova-compact-toolbar flex shrink-0 flex-wrap items-center gap-2 rounded-2xl px-4 py-2.5">
+    <button id="btnPanelLeft" type="button" class="aurora-mobile-only tr items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] font-semibold text-volt-300" aria-label="Open library">☰</button>
+    <div class="nova-header-brand flex items-center gap-2.5">
       <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-volt-400 to-volt-600 text-[15px] font-black text-ink-900">N</span>
       <div class="leading-tight">
         <p class="text-[13px] font-extrabold tracking-tight">NOVA<span class="text-volt-400">.</span>BUILDER</p>
@@ -214,18 +207,19 @@ tailwind.config = { theme: { extend: {
       <button data-dev="mobile" class="dev-btn tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Mobile</button>
     </div>
     <span class="h-7 w-px bg-white/10"></span>
-    <button id="btnGrid" class="tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">Grid</button>
-    <span id="blockCount" class="rounded-lg bg-white/6 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">0 blocks</span>
+    <button id="btnGrid" class="nova-hide-lg tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">Grid</button>
+    <span id="blockCount" class="nova-hide-lg rounded-lg bg-white/6 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">0 blocks</span>
     <div id="collabBadge" class="collab-badge hidden">
       <span id="collabDot" class="collab-dot"></span>
       <span id="collabStatus">Offline</span>
     </div>
     <button id="btnCloudQuick" class="tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] text-mist-300 hover:border-volt-400/50" title="Cloud save">☁</button>
-    <div class="ml-auto flex flex-wrap items-center gap-2">
-      <button id="btnClear" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-rose-400/50 hover:text-rose-300">Clear slide</button>
+    <button id="btnPanelRight" type="button" class="aurora-mobile-only tr items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] font-semibold text-volt-300" aria-label="Open inspector">◨</button>
+    <div class="nova-header-actions ml-auto flex flex-wrap items-center gap-2">
+      <button id="btnClear" class="nova-action-secondary tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-rose-400/50 hover:text-rose-300">Clear slide</button>
       <button id="btnSave" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-volt-400/60 hover:text-volt-300">Save</button>
-      <button id="btnPreview" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-200">Preview</button>
-      <button id="btnPresent" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-200">Present</button>
+      <button id="btnPreview" class="nova-action-secondary tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-200">Preview</button>
+      <button id="btnPresent" class="nova-action-secondary tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-200">Present</button>
       <div class="export-wrap relative">
         <button id="btnExport" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[12px] font-bold text-ink-900">Export ▾</button>
         <div class="export-menu glass absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-xl p-1">
@@ -288,6 +282,7 @@ tailwind.config = { theme: { extend: {
     </aside>
   </div>
 </div>
+<div class="aurora-panel-overlay" aria-hidden="true"></div>
 <button id="exitPreview" class="glass tr fixed bottom-5 left-1/2 z-50 hidden -translate-x-1/2 rounded-full px-5 py-2.5 text-[12px] font-bold text-volt-300">✕ Exit preview</button>
 <button id="exitPresent" class="glass tr fixed bottom-5 left-1/2 z-[110] hidden -translate-x-1/2 rounded-full px-5 py-2.5 text-[12px] font-bold text-volt-300">✕ Exit present (← → navigate)</button>
 <div id="aiModal" class="fixed inset-0 z-[120] hidden grid place-items-center bg-black/70 p-4">
@@ -1252,6 +1247,14 @@ $('#rightPanel').addEventListener('input',e=>{
   }
 });
 
+$('#rightPanel').addEventListener('change',e=>{
+  if(e.target.id!=='importJsonFile') return;
+  const file=e.target.files?.[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{ try{ restoreSnapshot(reader.result); persist(); }catch(_){ alert('Invalid JSON file'); } e.target.value=''; };
+  reader.readAsText(file);
+});
+
 $('#rightPanel').addEventListener('click',async e=>{
   const btn=e.target.closest('[data-act]'); if(btn) return act(btn.dataset.act,btn.dataset.target);
   if(e.target.id==='btnCmsSample'){ mutate(()=>{ state.cms.inline=JSON.stringify(CMS_SAMPLE,null,2); state.cms.data=CMS_SAMPLE; }); renderCMS(); }
@@ -1323,7 +1326,17 @@ $('#exitPresent').addEventListener('click',()=>setPresent(false));
 $('#btnSave').addEventListener('click',()=>{ persist(); const b=$('#btnSave'),t=b.textContent; b.textContent='✓ Saved'; setTimeout(()=>b.textContent=t,1400); });
 $('#btnClear').addEventListener('click',()=>{ if(confirm('Clear all blocks on this slide?')) commit(()=>{ currentPage().blocks=[]; selectedId=null; }); });
 $('#btnCloudQuick').addEventListener('click',async()=>{ rightTab='cloud'; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.rtab==='cloud')); await saveCloudVersion(); const b=$('#btnCloudQuick'); b.textContent='✓'; setTimeout(()=>b.textContent='☁',1200); });
-$$('[data-export]').forEach(btn=>btn.addEventListener('click',()=>{ if(btn.dataset.export==='html') exportHTML(); if(btn.dataset.export==='json') exportJSON(); if(btn.dataset.export==='png') exportPNG(); if(btn.dataset.export==='pdf') exportPDF(); if(btn.dataset.export==='share') exportShareState(); }));
+$('#btnExport')?.addEventListener('click',e=>{
+  e.stopPropagation();
+  const wrap=e.currentTarget.closest('.export-wrap');
+  if(!wrap) return;
+  const open=wrap.classList.toggle('export-open');
+  if(open) document.querySelectorAll('.export-wrap.export-open').forEach(w=>{ if(w!==wrap) w.classList.remove('export-open'); });
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.export-wrap')) document.querySelectorAll('.export-wrap.export-open').forEach(w=>w.classList.remove('export-open'));
+});
+$$('[data-export]').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.export-wrap.export-open').forEach(w=>w.classList.remove('export-open')); if(btn.dataset.export==='html') exportHTML(); if(btn.dataset.export==='json') exportJSON(); if(btn.dataset.export==='png') exportPNG(); if(btn.dataset.export==='pdf') exportPDF(); if(btn.dataset.export==='share') exportShareState(); }));
 $('#aiCancel').addEventListener('click',()=>$('#aiModal').classList.add('hidden'));
 $('#aiGenerate').addEventListener('click',generateAIDeck);
 
@@ -1365,13 +1378,8 @@ try{
   renderAll();
   $('#leftPanel').innerHTML=`<div class="rounded-xl border border-rose-400/30 bg-rose-500/10 p-3 text-[11px] text-rose-200">Builder recovered from an error. Demo deck loaded — refresh if panels stay empty.</div>`;
 }
-$('#importJsonFile')?.addEventListener('change',e=>{
-  const file=e.target.files?.[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=()=>{ try{ restoreSnapshot(reader.result); persist(); }catch(_){ alert('Invalid JSON file'); } e.target.value=''; };
-  reader.readAsText(file);
-});
 
 </script>
+<script src="assets/aurora-responsive.js"></script>
 </body>
 </html>
