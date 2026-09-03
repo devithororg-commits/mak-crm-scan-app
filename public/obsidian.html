@@ -50,6 +50,7 @@
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
 <link rel="stylesheet" href="assets/aurora-controls.css" />
 <link rel="stylesheet" href="assets/aurora-toolhub.css" />
+<link rel="stylesheet" href="assets/aurora-pro.css" />
 <script src="assets/aurora-controls.js"></script>
 <script src="assets/aurora-toolhub.js"></script>
 </head>
@@ -126,7 +127,7 @@
       </div>
 
       <!-- floating context toolbar -->
-      <div id="ctxBar" class="glass fadein pointer-events-none absolute left-1/2 top-4 z-30 hidden -translate-x-1/2 items-center gap-1.5 rounded-2xl px-2.5 py-2"></div>
+      <div id="ctxBar" class="glass fadein absolute left-1/2 top-4 z-30 hidden -translate-x-1/2 items-center gap-1.5 rounded-2xl px-2.5 py-2" style="pointer-events:auto"></div>
 
       <!-- status pill -->
       <div class="glass-2 pointer-events-none absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full px-4 py-1.5 text-[11px] text-slate-400">
@@ -268,7 +269,7 @@ const ENGINE = {
   /* ── history ── */
   snapshot(){
     if(STATE.hLock) return;
-    const json = JSON.stringify(canvas.toDatalessJSON(['objectName','name','locked','selectable','evented']));
+    const json = JSON.stringify(canvas.toDatalessJSON(['objectName','name','locked','selectable','evented','blendMode']));
     STATE.history = STATE.history.slice(0, STATE.hIndex+1);
     STATE.history.push(json);
     if(STATE.history.length>60) STATE.history.shift();
@@ -2430,6 +2431,7 @@ const CTX = {
     if(!o){ bar.classList.add('hidden'); return; }
     const isText = o.type==='textbox'||o.type==='i-text';
     bar.className = 'glass fadein absolute z-30 flex items-center gap-1.5 rounded-2xl px-2.5 py-2';
+    bar.style.pointerEvents = 'auto';
     bar.innerHTML = `
       ${isText?`<select class="fld w-32" data-c="font">${Object.values(FONTS).flat().map(f=>`<option ${o.fontFamily===f?'selected':''}>${f}</option>`).join('')}</select>
       <input class="fld w-14" value="${Math.round(o.fontSize)}" data-c="size" />
@@ -2621,6 +2623,7 @@ AuroraToolHub.init({
   ]
 });
 </script>
+<script src="assets/aurora-pro.js"></script>
 <script src="assets/aurora-responsive.js"></script>
 </body>
 </html>

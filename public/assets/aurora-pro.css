@@ -1,0 +1,42 @@
+/* Aurora Pro — visual enhancements */
+
+.pro-badge {
+  display: inline-block;
+  margin-left: .35rem;
+  padding: .1rem .35rem;
+  border-radius: .25rem;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  background: linear-gradient(135deg, rgba(34, 211, 238, .25), rgba(251, 146, 60, .2));
+  border: 1px solid rgba(34, 211, 238, .35);
+  color: #67e8f9;
+  vertical-align: middle;
+}
+
+#btnEyedropper.on {
+  border-color: rgba(34, 211, 238, .65) !important;
+  background: rgba(34, 211, 238, .15) !important;
+  color: #a5f3fc !important;
+  box-shadow: 0 0 16px -4px rgba(34, 211, 238, .6);
+}
+
+#proAlignExtra .chip:hover {
+  border-color: rgba(34, 211, 238, .45);
+}
+
+.pro-brand-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .5rem;
+}
+.pro-brand-swatch {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: .4rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.pro-brand-swatch:hover { transform: scale(1.12); }
