@@ -1,56 +1,10 @@
-/* Aurora Pro Phase 2 — GIF export, 2D grid, video layers, PWA, onboarding */
+/* Aurora Pro Phase 2 — 2D grid, merge, PWA, onboarding */
 
 (function () {
   'use strict';
   if (!document.body.classList.contains('obsidian-app')) return;
 
-  var videoRaf = null;
   var ONBOARD_KEY = 'aurora-pro-onboarded.v1';
-
-  /* ── GIF Export ── */
-  function exportGif() {
-    if (typeof GIF === 'undefined') return toast('GIF library loading…');
-    toast('Generating GIF…');
-    if (window.AuroraPro && AuroraPro.commitPage) AuroraPro.commitPage();
-    var frames = 12;
-    var delay = 80;
-    var gif = new GIF({
-      workers: 2,
-      quality: 12,
-      workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
-    });
-    var objs = canvas.getObjects().filter(function (o) { return o.objectName !== '__guide'; });
-    var originals = objs.map(function (o) { return { o: o, op: o.opacity ?? 1 }; });
-
-    function captureFrame(i, cb) {
-      originals.forEach(function (x, idx) {
-        x.o.set('opacity', Math.min(1, (i / frames) + idx * 0.02));
-      });
-      canvas.requestRenderAll();
-      setTimeout(function () {
-        gif.addFrame(canvas.getElement(), { copy: true, delay: delay });
-        cb();
-      }, 40);
-    }
-
-    function next(i) {
-      if (i >= frames) {
-        originals.forEach(function (x) { x.o.set('opacity', x.op); });
-        canvas.requestRenderAll();
-        gif.on('finished', function (blob) {
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = 'aurora-animation.gif';
-          a.click();
-          toast('GIF exported');
-        });
-        gif.render();
-        return;
-      }
-      captureFrame(i, function () { next(i + 1); });
-    }
-    next(0);
-  }
 
   /* ── 2D Grid Auto Layout (Figma-style) ── */
   function gridLayout(cols, rows, gap) {
@@ -120,66 +74,6 @@
     }
   }
 
-  /* ── Video layer ── */
-  function addVideoLayer(file) {
-    if (!file || !file.type.startsWith('video/')) return toast('Select a video file');
-    var url = URL.createObjectURL(file);
-    var video = document.createElement('video');
-    video.src = url;
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.crossOrigin = 'anonymous';
-    video.onloadeddata = function () {
-      video.play();
-      var img = new fabric.Image(video, {
-        objectName: 'Video · ' + (file.name || 'clip'),
-        left: STATE.W / 2,
-        top: STATE.H / 2,
-        originX: 'center',
-        originY: 'center'
-      });
-      var maxW = STATE.W * 0.7;
-      if (img.width > maxW) img.scaleToWidth(maxW);
-      canvas.add(img);
-      canvas.setActiveObject(img);
-      startVideoRenderLoop();
-      ENGINE.snapshot();
-      LAYERS.render();
-      toast('Video added — plays on canvas');
-    };
-  }
-
-  function startVideoRenderLoop() {
-    if (videoRaf) return;
-    function tick() {
-      var hasVideo = canvas.getObjects().some(function (o) {
-        return o._element && o._element.tagName === 'VIDEO';
-      });
-      if (!hasVideo) { videoRaf = null; return; }
-      canvas.getObjects().forEach(function (o) {
-        if (o._element && o._element.tagName === 'VIDEO') o.dirty = true;
-      });
-      canvas.requestRenderAll();
-      videoRaf = requestAnimationFrame(tick);
-    }
-    videoRaf = requestAnimationFrame(tick);
-  }
-
-  function injectVideoUpload() {
-    if (document.getElementById('proVideoInput')) return;
-    var inp = document.createElement('input');
-    inp.id = 'proVideoInput';
-    inp.type = 'file';
-    inp.accept = 'video/mp4,video/webm,video/ogg';
-    inp.className = 'hidden';
-    document.body.appendChild(inp);
-    inp.onchange = function () {
-      if (inp.files[0]) addVideoLayer(inp.files[0]);
-      inp.value = '';
-    };
-  }
-
   /* ── Onboarding tour ── */
   function injectOnboarding() {
     if (document.getElementById('proOnboard')) return;
@@ -238,15 +132,13 @@
       '<button type="button" data-gl="2x2" class="tr chip rounded-lg px-2 py-1 text-[10px]">2×2</button>' +
       '<button type="button" data-gl="3x3" class="tr chip rounded-lg px-2 py-1 text-[10px]">3×3</button>' +
       '<button type="button" data-gl="4x2" class="tr chip rounded-lg px-2 py-1 text-[10px]">4×2</button>' +
-      '<button type="button" data-gl="merge" class="tr chip rounded-lg px-2 py-1 text-[10px]">⊕ Merge</button>' +
-      '<button type="button" data-gl="video" class="tr chip rounded-lg px-2 py-1 text-[10px]">▶ Video</button>';
+      '<button type="button" data-gl="merge" class="tr chip rounded-lg px-2 py-1 text-[10px]">⊕ Merge</button>';
     bp.insertAdjacentElement('afterend', bar);
     bar.addEventListener('click', function (e) {
       var b = e.target.closest('[data-gl]');
       if (!b) return;
       var k = b.dataset.gl;
       if (k === 'merge') return mergeSelection();
-      if (k === 'video') return document.getElementById('proVideoInput').click();
       var parts = k.split('x');
       gridLayout(+parts[0], +parts[1]);
     });
@@ -258,21 +150,6 @@
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js').catch(function () { /* offline optional */ });
     });
-  }
-
-  /* ── Patch export for GIF ── */
-  function patchExportGif() {
-    var fmt = document.getElementById('expFormat');
-    if (fmt && !fmt.querySelector('[value="gif"]')) {
-      fmt.insertAdjacentHTML('beforeend', '<option value="gif">GIF Animation</option>');
-    }
-    if (typeof EXPORT === 'undefined' || EXPORT._gifPatched) return;
-    var orig = EXPORT.run;
-    EXPORT.run = function () {
-      if (document.getElementById('expFormat').value === 'gif') return exportGif();
-      return orig.call(EXPORT);
-    };
-    EXPORT._gifPatched = true;
   }
 
   /* ── IndexedDB large design storage ── */
@@ -305,21 +182,17 @@
   function registerCommands() {
     if (!window.AuroraToolHub) return;
     AuroraToolHub.register([
-      { id: 'p2-gif', label: 'Export GIF animation', icon: '🎞', group: 'Export', quick: true, run: exportGif },
       { id: 'p2-grid-2', label: 'Grid layout 2×2', icon: '⊞', group: 'Layout', run: function () { gridLayout(2, 2); } },
       { id: 'p2-grid-3', label: 'Grid layout 3×3', icon: '⊞', group: 'Layout', run: function () { gridLayout(3, 3); } },
       { id: 'p2-merge', label: 'Merge shapes to image', icon: '⊕', group: 'Pro', run: mergeSelection },
-      { id: 'p2-video', label: 'Add video layer', icon: '▶', group: 'Pro', run: function () { document.getElementById('proVideoInput')?.click(); } },
       { id: 'p2-onboard', label: 'Show onboarding tour', icon: '?', group: 'Help', run: function () { localStorage.removeItem(ONBOARD_KEY); document.getElementById('proOnboard')?.classList.add('open'); } },
       { id: 'p2-idb', label: 'Save to device (IndexedDB)', icon: '💾', group: 'Pro', run: function () { idbSaveLarge(prompt('Name', 'Large design')); } }
     ]);
   }
 
   function init() {
-    injectVideoUpload();
     injectOnboarding();
     injectGridLayoutBar();
-    patchExportGif();
     registerPWA();
     registerCommands();
   }
@@ -331,9 +204,7 @@
   }
 
   window.AuroraProPhase2 = {
-    exportGif: exportGif,
     gridLayout: gridLayout,
-    mergeSelection: mergeSelection,
-    addVideoLayer: addVideoLayer
+    mergeSelection: mergeSelection
   };
 })();
