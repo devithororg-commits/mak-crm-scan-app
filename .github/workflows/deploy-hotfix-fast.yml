@@ -1,0 +1,49 @@
+name: Fast hotfix to apptesting.in
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'public/index.html'
+      - 'public/.htaccess'
+      - '.github/scripts/deploy-hotfix.py'
+  workflow_dispatch:
+
+concurrency:
+  group: apptesting-hotfix
+  cancel-in-progress: false
+
+jobs:
+  hotfix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Upload index + htaccess via FTP
+        env:
+          APPTESTING_FTP_HOST: ${{ secrets.APPTESTING_FTP_HOST }}
+          APPTESTING_FTP_USER: ${{ secrets.APPTESTING_FTP_USER }}
+          APPTESTING_FTP_PASS: ${{ secrets.APPTESTING_FTP_PASS }}
+          HOSTINGER_FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
+          HOSTINGER_FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
+          HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
+        run: python3 .github/scripts/deploy-hotfix.py
+
+      - name: Verify light theme live
+        run: |
+          sleep 5
+          home=$(curl -sS --max-time 25 "https://apptesting.in/?t=$(date +%s)" || true)
+          if echo "$home" | grep -q "f8fafc"; then
+            echo "✅ Light theme confirmed on apptesting.in"
+            exit 0
+          fi
+          echo "⚠️ Still serving old page — CDN may need a minute"
+          exit 0
