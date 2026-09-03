@@ -5,6 +5,7 @@ from __future__ import annotations
 import ftplib
 import os
 import sys
+import time
 from pathlib import Path
 
 def env_first(*keys: str, default: str = "") -> str:
@@ -38,6 +39,13 @@ def unique(items: list[str | None]) -> list[str]:
     return out
 
 
+HOST_FALLBACKS = unique([
+    HOST,
+    "ftp.apptesting.in",
+    "145.79.213.39",
+])
+
+
 def credential_pairs() -> list[tuple[str, str]]:
     users = unique([
         env_first("APPTESTING_FTP_USER", "HOSTINGER_FTP_USER"),
@@ -56,11 +64,20 @@ def credential_pairs() -> list[tuple[str, str]]:
 def connect_ftp(user: str, password: str) -> ftplib.FTP:
     if "apptesting.in" not in user:
         raise RuntimeError(f"Refusing non-apptesting FTP user: {user}")
-    ftp = ftplib.FTP(timeout=180)
-    ftp.connect(HOST, 21)
-    ftp.login(user, password)
-    ftp.set_pasv(True)
-    return ftp
+    errors: list[str] = []
+    for host in HOST_FALLBACKS:
+        for attempt in range(3):
+            try:
+                ftp = ftplib.FTP(timeout=300)
+                ftp.connect(host, 21, timeout=120)
+                ftp.login(user, password)
+                ftp.set_pasv(True)
+                print(f"  connected to {host} (attempt {attempt + 1})")
+                return ftp
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"{host}#{attempt + 1}: {exc}")
+                time.sleep(4 * (attempt + 1))
+    raise RuntimeError("FTP connect failed: " + "; ".join(errors[-4:]))
 
 
 def goto_webroot(ftp: ftplib.FTP, webroot: str) -> None:
