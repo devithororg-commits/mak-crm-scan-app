@@ -184,7 +184,9 @@ tailwind.config = { theme: { extend: {
 </style>
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
 <link rel="stylesheet" href="assets/aurora-controls.css" />
+<link rel="stylesheet" href="assets/aurora-toolhub.css" />
 <script src="assets/aurora-controls.js"></script>
+<script src="assets/aurora-toolhub.js"></script>
 </head>
 <body class="antialiased nova-app">
 <div class="nova-shell relative z-10 flex h-screen w-screen flex-col gap-3 p-3">
@@ -1388,6 +1390,54 @@ try{
   renderAll();
   $('#leftPanel').innerHTML=`<div class="rounded-xl border border-rose-400/30 bg-rose-500/10 p-3 text-[11px] text-rose-200">Builder recovered from an error. Demo deck loaded — refresh if panels stay empty.</div>`;
 }
+
+AuroraToolHub.init({
+  app: 'nova',
+  headerAnchor: '.nova-header-actions',
+  dock: ['undo', 'save', 'elements', 'templates', 'export', 'preview'],
+  shortcuts: [
+    { label: 'Command palette', keys: 'Ctrl+K' },
+    { label: 'Shortcuts help', keys: '?' },
+    { label: 'Undo', keys: 'Ctrl+Z' },
+    { label: 'Redo', keys: 'Ctrl+Y' },
+    { label: 'Duplicate block', keys: 'Ctrl+D' },
+    { label: 'Save', keys: 'Ctrl+S' },
+    { label: 'Delete block', keys: 'Delete' }
+  ],
+  commands: [
+    { id: 'palette', label: 'Open command palette', icon: '⌘', keys: 'Ctrl+K', group: 'Quick', quick: true, run: () => AuroraToolHub.openPalette() },
+    { id: 'shortcuts', label: 'Keyboard shortcuts', icon: '?', keys: '?', group: 'Quick', quick: true, run: () => AuroraToolHub.openShortcuts() },
+    { id: 'undo', label: 'Undo', icon: '↶', keys: 'Ctrl+Z', group: 'Edit', dock: true, run: () => $('#btnUndo').click() },
+    { id: 'redo', label: 'Redo', icon: '↷', keys: 'Ctrl+Y', group: 'Edit', run: () => $('#btnRedo').click() },
+    { id: 'save', label: 'Save deck', icon: '💾', keys: 'Ctrl+S', group: 'Edit', dock: true, run: () => $('#btnSave').click() },
+    { id: 'clear', label: 'Clear slide', icon: '🗑', group: 'Edit', run: () => $('#btnClear').click() },
+    { id: 'preview', label: 'Preview mode', icon: '👁', group: 'View', dock: true, run: () => $('#btnPreview').click() },
+    { id: 'present', label: 'Presentation mode', icon: '▶', group: 'View', run: () => $('#btnPresent').click() },
+    { id: 'grid', label: 'Toggle canvas grid', icon: '▦', group: 'View', run: () => $('#btnGrid').click() },
+    { id: 'export', label: 'Export menu', icon: '⤓', group: 'Export', dock: true, run: () => $('#btnExport').click() },
+    { id: 'export-html', label: 'Export HTML', icon: '🌐', group: 'Export', quick: true, run: () => exportHTML() },
+    { id: 'export-png', label: 'Export PNG', icon: '🖼', group: 'Export', quick: true, run: () => exportPNG() },
+    { id: 'export-pdf', label: 'Export PDF deck', icon: '📄', group: 'Export', quick: true, run: () => exportPDF() },
+    { id: 'cloud-save', label: 'Quick cloud save', icon: '☁', group: 'Cloud', run: () => $('#btnCloudQuick').click() },
+    { id: 'panel-left', label: 'Open library panel', icon: '☰', group: 'Panels', quick: true, run: () => $('#btnPanelLeft').click() },
+    { id: 'panel-right', label: 'Open inspector panel', icon: '◨', group: 'Panels', quick: true, run: () => $('#btnPanelRight').click() },
+    { id: 'elements', label: 'Elements widgets', icon: '◈', group: 'Panels', dock: true, run: () => AuroraToolHub.runTab('elements') },
+    { id: 'templates', label: 'Templates', icon: '▦', group: 'Panels', dock: true, run: () => AuroraToolHub.runTab('templates') },
+    { id: 'layers', label: 'Layers', icon: '☰', group: 'Panels', quick: true, run: () => AuroraToolHub.runTab('layers') },
+    { id: 'import', label: 'Import deck', icon: '⬇', group: 'Panels', run: () => AuroraToolHub.runTab('import') },
+    { id: 'collab', label: 'Collaboration', icon: '💬', group: 'Panels', run: () => AuroraToolHub.runTab('collab') },
+    { id: 'ai', label: 'AI Deck Wizard', icon: '✦', group: 'Panels', quick: true, run: () => { updateAiModal(); $('#aiModal').classList.remove('hidden'); } },
+    { id: 'properties', label: 'Block properties', icon: '⚙', group: 'Inspector', run: () => AuroraToolHub.runTab('properties') },
+    { id: 'design', label: 'Design tokens', icon: '🎨', group: 'Inspector', run: () => AuroraToolHub.runTab('design') },
+    { id: 'motion', label: 'Motion & animation', icon: '〜', group: 'Inspector', run: () => AuroraToolHub.runTab('motion') },
+    { id: 'cms', label: 'CMS data binding', icon: '🔗', group: 'Inspector', run: () => AuroraToolHub.runTab('cms') },
+    { id: 'seo', label: 'SEO settings', icon: '🔍', group: 'Inspector', run: () => AuroraToolHub.runTab('seo') },
+    { id: 'cloud', label: 'Cloud versions', icon: '☁', group: 'Inspector', run: () => AuroraToolHub.runTab('cloud') },
+    { id: 'dev-desktop', label: 'Desktop preview', icon: '🖥', group: 'Device', run: () => document.querySelector('[data-dev="desktop"]')?.click() },
+    { id: 'dev-tablet', label: 'Tablet preview', icon: '📱', group: 'Device', run: () => document.querySelector('[data-dev="tablet"]')?.click() },
+    { id: 'dev-mobile', label: 'Mobile preview', icon: '📲', group: 'Device', run: () => document.querySelector('[data-dev="mobile"]')?.click() }
+  ]
+});
 
 </script>
 <script src="assets/aurora-responsive.js"></script>

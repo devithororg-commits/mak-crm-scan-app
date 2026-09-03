@@ -49,7 +49,9 @@
 </style>
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
 <link rel="stylesheet" href="assets/aurora-controls.css" />
+<link rel="stylesheet" href="assets/aurora-toolhub.css" />
 <script src="assets/aurora-controls.js"></script>
+<script src="assets/aurora-toolhub.js"></script>
 </head>
 <body class="antialiased obsidian-app">
 <div class="obsidian-shell relative z-10 flex h-screen w-screen flex-col gap-2.5 p-2.5">
@@ -2584,6 +2586,40 @@ function boot(){
 }
 document.fonts ? document.fonts.ready.then(boot) : boot();
 window.addEventListener('resize',()=>{ CTX.update(); });
+
+AuroraToolHub.init({
+  app: 'obsidian',
+  headerAnchor: 'header.glass .ml-auto',
+  dock: ['undo', 'templates', 'text', 'zoom-fit', 'export', 'inspector'],
+  shortcuts: [
+    { label: 'Command palette', keys: 'Ctrl+K' },
+    { label: 'Shortcuts help', keys: '?' },
+    { label: 'Undo', keys: 'Ctrl+Z' },
+    { label: 'Redo', keys: 'Ctrl+Shift+Z' },
+    { label: 'Delete selection', keys: 'Delete' },
+    { label: 'Zoom canvas', keys: 'Ctrl+Wheel' }
+  ],
+  commands: [
+    { id: 'palette', label: 'Open command palette', icon: '⌘', keys: 'Ctrl+K', group: 'Quick', quick: true, run: () => AuroraToolHub.openPalette() },
+    { id: 'shortcuts', label: 'Keyboard shortcuts', icon: '?', keys: '?', group: 'Quick', quick: true, run: () => AuroraToolHub.openShortcuts() },
+    { id: 'undo', label: 'Undo', icon: '↶', keys: 'Ctrl+Z', group: 'Edit', dock: true, run: () => $('#undo').click() },
+    { id: 'redo', label: 'Redo', icon: '↷', keys: 'Ctrl+Shift+Z', group: 'Edit', run: () => $('#redo').click() },
+    { id: 'export', label: 'Export project', icon: '⤓', group: 'Export', dock: true, run: () => $('#btnExport').click() },
+    { id: 'snap', label: 'Toggle smart guides', icon: '🧲', group: 'View', quick: true, run: () => { $('#snapToggle').click(); } },
+    { id: 'drawer-left', label: 'Toggle asset drawer', icon: '☰', group: 'Panels', quick: true, run: () => $('#toggleLeft').click() },
+    { id: 'inspector', label: 'Toggle inspector', icon: '◨', group: 'Panels', dock: true, run: () => $('#toggleRight')?.click() },
+    { id: 'templates', label: 'Templates', icon: '▦', group: 'Tools', dock: true, run: () => AuroraToolHub.runTab('templates') },
+    { id: 'text', label: 'Typography', icon: 'T', group: 'Tools', dock: true, run: () => AuroraToolHub.runTab('text') },
+    { id: 'shapes', label: 'Shapes', icon: '◆', group: 'Tools', quick: true, run: () => AuroraToolHub.runTab('shapes') },
+    { id: 'icons', label: 'Icons', icon: '✦', group: 'Tools', quick: true, run: () => AuroraToolHub.runTab('icons') },
+    { id: 'uploads', label: 'Uploads', icon: '⇪', group: 'Tools', quick: true, run: () => AuroraToolHub.runTab('uploads') },
+    { id: 'palette-colors', label: 'Color palette', icon: '◐', group: 'Tools', run: () => AuroraToolHub.runTab('palette') },
+    { id: 'canvas', label: 'Artboard settings', icon: '▢', group: 'Tools', run: () => AuroraToolHub.runTab('canvas') },
+    { id: 'zoom-in', label: 'Zoom in', icon: '+', group: 'View', run: () => $('#zoomIn').click() },
+    { id: 'zoom-out', label: 'Zoom out', icon: '−', group: 'View', run: () => $('#zoomOut').click() },
+    { id: 'zoom-fit', label: 'Fit to screen', icon: '⊡', group: 'View', dock: true, run: () => $('#zoomFit').click() }
+  ]
+});
 </script>
 <script src="assets/aurora-responsive.js"></script>
 </body>

@@ -77,7 +77,9 @@ tailwind.config = {
 </style>
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
 <link rel="stylesheet" href="assets/aurora-controls.css" />
+<link rel="stylesheet" href="assets/aurora-toolhub.css" />
 <script src="assets/aurora-controls.js"></script>
+<script src="assets/aurora-toolhub.js"></script>
 </head>
 <body class="font-body studio-app">
 <div class="studio-shell relative z-10 flex h-screen w-screen flex-col">
@@ -3129,6 +3131,58 @@ $('#panelBody').addEventListener('input',e=>{ if(e.target.id==='fxCurve') curveT
 canvas.on('object:modified',()=>{ if(tab==='collab')renderPanel(); });
 renderPins();
 readOnlyBoot();
+
+AuroraToolHub.init({
+  app: 'studio',
+  headerAnchor: 'header.glass-dark .ml-auto',
+  dock: ['undo', 'save', 'templates', 'text', 'fit', 'export'],
+  shortcuts: [
+    { label: 'Command palette — search all tools', keys: 'Ctrl+K' },
+    { label: 'Keyboard shortcuts', keys: '?' },
+    { label: 'Undo', keys: 'Ctrl+Z' },
+    { label: 'Redo', keys: 'Ctrl+Y' },
+    { label: 'Duplicate selection', keys: 'Ctrl+D' },
+    { label: 'Group / Ungroup', keys: 'Ctrl+G' },
+    { label: 'Delete selection', keys: 'Delete' },
+    { label: 'Save design', keys: 'Ctrl+S' },
+    { label: 'Nudge object', keys: 'Arrow keys' },
+    { label: 'Nudge 20px', keys: 'Shift+Arrow' }
+  ],
+  commands: [
+    { id: 'palette', label: 'Open command palette', icon: '⌘', keys: 'Ctrl+K', group: 'Quick', quick: true, run: () => AuroraToolHub.openPalette() },
+    { id: 'shortcuts', label: 'Keyboard shortcuts', icon: '?', keys: '?', group: 'Quick', quick: true, run: () => AuroraToolHub.openShortcuts() },
+    { id: 'undo', label: 'Undo', icon: '↶', keys: 'Ctrl+Z', group: 'Edit', dock: true, run: () => $('#btnUndo').click() },
+    { id: 'redo', label: 'Redo', icon: '↷', keys: 'Ctrl+Y', group: 'Edit', run: () => $('#btnRedo').click() },
+    { id: 'save', label: 'Save design', icon: '💾', keys: 'Ctrl+S', group: 'Edit', dock: true, run: () => $('#btnSave').click() },
+    { id: 'designs', label: 'My Designs library', icon: '☁', group: 'Edit', quick: true, run: () => $('#btnDesigns').click() },
+    { id: 'export', label: 'Export menu', icon: '⤓', group: 'Export', dock: true, run: () => $('#btnExport').click() },
+    { id: 'export-png', label: 'Quick export PNG', icon: '🖼', group: 'Export', quick: true, run: () => doExport('png') },
+    { id: 'export-pdf', label: 'Quick export PDF', icon: '📄', group: 'Export', quick: true, run: () => doExport('pdf') },
+    { id: 'export-json', label: 'Export project JSON', icon: '{ }', group: 'Export', run: () => doExport('json') },
+    { id: 'library', label: 'Toggle library panel', icon: '◧', group: 'Panels', quick: true, run: () => toggleStudioPanel('left') },
+    { id: 'inspector', label: 'Toggle inspector panel', icon: '◨', group: 'Panels', quick: true, run: () => toggleStudioPanel('right') },
+    { id: 'templates', label: 'Templates', icon: '▦', group: 'Tools', dock: true, run: () => AuroraToolHub.runTab('templates') },
+    { id: 'text', label: 'Typography & text', icon: 'T', group: 'Tools', dock: true, run: () => AuroraToolHub.runTab('text') },
+    { id: 'elements', label: 'Elements & shapes', icon: '◈', group: 'Tools', quick: true, run: () => AuroraToolHub.runTab('elements') },
+    { id: 'uploads', label: 'Upload images', icon: '⬆', group: 'Tools', quick: true, run: () => AuroraToolHub.runTab('uploads') },
+    { id: 'bg', label: 'Background', icon: '◐', group: 'Tools', run: () => AuroraToolHub.runTab('bg') },
+    { id: 'canvas', label: 'Artboard settings', icon: '⬚', group: 'Tools', run: () => AuroraToolHub.runTab('canvas') },
+    { id: 'effects', label: 'Text & effects', icon: '✦', group: 'Tools', run: () => AuroraToolHub.runTab('effects') },
+    { id: 'assets', label: 'Brand assets', icon: '◆', group: 'Tools', run: () => AuroraToolHub.runTab('assets') },
+    { id: 'collab', label: 'Collaboration', icon: '💬', group: 'Tools', run: () => AuroraToolHub.runTab('collab') },
+    { id: 'zoom-in', label: 'Zoom in', icon: '+', group: 'View', run: () => $('#zIn').click() },
+    { id: 'zoom-out', label: 'Zoom out', icon: '−', group: 'View', run: () => $('#zOut').click() },
+    { id: 'fit', label: 'Fit to screen', icon: '⊡', group: 'View', dock: true, run: () => $('#zFit').click() },
+    { id: 'rulers', label: 'Toggle rulers', icon: '📐', group: 'View', run: () => $('#vRuler').click() },
+    { id: 'grid', label: 'Toggle grid', icon: '▦', group: 'View', run: () => $('#vGrid').click() },
+    { id: 'iso', label: 'Toggle isometric grid', icon: '◇', group: 'View', run: () => $('#vIso').click() },
+    { id: 'bleed', label: 'Toggle bleed guides', icon: '⊞', group: 'View', run: () => $('#vBleed').click() },
+    { id: 'snap', label: 'Toggle snap guides', icon: '🧲', group: 'View', run: () => $('#vSnap').click() },
+    { id: 'pg-add', label: 'Add artboard', icon: '＋', group: 'Pages', quick: true, run: () => $('#pgAdd').click() },
+    { id: 'pg-dup', label: 'Duplicate artboard', icon: '⧉', group: 'Pages', run: () => $('#pgDup').click() },
+    { id: 'pg-del', label: 'Delete artboard', icon: '✕', group: 'Pages', run: () => $('#pgDel').click() }
+  ]
+});
 })();
 </script>
 <script src="assets/aurora-responsive.js"></script>
