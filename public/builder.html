@@ -161,6 +161,11 @@ tailwind.config = { theme: { extend: {
         <div id="dropHint" class="drop-hint mt-2 grid place-items-center rounded-2xl border-2 border-dashed border-white/12 py-16 text-center">
           <p class="text-[13px] font-semibold text-mist-300">Drop widgets here</p>
           <p class="mt-1 text-[11px] text-mist-400">Slide canvas · reorder · click to edit</p>
+          <div id="emptyActions" class="mt-6 hidden flex flex-wrap justify-center gap-2">
+            <button id="btnLoadDemo" type="button" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[11px] font-bold text-ink-900">Load demo deck</button>
+            <button id="btnOpenTemplates" type="button" class="tr rounded-xl border border-white/10 px-4 py-2 text-[11px] font-semibold text-volt-300">Browse templates</button>
+            <button id="btnOpenAI" type="button" class="tr rounded-xl border border-white/10 px-4 py-2 text-[11px] font-semibold text-mist-200">AI Wizard</button>
+          </div>
         </div>
       </div>
     </main>
@@ -410,8 +415,25 @@ let undoStack=[];
 let redoStack=[];
 let snapshotLock=false;
 
-function currentPage(){ return state.pages.find(p=>p.id===state.currentPageId)||state.pages[0]; }
-function blocks(){ return currentPage().blocks; }
+function currentPage(){
+  if(!state.pages?.length) state.pages=[{id:uid('p'),name:'Slide 1',blocks:[]}];
+  return state.pages.find(p=>p.id===state.currentPageId)||state.pages[0];
+}
+function blocks(){ const p=currentPage(); return p.blocks||(p.blocks=[]); }
+
+function ensureValidState(){
+  if(!state.pages?.length) state.pages=[{id:uid('p'),name:'Slide 1',blocks:[]}];
+  if(!state.currentPageId||!state.pages.find(p=>p.id===state.currentPageId)) state.currentPageId=state.pages[0].id;
+  if(!state.theme) state.theme={accent:'volt',font:'inter',radius:'md',animations:true,gsapEnabled:true};
+  if(state.theme.gsapEnabled==null) state.theme.gsapEnabled=true;
+  if(!state.seo) state.seo={title:'NOVA Exported Page',description:'Built with NOVA Builder by AURORA.STUDIO',ogImage:''};
+  if(!state.cms) state.cms={inline:'',url:'',refreshInterval:0,data:{}};
+  if(!state.cloud) state.cloud={autoSnapshot:false,openaiModel:'gpt-4o-mini'};
+  state.pages.forEach(pg=>{
+    if(!Array.isArray(pg.blocks)) pg.blocks=[];
+    pg.blocks.forEach(ensureBlockAnim);
+  });
+}
 
 let collab={room:null,isHost:false,peer:null,connections:[],online:1,bc:null,broadcastTimer:null};
 let cmsRefreshTimer=null;
@@ -472,8 +494,10 @@ function deletePage(id){
 function persist(){ try{ localStorage.setItem(LS_V3, snapshot()); }catch(_){} broadcastState(); }
 function migrateV2(data){
   const s=JSON.parse(data);
+  if(!s.theme) s.theme={accent:'volt',font:'inter',radius:'md',animations:true,gsapEnabled:true};
   if(!s.theme.gsapEnabled) s.theme.gsapEnabled=true;
   if(!s.cms) s.cms={inline:'',url:'',refreshInterval:0,data:{}};
+  if(!s.pages?.length) s.pages=[{id:uid('p'),name:'Slide 1',blocks:[]}];
   s.pages.forEach(pg=>pg.blocks.forEach(ensureBlockAnim));
   return JSON.stringify(s);
 }
@@ -481,17 +505,20 @@ function restore(){
   try{
     const hash=location.hash.slice(1);
     const stateMatch=hash.match(/(?:^|&)state=([^&]+)/);
-    if(stateMatch){ restoreSnapshot(decodeURIComponent(escape(atob(stateMatch[1])))); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
+    if(stateMatch){ restoreSnapshot(decodeURIComponent(escape(atob(stateMatch[1])))); undoStack=[]; redoStack=[]; updateUndoButtons(); ensureValidState(); return; }
     const roomMatch=hash.match(/(?:^|&)room=([^&]+)/);
     if(roomMatch) setTimeout(()=>joinRoom(roomMatch[1]),800);
     const v3=localStorage.getItem(LS_V3);
-    if(v3){ restoreSnapshot(v3); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
+    if(v3){ restoreSnapshot(v3); undoStack=[]; redoStack=[]; updateUndoButtons(); ensureValidState(); return; }
     const v2=localStorage.getItem(LS_V2);
-    if(v2){ restoreSnapshot(migrateV2(v2)); persist(); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
+    if(v2){ restoreSnapshot(migrateV2(v2)); persist(); undoStack=[]; redoStack=[]; updateUndoButtons(); ensureValidState(); return; }
     const v1=localStorage.getItem(LS_V1);
-    if(v1){ const arr=JSON.parse(v1); if(Array.isArray(arr)){ state.pages[0].blocks=arr; persist(); return; } }
-  }catch(_){}
-  state.pages[0].blocks=defaultDemo();
+    if(v1){ const arr=JSON.parse(v1); if(Array.isArray(arr)){ state.pages[0].blocks=arr; persist(); ensureValidState(); return; } }
+  }catch(e){ console.error('NOVA restore failed',e); }
+  state.pages=[{id:uid('p'),name:'Slide 1',blocks:defaultDemo()}];
+  state.currentPageId=state.pages[0].id;
+  ensureValidState();
+  persist();
 }
 
 /* ── Collaboration (PeerJS + BroadcastChannel) ── */
@@ -842,7 +869,8 @@ function renderCanvas(){
   }).join('');
   $('#dropHint').style.opacity=bs.length?'0':'1';
   $('#dropHint').style.height=bs.length?'0px':'';
-  $('#dropHint').style.overflow='hidden';
+  $('#dropHint').style.overflow=bs.length?'hidden':'visible';
+  $('#emptyActions')?.classList.toggle('hidden',!!bs.length);
   $('#blockCount').textContent=`${bs.length} block${bs.length===1?'':'s'} · ${state.pages.length} slide${state.pages.length===1?'':'s'}`;
   $('#canvasInner').style.maxWidth=state.device+'px';
   document.body.classList.toggle('grid-on',state.grid);
@@ -1063,6 +1091,11 @@ $('#rightPanel').addEventListener('click',async e=>{
   if(eid){ const versions=await listCloudVersions(); const v=versions.find(x=>x.id===+eid.dataset.vexport); if(v) downloadBlob(v.data,(v.name||'version')+'.json','application/json'); }
 });
 
+$('#canvasWrap').addEventListener('click',e=>{
+  if(e.target.id==='btnLoadDemo') commit(()=>{ currentPage().blocks=defaultDemo(); selectedId=null; });
+  if(e.target.id==='btnOpenTemplates'){ leftTab='templates'; $$('#leftTabs .tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.ltab==='templates')); renderLeftPanel(); }
+  if(e.target.id==='btnOpenAI'){ updateAiModal(); $('#aiModal').classList.remove('hidden'); }
+});
 $('#canvas').addEventListener('click',e=>{
   if(previewMode||presentMode) return;
   const btn=e.target.closest('[data-act]'); const blk=e.target.closest('.block'); if(!blk) return;
@@ -1141,7 +1174,18 @@ window._canvasSort=Sortable.create($('#canvas'),{
   onEnd(evt){ if(evt.from!==evt.to) return; const {oldIndex,newIndex}=evt; if(oldIndex===newIndex) return; commit(()=>{ blocks().splice(newIndex,0,blocks().splice(oldIndex,1)[0]); }); }
 });
 
-applyThemeCSS(); initBroadcastChannel(); restore(); renderAll(); pushHistory(); updateAiModal(); startAutoSnapshot();
+applyThemeCSS(); initBroadcastChannel();
+try{
+  restore(); ensureValidState();
+  renderAll(); pushHistory(); updateAiModal(); startAutoSnapshot();
+}catch(err){
+  console.error('NOVA boot failed',err);
+  state.pages=[{id:uid('p'),name:'Slide 1',blocks:defaultDemo()}];
+  state.currentPageId=state.pages[0].id;
+  ensureValidState();
+  renderAll();
+  $('#leftPanel').innerHTML=`<div class="rounded-xl border border-rose-400/30 bg-rose-500/10 p-3 text-[11px] text-rose-200">Builder recovered from an error. Demo deck loaded — refresh if panels stay empty.</div>`;
+}
 $('#importJsonFile')?.addEventListener('change',e=>{
   const file=e.target.files?.[0]; if(!file) return;
   const reader=new FileReader();
