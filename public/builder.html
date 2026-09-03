@@ -183,11 +183,13 @@ tailwind.config = { theme: { extend: {
   @media(max-width:1024px){#libPanel,#inspPanel{width:14rem}}
 </style>
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
+<link rel="stylesheet" href="assets/aurora-controls.css" />
+<script src="assets/aurora-controls.js"></script>
 </head>
 <body class="antialiased nova-app">
 <div class="nova-shell relative z-10 flex h-screen w-screen flex-col gap-3 p-3">
   <header class="glass top-tools nova-compact-toolbar flex shrink-0 flex-wrap items-center gap-2 rounded-2xl px-4 py-2.5">
-    <button id="btnPanelLeft" type="button" class="aurora-mobile-only tr items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] font-semibold text-volt-300" aria-label="Open library">☰</button>
+      <button id="btnPanelLeft" type="button" class="aurora-mobile-only tr items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] font-semibold text-volt-300" aria-label="Open library" aria-controls="libPanel" aria-expanded="false">☰</button>
     <div class="nova-header-brand flex items-center gap-2.5">
       <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-volt-400 to-volt-600 text-[15px] font-black text-ink-900">N</span>
       <div class="leading-tight">
@@ -214,7 +216,7 @@ tailwind.config = { theme: { extend: {
       <span id="collabStatus">Offline</span>
     </div>
     <button id="btnCloudQuick" class="tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] text-mist-300 hover:border-volt-400/50" title="Cloud save">☁</button>
-    <button id="btnPanelRight" type="button" class="aurora-mobile-only tr items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] font-semibold text-volt-300" aria-label="Open inspector">◨</button>
+      <button id="btnPanelRight" type="button" class="aurora-mobile-only tr items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] font-semibold text-volt-300" aria-label="Open inspector" aria-controls="inspPanel" aria-expanded="false">◨</button>
     <div class="nova-header-actions ml-auto flex flex-wrap items-center gap-2">
       <button id="btnClear" class="nova-action-secondary tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-rose-400/50 hover:text-rose-300">Clear slide</button>
       <button id="btnSave" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-volt-400/60 hover:text-volt-300">Save</button>
@@ -234,7 +236,7 @@ tailwind.config = { theme: { extend: {
   </header>
   <div class="flex min-h-0 flex-1 gap-3">
     <aside id="libPanel" class="glass flex w-64 shrink-0 flex-col rounded-2xl p-3">
-      <div id="leftTabs" class="mb-2 flex flex-wrap gap-1">
+      <div id="leftTabs" class="mb-2 flex flex-wrap gap-1" role="tablist" aria-label="Library panels">
         <button data-ltab="elements" class="tab-btn active tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Elements</button>
         <button data-ltab="templates" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Templates</button>
         <button data-ltab="layers" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Layers</button>
@@ -270,7 +272,7 @@ tailwind.config = { theme: { extend: {
       </div>
     </main>
     <aside id="inspPanel" class="glass flex w-72 shrink-0 flex-col rounded-2xl p-3">
-      <div id="rightTabs" class="mb-2 flex flex-wrap gap-1">
+      <div id="rightTabs" class="mb-2 flex flex-wrap gap-1" role="tablist" aria-label="Inspector panels">
         <button data-rtab="properties" class="tab-btn active tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Properties</button>
         <button data-rtab="design" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Design</button>
         <button data-rtab="motion" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Motion</button>
@@ -1311,8 +1313,10 @@ $('#slideStrip').addEventListener('click',e=>{
   if(e.target.id==='delSlide') commit(()=>deletePage(state.currentPageId));
 });
 
-$$('#leftTabs [data-ltab]').forEach(btn=>btn.addEventListener('click',()=>{ leftTab=btn.dataset.ltab; $$('#leftTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderLeftPanel(); }));
-$$('#rightTabs [data-rtab]').forEach(btn=>btn.addEventListener('click',()=>{ rightTab=btn.dataset.rtab; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderRightPanel(); }));
+const leftTabsApi=AuroraControls.initTabs($('#leftTabs'),'.tab-btn');
+const rightTabsApi=AuroraControls.initTabs($('#rightTabs'),'.tab-btn');
+$$('#leftTabs [data-ltab]').forEach(btn=>btn.addEventListener('click',()=>{ leftTab=btn.dataset.ltab; $$('#leftTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); leftTabsApi.sync(btn); renderLeftPanel(); }));
+$$('#rightTabs [data-rtab]').forEach(btn=>btn.addEventListener('click',()=>{ rightTab=btn.dataset.rtab; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); rightTabsApi.sync(btn); renderRightPanel(); }));
 
 $$('#deviceGroup [data-dev]').forEach(btn=>btn.addEventListener('click',()=>{ state.deviceKey=btn.dataset.dev; const dev=currentDevice(); state.device=dev.width; renderCanvas(); }));
 
@@ -1324,7 +1328,13 @@ $('#btnPresent').addEventListener('click',()=>setPresent(!presentMode));
 $('#exitPreview').addEventListener('click',()=>setPreview(false));
 $('#exitPresent').addEventListener('click',()=>setPresent(false));
 $('#btnSave').addEventListener('click',()=>{ persist(); const b=$('#btnSave'),t=b.textContent; b.textContent='✓ Saved'; setTimeout(()=>b.textContent=t,1400); });
-$('#btnClear').addEventListener('click',()=>{ if(confirm('Clear all blocks on this slide?')) commit(()=>{ currentPage().blocks=[]; selectedId=null; }); });
+$('#btnClear').addEventListener('click',()=>{
+  AuroraControls.confirmPopover($('#btnClear'),{
+    message:'Remove all blocks on this slide?',
+    ok:'Clear slide',
+    onConfirm:()=>commit(()=>{ currentPage().blocks=[]; selectedId=null; })
+  });
+});
 $('#btnCloudQuick').addEventListener('click',async()=>{ rightTab='cloud'; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.rtab==='cloud')); await saveCloudVersion(); const b=$('#btnCloudQuick'); b.textContent='✓'; setTimeout(()=>b.textContent='☁',1200); });
 $('#btnExport')?.addEventListener('click',e=>{
   e.stopPropagation();

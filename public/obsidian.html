@@ -48,6 +48,8 @@
   .drawer-collapsed{width:0!important;padding:0!important;border:0!important;overflow:hidden!important;opacity:0}
 </style>
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
+<link rel="stylesheet" href="assets/aurora-controls.css" />
+<script src="assets/aurora-controls.js"></script>
 </head>
 <body class="antialiased obsidian-app">
 <div class="obsidian-shell relative z-10 flex h-screen w-screen flex-col gap-2.5 p-2.5">
@@ -96,13 +98,13 @@
 
     <!-- rail -->
     <nav class="obsidian-rail glass flex w-[62px] shrink-0 flex-col items-center gap-1.5 rounded-2xl py-3">
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="templates" title="Templates">▦</button>
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="text" title="Text">T</button>
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="shapes" title="Shapes">◆</button>
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="icons" title="Icons">✦</button>
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="uploads" title="Uploads">⇪</button>
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="palette" title="Colors">◐</button>
-      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="canvas" title="Artboard">▢</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="templates" aria-label="Templates" aria-pressed="false">▦</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="text" aria-label="Text" aria-pressed="false">T</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="shapes" aria-label="Shapes" aria-pressed="false">◆</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="icons" aria-label="Icons" aria-pressed="false">✦</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="uploads" aria-label="Uploads" aria-pressed="false">⇪</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="palette" aria-label="Colors" aria-pressed="false">◐</button>
+      <button class="railBtn tr grid h-11 w-11 place-items-center rounded-xl text-[17px]" data-tab="canvas" aria-label="Artboard" aria-pressed="false">▢</button>
     </nav>
 
     <!-- LEFT drawer -->
@@ -2160,6 +2162,7 @@ const DRAWER = {
     $('#drawer').innerHTML = PANELS[tab]();
     $('#drawer').classList.add('fadein'); setTimeout(()=>$('#drawer').classList.remove('fadein'),300);
     $$('.railBtn').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+    $$('.railBtn').forEach(b=>b.setAttribute('aria-pressed', b.dataset.tab===tab ? 'true' : 'false'));
     DRAWER.bind(tab);
   },
   bind(tab){
@@ -2514,7 +2517,7 @@ $('#zoomFit').onclick = ()=>ENGINE.fit();
 $('#undo').onclick    = ()=>ENGINE.travel(-1);
 $('#redo').onclick    = ()=>ENGINE.travel(1);
 $('#snapToggle').onchange = e=>{ STATE.snap=e.target.checked; toast('Smart guides '+(e.target.checked?'on':'off')); };
-$('#btnExport').onclick = ()=>EXPORT.run();
+$('#btnExport').onclick = ()=> AuroraControls.runWithLoading($('#btnExport'), ()=> EXPORT.run());
 
 /* ctrl/⌘ + wheel zoom over the stage */
 $('#stageWrap').addEventListener('wheel',e=>{

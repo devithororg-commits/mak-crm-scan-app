@@ -50,6 +50,8 @@ tailwind.config = {
   table td,table th{transition:background .22s ease}
 </style>
 <link rel="stylesheet" href="assets/aurora-responsive.css" />
+<link rel="stylesheet" href="assets/aurora-controls.css" />
+<script src="assets/aurora-controls.js"></script>
 </head>
 <body class="antialiased">
 <div class="relative z-10">
@@ -292,6 +294,7 @@ function applyHighlight(col){
     const on = +b.dataset.col === col;
     b.classList.toggle('bg-volt-500/20', on);
     b.classList.toggle('text-volt-200', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
 }
 document.querySelectorAll('.hl-btn').forEach(b =>

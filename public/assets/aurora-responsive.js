@@ -37,6 +37,10 @@
 
     function sync() {
       setPanelOpen(body, body.classList.contains('panel-left-open') || body.classList.contains('panel-right-open'));
+      if (typeof window.AuroraControls !== 'undefined') {
+        window.AuroraControls.syncPanelAria(btnL, q('#libPanel'), body.classList.contains('panel-left-open'));
+        window.AuroraControls.syncPanelAria(btnR, q('#inspPanel'), body.classList.contains('panel-right-open'));
+      }
     }
     btnL.addEventListener('click', function () {
       var open = body.classList.toggle('panel-left-open');
@@ -139,7 +143,12 @@
     var btn = q('#showcaseMenuBtn');
     var menu = q('#showcaseMobileMenu');
     if (!btn || !menu) return;
-    btn.addEventListener('click', function () { menu.classList.toggle('open'); });
+    btn.addEventListener('click', function () {
+      var open = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    btn.setAttribute('aria-controls', 'showcaseMobileMenu');
+    btn.setAttribute('aria-expanded', 'false');
     menu.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () { menu.classList.remove('open'); });
     });

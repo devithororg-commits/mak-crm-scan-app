@@ -175,6 +175,8 @@
     }
   </style>
   <link rel="stylesheet" href="assets/aurora-responsive.css" />
+  <link rel="stylesheet" href="assets/aurora-controls.css" />
+  <script src="assets/aurora-controls.js"></script>
 </head>
 <body class="relative" style="background:#f8fafc;color:#0f172a">
   <header id="siteHeader" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
@@ -221,7 +223,7 @@
       <div class="reveal">
         <div class="badge-live mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
           <span class="pulse-dot h-2 w-2 rounded-full bg-orange-500"></span>
-          <span id="liveCount">2,847</span> creatives published in the last hour
+          <span id="liveCount" aria-live="polite" aria-atomic="true">2,847</span> creatives published in the last hour
         </div>
         <p class="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600">Provided by Devithor.org</p>
         <h1 class="font-sora text-4xl font-extrabold leading-[1.08] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
@@ -514,7 +516,7 @@
         <div class="mt-8 inline-flex flex-wrap items-center justify-center gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-md">
           <div class="text-left">
             <p class="text-xs text-slate-500">Offer refreshes in</p>
-            <p class="timer-digit font-sora text-2xl font-black text-orange-600" id="countdown">14:59:42</p>
+            <p class="timer-digit font-sora text-2xl font-black text-orange-600" id="countdown" role="timer" aria-label="Limited offer countdown">14:59:42</p>
           </div>
           <div class="h-10 w-px bg-slate-200"></div>
           <div class="text-left">
@@ -546,9 +548,9 @@
     const header = document.getElementById('siteHeader');
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.setAttribute('aria-controls', 'mobileMenu');
+    menuBtn.setAttribute('aria-expanded', 'false');
     window.addEventListener('scroll', () => header.classList.toggle('nav-scrolled', window.scrollY > 20), { passive: true });
-    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
     const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     const liveEl = document.getElementById('liveCount');
