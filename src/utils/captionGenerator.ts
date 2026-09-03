@@ -18,7 +18,7 @@ const HOOKS = [
 
 const HOOKS_SALES = [
   'Limited opportunity:',
-  'Don\'t miss out —',
+  "Don't miss out —",
   'Exclusive offer:',
   'Act fast:',
   'Only a few left:',
@@ -28,7 +28,7 @@ const HOOKS_CASUAL = [
   'Hey! Check this out —',
   'So excited to share:',
   'Quick update:',
-  'You\'ll love this:',
+  "You'll love this:",
 ]
 
 function pick<T>(arr: T[], seed: number) {
@@ -202,4 +202,3 @@ export function generateCaptionVariants(
 
   return variants.sort((a, b) => b.engagementScore - a.engagementScore)
 }
-
