@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DIST = ROOT / "dist"
-HOTFIX_FILES = ("index.html", "builder.html", "nova-builder.html")
+HOTFIX_FILES = ("index.html", "builder.html", "nova-builder.html", ".htaccess")
 
 
 def unique(items: list[str | None]) -> list[str]:
