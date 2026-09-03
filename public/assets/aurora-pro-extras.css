@@ -1,0 +1,73 @@
+/* Aurora Pro Extras — no-API remaining features */
+
+#proSyncWrap {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: 10px;
+  color: #94a3b8;
+}
+#proSyncDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  flex-shrink: 0;
+}
+#proSyncDot.dirty { background: #fbbf24; }
+#proSyncDot.saving { background: #22d3ee; animation: proSpin .8s linear infinite; }
+
+#proCommentLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+#proCommentLayer button {
+  pointer-events: auto;
+  position: absolute;
+  transform: translate(-50%, -100%);
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .4);
+}
+#proCommentLayer button.open { background: #10b981; }
+#proCommentLayer button.pending { background: #f43f5e; }
+
+#proLintPanel {
+  margin-top: .5rem;
+  padding: .5rem;
+  border-radius: .5rem;
+  font-size: 10px;
+  background: rgba(15, 23, 42, .5);
+  border: 1px solid rgba(255, 255, 255, .08);
+}
+.pro-lint-ok { color: #34d399; }
+.pro-lint-warn { color: #fbbf24; }
+.pro-lint-err { color: #f87171; }
+
+.pro-palette-row { display: flex; gap: .35rem; margin-top: .5rem; flex-wrap: wrap; }
+.pro-palette-swatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: .45rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  cursor: pointer;
+}
+
+.pro-scrub-label { cursor: ew-resize; user-select: none; }
+
+#proVersionsModal {
+  position: fixed;
+  inset: 0;
+  z-index: 88;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, .78);
+}
+#proVersionsModal.open { display: flex; }
