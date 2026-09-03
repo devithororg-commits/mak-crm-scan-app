@@ -9,6 +9,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -82,6 +85,15 @@ tailwind.config = { theme: { extend: {
   .faq-item.open .faq-panel{max-height:400px}
   .faq-item.open .faq-chev{transform:rotate(180deg)}
   #aiModal.hidden{display:none}
+  .collab-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);padding:4px 10px;font-size:11px;font-weight:600;color:#93a1c4}
+  .collab-dot{width:7px;height:7px;border-radius:50%;background:#6b7aa1;box-shadow:0 0 0 2px rgba(107,122,161,.25)}
+  .collab-dot.online{background:#35e2c8;box-shadow:0 0 8px rgba(53,226,200,.6)}
+  .version-row{display:flex;align-items:center;gap:8px;border-radius:.75rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);padding:8px 10px;font-size:11px}
+  .version-row:hover{border-color:rgba(53,226,200,.35)}
+  .import-panel textarea{min-height:120px;font-family:ui-monospace,monospace;font-size:11px}
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.15);border-top-color:#35e2c8;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .cms-bound::after{content:'🔗';margin-left:4px;font-size:10px}
 </style>
 </head>
 <body class="antialiased">
@@ -108,6 +120,11 @@ tailwind.config = { theme: { extend: {
     <span class="h-7 w-px bg-white/10"></span>
     <button id="btnGrid" class="tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">Grid</button>
     <span id="blockCount" class="rounded-lg bg-white/6 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">0 blocks</span>
+    <div id="collabBadge" class="collab-badge hidden">
+      <span id="collabDot" class="collab-dot"></span>
+      <span id="collabStatus">Offline</span>
+    </div>
+    <button id="btnCloudQuick" class="tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[12px] text-mist-300 hover:border-volt-400/50" title="Cloud save">☁</button>
     <div class="ml-auto flex flex-wrap items-center gap-2">
       <button id="btnClear" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-rose-400/50 hover:text-rose-300">Clear slide</button>
       <button id="btnSave" class="tr rounded-xl border border-white/10 px-3 py-2 text-[12px] font-semibold text-mist-300 hover:border-volt-400/60 hover:text-volt-300">Save</button>
@@ -120,6 +137,7 @@ tailwind.config = { theme: { extend: {
           <button data-export="json" class="tr block w-full rounded-lg px-3 py-2 text-left text-[12px] hover:bg-white/8">JSON layout</button>
           <button data-export="png" class="tr block w-full rounded-lg px-3 py-2 text-left text-[12px] hover:bg-white/8">PNG snapshot</button>
           <button data-export="pdf" class="tr block w-full rounded-lg px-3 py-2 text-left text-[12px] hover:bg-white/8">PDF deck</button>
+          <button data-export="share" class="tr block w-full rounded-lg px-3 py-2 text-left text-[12px] hover:bg-white/8">Share state URL</button>
         </div>
       </div>
     </div>
@@ -130,7 +148,9 @@ tailwind.config = { theme: { extend: {
         <button data-ltab="elements" class="tab-btn active tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Elements</button>
         <button data-ltab="templates" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Templates</button>
         <button data-ltab="layers" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Layers</button>
-        <button data-ltab="ai" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">AI Wizard</button>
+        <button data-ltab="import" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Import</button>
+        <button data-ltab="collab" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Collab</button>
+        <button data-ltab="ai" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">AI</button>
       </div>
       <div id="leftPanel" class="min-h-0 flex-1 overflow-y-auto pr-1"></div>
     </aside>
@@ -148,7 +168,10 @@ tailwind.config = { theme: { extend: {
       <div id="rightTabs" class="mb-2 flex flex-wrap gap-1">
         <button data-rtab="properties" class="tab-btn active tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Properties</button>
         <button data-rtab="design" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Design</button>
+        <button data-rtab="motion" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Motion</button>
+        <button data-rtab="cms" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">CMS</button>
         <button data-rtab="seo" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">SEO</button>
+        <button data-rtab="cloud" class="tab-btn tr rounded-lg border border-white/10 px-2 py-1 text-[10px] font-bold uppercase">Cloud</button>
       </div>
       <div id="rightPanel" class="min-h-0 flex-1 overflow-y-auto pr-1"></div>
     </aside>
@@ -159,7 +182,8 @@ tailwind.config = { theme: { extend: {
 <div id="aiModal" class="fixed inset-0 z-[120] hidden grid place-items-center bg-black/70 p-4">
   <div class="glass w-full max-w-lg rounded-2xl p-5">
     <h3 class="text-lg font-black">AI Deck Wizard</h3>
-    <p class="mt-1 text-[12px] text-mist-400">Rule-based generator — no external API.</p>
+    <p class="mt-1 text-[12px] text-mist-400">Rule-based or OpenAI-powered deck generation.</p>
+    <label id="aiOpenAIWrap" class="mt-3 hidden flex items-center gap-2 text-[12px]"><input id="aiUseOpenAI" type="checkbox" /> Use OpenAI (API key in Cloud tab)</label>
     <div class="mt-4 space-y-3">
       <div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Topic</label><input id="aiTopic" class="fld" placeholder="e.g. Electric SUV launch" /></div>
       <div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Audience</label><input id="aiAudience" class="fld" placeholder="e.g. Fleet buyers" /></div>
@@ -168,12 +192,12 @@ tailwind.config = { theme: { extend: {
     </div>
     <div class="mt-5 flex justify-end gap-2">
       <button id="aiCancel" class="tr rounded-xl border border-white/10 px-4 py-2 text-[12px]">Cancel</button>
-      <button id="aiGenerate" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[12px] font-bold text-ink-900">Generate deck</button>
+      <button id="aiGenerate" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[12px] font-bold text-ink-900"><span id="aiGenLabel">Generate deck</span><span id="aiSpinner" class="spinner ml-2 hidden"></span></button>
     </div>
   </div>
 </div>
 <script>
-/* NOVA BUILDER v2 — multi-slide deck builder */
+/* NOVA BUILDER v3 — multi-slide deck builder */
 const ICONS={
   battery:'<path d="M3 8h13a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Z"/><path d="M21 11v2"/>',
   range:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
@@ -193,14 +217,25 @@ const ICONS={
   timeline:'<path d="M12 3v18"/><circle cx="12" cy="7" r="2"/><circle cx="12" cy="17" r="2"/>',
   video:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 6 4-6 4Z"/>',
   logos:'<rect x="3" y="8" width="6" height="4" rx="1"/><rect x="11" y="8" width="6" height="4" rx="1"/><rect x="19" y="8" width="2" height="4" rx="1"/>',
-  divider:'<path d="M4 12h16"/>'
+  divider:'<path d="M4 12h16"/>',
+  code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>'
 };
 const svg=(k,c='h-4 w-4')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="${c}">${ICONS[k]||''}</svg>`;
 function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function f(type,key,label,value,options){ return {type,key,label,value,options}; }
 const uid=(p='')=> (p||'b')+Math.random().toString(36).slice(2,9);
 const $=s=>document.querySelector(s);
-const $=s=>[...document.querySelectorAll(s)];
+const $$=s=>[...document.querySelectorAll(s)];
+
+const DEFAULT_ANIM={preset:'fadeUp',duration:0.8,delay:0,ease:'power2.out'};
+const ANIM_PRESETS=[['none','None'],['fadeUp','Fade up'],['fadeIn','Fade in'],['slideLeft','Slide left'],['slideRight','Slide right'],['scaleIn','Scale in'],['blurIn','Blur in'],['stagger','Stagger children']];
+const LS_V3='nova.builder.v3';
+const LS_V2='nova.builder.v2';
+const LS_V1='nova.builder.v1';
+const LS_OPENAI='nova.openai.key';
+const IDB_NAME='nova-cloud';
+const IDB_STORE='versions';
+const MAX_UNDO=50;
 
 const ACCENTS={
   volt:{text:'text-volt-300',grad:'from-volt-400 to-volt-600',eye:'text-volt-300 border-volt-400/30 bg-volt-500/10',star:'col-star',soft:'rgba(15,211,182,.15)'},
@@ -216,7 +251,6 @@ function blockAccent(p){ return ACCENTS[p?.accent||theme().accent]||ACCENTS.volt
 function theme(){ return state.theme; }
 function applyThemeCSS(){
   const t=theme();
-  const a=ACCENTS[t.accent]||ACCENTS.volt;
   document.documentElement.style.setProperty('--nova-accent', t.accent==='gold'?'#f5c452':t.accent==='rose'?'#ff6b9d':t.accent==='indigo'?'#818cf8':'#35e2c8');
   document.documentElement.style.setProperty('--nova-accent-soft', t.accent==='gold'?'#ffdf95':t.accent==='rose'?'#ffb4c8':t.accent==='indigo'?'#a5b4fc':'#7ff3e4');
   document.documentElement.style.setProperty('--nova-radius', RADIUS_MAP[t.radius]||RADIUS_MAP.md);
@@ -314,20 +348,55 @@ const WIDGETS = {
     defaults:()=>({label:'',size:'md',accent:'volt',visible:true}),
     render(p){ const acc=blockAccent(p); const h={sm:'py-4',md:'py-8',lg:'py-14'}[p.size]||'py-8'; return `<section class="${h} ${revealClass()}"><div class="flex items-center gap-4">${p.label?`<span class="shrink-0 text-[10px] font-bold uppercase tracking-[.2em] ${acc.text}">${esc(p.label)}</span>`:''}<div class="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div></div></section>`; },
     fields(p){ return [f('text','label','Label (optional)',p.label),f('select','size','Spacer size',p.size,[['sm','Small'],['md','Medium'],['lg','Large']]),f('select','accent','Accent',p.accent,ACCENT_OPTS)]; }
+  },
+  html:{
+    label:'Custom HTML', icon:'code', hint:'Raw HTML in glass container',
+    defaults:()=>({html:'<p class="text-mist-300">Custom content</p>',accent:'volt',visible:true}),
+    render(p){ return `<section class="glass ${glassRadius()} overflow-hidden p-6 ${revealClass()}">${sanitizeHtml(p.html)}</section>`; },
+    fields(p){ return [f('area','html','HTML content',p.html),f('select','accent','Accent',p.accent,ACCENT_OPTS)]; }
   }
 };
 
-const LS_V2='nova.builder.v2';
-const LS_V1='nova.builder.v1';
-const MAX_UNDO=50;
+function sanitizeHtml(html){
+  const div=document.createElement('div');
+  div.innerHTML=String(html||'');
+  div.querySelectorAll('script,iframe,object,embed,form').forEach(el=>el.remove());
+  return div.innerHTML;
+}
+
+function bindCms(obj){
+  if(!state.cms?.data||!obj) return obj;
+  const data=state.cms.data;
+  const resolve=str=>{
+    if(typeof str!=='string') return str;
+    return str.replace(/\{\{([\w.]+)\}\}/g,(_,path)=>{
+      let val=data;
+      for(const p of path.split('.')) val=val?.[p];
+      return val!=null?String(val):'';
+    });
+  };
+  const walk=o=>{
+    if(typeof o==='string') return resolve(o);
+    if(Array.isArray(o)) return o.map(walk);
+    if(o&&typeof o==='object'){ const r={}; for(const[k,v]of Object.entries(o)) r[k]=walk(v); return r; }
+    return o;
+  };
+  return walk(structuredClone(obj));
+}
+
+function renderWidget(type,props){ return WIDGETS[type].render(bindCms(props)); }
+function hasCmsBinding(props){ return /\{\{[\w.]+\}\}/.test(JSON.stringify(props||{})); }
+function ensureBlockAnim(b){ if(!b.props.anim) b.props.anim={...DEFAULT_ANIM}; }
 
 let state={
   pages:[{id:uid('p'),name:'Slide 1',blocks:[]}],
   currentPageId:null,
-  theme:{accent:'volt',font:'inter',radius:'md',animations:true},
+  theme:{accent:'volt',font:'inter',radius:'md',animations:true,gsapEnabled:true},
   seo:{title:'NOVA Exported Page',description:'Built with NOVA Builder by AURORA.STUDIO',ogImage:''},
+  cms:{inline:'',url:'',refreshInterval:0,data:{}},
   device:1280,
-  grid:false
+  grid:false,
+  cloud:{autoSnapshot:false,openaiModel:'gpt-4o-mini'}
 };
 state.currentPageId=state.pages[0].id;
 
@@ -344,8 +413,12 @@ let snapshotLock=false;
 function currentPage(){ return state.pages.find(p=>p.id===state.currentPageId)||state.pages[0]; }
 function blocks(){ return currentPage().blocks; }
 
+let collab={room:null,isHost:false,peer:null,connections:[],online:1,bc:null,broadcastTimer:null};
+let cmsRefreshTimer=null;
+let autoSnapshotTimer=null;
+
 function snapshot(){
-  return JSON.stringify({pages:state.pages,currentPageId:state.currentPageId,theme:state.theme,seo:state.seo});
+  return JSON.stringify({pages:state.pages,currentPageId:state.currentPageId,theme:state.theme,seo:state.seo,cms:state.cms});
 }
 function pushHistory(){
   if(snapshotLock) return;
@@ -358,7 +431,9 @@ function restoreSnapshot(json){
   snapshotLock=true;
   try{
     const s=JSON.parse(json);
-    state.pages=s.pages; state.currentPageId=s.currentPageId; state.theme=s.theme; state.seo=s.seo;
+    state.pages=s.pages; state.currentPageId=s.currentPageId; state.theme={...state.theme,...s.theme}; state.seo=s.seo;
+    if(s.cms) state.cms={...state.cms,...s.cms};
+    state.pages.forEach(pg=>pg.blocks.forEach(ensureBlockAnim));
     if(!state.pages.find(p=>p.id===state.currentPageId)) state.currentPageId=state.pages[0]?.id;
     selectedId=null; applyThemeCSS(); renderAll();
   }finally{ snapshotLock=false; }
@@ -370,7 +445,11 @@ function updateUndoButtons(){ $('#btnUndo').disabled=!undoStack.length; $('#btnR
 function commit(fn){ pushHistory(); fn(); persist(); renderAll(); }
 function mutate(fn){ fn(); persist(); renderAll(); }
 
-function mkBlock(type, props){ return {id:uid(),type,props:{...WIDGETS[type].defaults(),...props||{},visible:props?.visible!==false}}; }
+function mkBlock(type, props){
+  const defaults=WIDGETS[type].defaults();
+  const anim={...DEFAULT_ANIM,...defaults.anim,...props?.anim};
+  return {id:uid(),type,props:{...defaults,...props||{},anim,visible:props?.visible!==false}};
+}
 function defaultDemo(){ return ['hero','table','badges'].map(t=>mkBlock(t)); }
 
 function addPage(name, blocksArr){
@@ -390,15 +469,278 @@ function deletePage(id){
   selectedId=null;
 }
 
-function persist(){ try{ localStorage.setItem(LS_V2, snapshot()); }catch(_){} }
+function persist(){ try{ localStorage.setItem(LS_V3, snapshot()); }catch(_){} broadcastState(); }
+function migrateV2(data){
+  const s=JSON.parse(data);
+  if(!s.theme.gsapEnabled) s.theme.gsapEnabled=true;
+  if(!s.cms) s.cms={inline:'',url:'',refreshInterval:0,data:{}};
+  s.pages.forEach(pg=>pg.blocks.forEach(ensureBlockAnim));
+  return JSON.stringify(s);
+}
 function restore(){
   try{
+    const hash=location.hash.slice(1);
+    const stateMatch=hash.match(/(?:^|&)state=([^&]+)/);
+    if(stateMatch){ restoreSnapshot(decodeURIComponent(escape(atob(stateMatch[1])))); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
+    const roomMatch=hash.match(/(?:^|&)room=([^&]+)/);
+    if(roomMatch) setTimeout(()=>joinRoom(roomMatch[1]),800);
+    const v3=localStorage.getItem(LS_V3);
+    if(v3){ restoreSnapshot(v3); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
     const v2=localStorage.getItem(LS_V2);
-    if(v2){ restoreSnapshot(v2); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
+    if(v2){ restoreSnapshot(migrateV2(v2)); persist(); undoStack=[]; redoStack=[]; updateUndoButtons(); return; }
     const v1=localStorage.getItem(LS_V1);
     if(v1){ const arr=JSON.parse(v1); if(Array.isArray(arr)){ state.pages[0].blocks=arr; persist(); return; } }
   }catch(_){}
   state.pages[0].blocks=defaultDemo();
+}
+
+/* ── Collaboration (PeerJS + BroadcastChannel) ── */
+function genRoomCode(){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join(''); }
+function initBroadcastChannel(){
+  if(collab.bc) return;
+  try{
+    collab.bc=new BroadcastChannel('nova-collab');
+    collab.bc.onmessage=e=>{ if(e.data?.type==='sync'&&e.data.data) receiveRemoteSnapshot(e.data.data); if(e.data?.type==='presence') updateCollabBadge(e.data.count); };
+  }catch(_){}
+}
+function broadcastState(){
+  if(snapshotLock) return;
+  clearTimeout(collab.broadcastTimer);
+  collab.broadcastTimer=setTimeout(()=>{
+    const data=snapshot();
+    collab.bc?.postMessage({type:'sync',data});
+    collab.connections.forEach(c=>{ try{ c.send({type:'sync',data}); }catch(_){} });
+  },300);
+}
+function receiveRemoteSnapshot(json){
+  snapshotLock=true;
+  try{ const s=typeof json==='string'?json:JSON.stringify(json); restoreSnapshot(s); }finally{ snapshotLock=false; }
+}
+function updateCollabBadge(count){
+  const badge=$('#collabBadge'),dot=$('#collabDot'),status=$('#collabStatus');
+  if(!badge) return;
+  const n=count||collab.online;
+  if(collab.room||n>1){ badge.classList.remove('hidden'); dot.classList.add('online'); status.textContent=`${n} online`; }
+  else if(collab.room){ badge.classList.remove('hidden'); dot.classList.add('online'); status.textContent=collab.isHost?'Hosting':'Connected'; }
+  else{ badge.classList.add('hidden'); dot.classList.remove('online'); status.textContent='Offline'; }
+}
+function setupPeerConnection(conn){
+  collab.connections.push(conn);
+  conn.on('data',d=>{ if(d?.type==='sync') receiveRemoteSnapshot(d.data); });
+  conn.on('close',()=>{ collab.connections=collab.connections.filter(c=>c!==conn); collab.online=Math.max(1,collab.connections.length+1); updateCollabBadge(); });
+  collab.online=collab.connections.length+1; updateCollabBadge();
+}
+function hostRoom(){
+  const code=genRoomCode(); collab.room=code; collab.isHost=true; initBroadcastChannel();
+  if(typeof Peer==='undefined'){ alert('PeerJS not loaded'); return; }
+  if(collab.peer) collab.peer.destroy();
+  collab.peer=new Peer(code);
+  collab.peer.on('open',()=>{ updateCollabBadge(); renderLeftPanel(); });
+  collab.peer.on('connection',conn=>{ conn.on('open',()=>setupPeerConnection(conn)); });
+  collab.peer.on('error',e=>console.warn('Peer error',e));
+  location.hash=`room=${code}`;
+}
+function joinRoom(code){
+  code=String(code||'').trim().toUpperCase(); if(!code) return;
+  collab.room=code; collab.isHost=false; initBroadcastChannel();
+  if(typeof Peer==='undefined'){ alert('PeerJS not loaded'); return; }
+  if(collab.peer) collab.peer.destroy();
+  collab.peer=new Peer();
+  collab.peer.on('open',()=>{
+    const conn=collab.peer.connect(code); conn.on('open',()=>setupPeerConnection(conn));
+    updateCollabBadge(); renderLeftPanel();
+  });
+  collab.peer.on('error',e=>console.warn('Peer error',e));
+  location.hash=`room=${code}`;
+}
+function leaveRoom(){
+  collab.connections.forEach(c=>c.close()); collab.connections=[];
+  if(collab.peer){ collab.peer.destroy(); collab.peer=null; }
+  collab.room=null; collab.isHost=false; collab.online=1; updateCollabBadge(); renderLeftPanel();
+}
+function copyShareLink(){
+  const url=location.origin+location.pathname+(collab.room?`#room=${collab.room}`:'');
+  navigator.clipboard?.writeText(url).then(()=>alert('Share link copied!')).catch(()=>prompt('Copy link:',url));
+}
+
+/* ── IndexedDB Cloud Versions ── */
+function idbOpen(){
+  return new Promise((res,rej)=>{
+    const req=indexedDB.open(IDB_NAME,1);
+    req.onupgradeneeded=()=>{ const db=req.result; if(!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE,{keyPath:'id',autoIncrement:true}); };
+    req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error);
+  });
+}
+async function saveCloudVersion(name){
+  const db=await idbOpen();
+  const entry={name:name||`Version ${new Date().toLocaleString()}`,ts:Date.now(),data:snapshot()};
+  await new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).add(entry); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); });
+  const all=await listCloudVersions(); if(all.length>20){ const db2=await idbOpen(); const old=all.slice(20); for(const o of old){ await new Promise(r=>{ const tx=db2.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).delete(o.id); tx.oncomplete=r; }); } }
+  renderRightPanel();
+}
+async function listCloudVersions(){
+  const db=await idbOpen();
+  return new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,'readonly'); const req=tx.objectStore(IDB_STORE).getAll(); req.onsuccess=()=>res((req.result||[]).sort((a,b)=>b.ts-a.ts)); req.onerror=()=>rej(req.error); });
+}
+async function restoreCloudVersion(id){
+  const db=await idbOpen();
+  const entry=await new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,'readonly'); const req=tx.objectStore(IDB_STORE).get(id); req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error); });
+  if(entry?.data) commit(()=>restoreSnapshot(entry.data));
+}
+async function deleteCloudVersion(id){
+  const db=await idbOpen();
+  await new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).delete(id); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); });
+  renderRightPanel();
+}
+function startAutoSnapshot(){
+  clearInterval(autoSnapshotTimer);
+  if(state.cloud.autoSnapshot) autoSnapshotTimer=setInterval(()=>saveCloudVersion('Auto-snapshot'),5*60*1000);
+}
+
+/* ── GSAP Animations ── */
+function getBlockAnim(blockId){ const b=blocks().find(x=>x.id===blockId)||state.pages.flatMap(p=>p.blocks).find(x=>x.id===blockId); return b?.props?.anim||DEFAULT_ANIM; }
+function animFromVars(preset){
+  const map={fadeUp:{opacity:0,y:40},fadeIn:{opacity:0},slideLeft:{opacity:0,x:-60},slideRight:{opacity:0,x:60},scaleIn:{opacity:0,scale:.85},blurIn:{opacity:0,filter:'blur(12px)'}};
+  return map[preset]||map.fadeUp;
+}
+function animToVars(from){
+  const to={opacity:1,duration:0.8,ease:'power2.out'};
+  if('y' in from) to.y=0; if('x' in from) to.x=0; if('scale' in from) to.scale=1; if('filter' in from) to.filter='blur(0px)';
+  return to;
+}
+function runBlockAnimations(){
+  if(!theme().gsapEnabled||typeof gsap==='undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.getAll().forEach(st=>st.kill());
+  $$('#canvas .block').forEach((el,i)=>{
+    const anim=getBlockAnim(el.dataset.id);
+    if(!anim||anim.preset==='none') return;
+    const target=el.querySelector('section')||el;
+    if(anim.preset==='stagger'){
+      const kids=target.children;
+      if(!kids.length) return;
+      gsap.set(kids,{opacity:0,y:24});
+      const cfg={opacity:1,y:0,duration:anim.duration,delay:anim.delay,ease:anim.ease,stagger:.12};
+      if(previewMode||presentMode) gsap.to(kids,cfg);
+      else gsap.to(kids,{...cfg,scrollTrigger:{trigger:target,start:'top 85%'}});
+      return;
+    }
+    const from=animFromVars(anim.preset);
+    gsap.set(target,from);
+    const to={...animToVars(from),duration:anim.duration,delay:anim.delay+(previewMode||presentMode?i*.08:0),ease:anim.ease};
+    if(previewMode||presentMode) gsap.to(target,to);
+    else gsap.to(target,{...to,scrollTrigger:{trigger:target,start:'top 85%',toggleActions:'play none none none'}});
+  });
+}
+
+/* ── Web Import ── */
+function importHtmlBlock(html){
+  commit(()=>{ const b=mkBlock('html',{html:sanitizeHtml(html)}); blocks().push(b); selectedId=b.id; });
+}
+async function importFromUrl(url){
+  const u=String(url||'').trim(); if(!u) return;
+  try{
+    const res=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`);
+    const text=await res.text();
+    const doc=new DOMParser().parseFromString(text,'text/html');
+    importHtmlBlock(doc.body?.innerHTML||text);
+  }catch(e){ alert('Import failed: '+e.message); }
+}
+function smartParseHtml(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const newBlocks=[];
+  const h1=doc.querySelector('h1');
+  if(h1) newBlocks.push(mkBlock('heading',{title:h1.textContent.trim(),eyebrow:'',body:doc.querySelector('p')?.textContent?.trim()||''}));
+  const img=doc.querySelector('img');
+  if(img&&doc.querySelector('p')) newBlocks.push(mkBlock('hero',{title:h1?.textContent?.trim()||'Imported',body:doc.querySelector('p').textContent.trim(),image:img.src,eyebrow:'Import'}));
+  const table=doc.querySelector('table');
+  if(table){
+    const cols=[...table.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+    const rows=[...table.querySelectorAll('tbody tr')].map(tr=>{
+      const cells=[...tr.querySelectorAll('td')];
+      return {icon:'grid',name:cells[0]?.textContent?.trim()||'Row',values:cells.slice(1).map(c=>c.textContent.trim())};
+    });
+    if(cols.length) newBlocks.push(mkBlock('table',{columns:cols,rows,prices:cols.map(()=>'')}));
+  }
+  if(!newBlocks.length) newBlocks.push(mkBlock('html',{html:sanitizeHtml(html)}));
+  commit(()=>{ blocks().push(...newBlocks); selectedId=newBlocks[0].id; });
+}
+
+/* ── CMS Data Binding ── */
+const CMS_SAMPLE={company:'AURORA',product:'NOVA',price:'$79',features:['Fast','Secure','Modern']};
+function parseCmsInline(){
+  try{ state.cms.data=JSON.parse(state.cms.inline||'{}'); }catch(_){ alert('Invalid JSON in CMS data'); }
+}
+async function fetchCmsUrl(){
+  const u=state.cms.url?.trim(); if(!u) return;
+  try{ const res=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`); state.cms.data=await res.json(); renderAll(); }catch(e){ alert('CMS fetch failed'); }
+}
+function setupCmsRefresh(){
+  clearInterval(cmsRefreshTimer);
+  const sec=+state.cms.refreshInterval;
+  if(sec>0) cmsRefreshTimer=setInterval(fetchCmsUrl,sec*1000);
+}
+function applyCmsToDeck(){ renderAll(); }
+
+/* ── OpenAI AI Wizard ── */
+function hasOpenAIKey(){ return !!localStorage.getItem(LS_OPENAI); }
+function updateAiModal(){
+  const wrap=$('#aiOpenAIWrap');
+  if(wrap){ wrap.classList.toggle('hidden',!hasOpenAIKey()); if(hasOpenAIKey()) $('#aiUseOpenAI').checked=true; }
+}
+async function callOpenAIDeck(topic,audience,goal,style){
+  const key=localStorage.getItem(LS_OPENAI);
+  const model=state.cloud.openaiModel||'gpt-4o-mini';
+  const sys='You are a presentation layout generator. Return ONLY valid JSON matching this schema: {"pages":[{"name":"string","blocks":[{"type":"hero|heading|badges|stats|table|pricing|faq|timeline|cta|testimonial|video|logos|divider|html","props":{}}]}]}. Use NOVA widget types. Keep props minimal but complete.';
+  const user=`Topic: ${topic}. Audience: ${audience}. Goal: ${goal}. Style accent: ${style}. Generate 4-5 slides.`;
+  const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${key}`},body:JSON.stringify({model,messages:[{role:'system',content:sys},{role:'user',content:user}],temperature:.7})});
+  if(!res.ok) throw new Error('API error');
+  const data=await res.json();
+  const text=data.choices?.[0]?.message?.content||'';
+  const jsonMatch=text.match(/\{[\s\S]*\}/);
+  if(!jsonMatch) throw new Error('No JSON in response');
+  return JSON.parse(jsonMatch[0]);
+}
+function applyAIDeckLayout(layout,style){
+  const slides=(layout.pages||[]).map(pg=>({
+    id:uid('p'),name:pg.name||'Slide',
+    blocks:(pg.blocks||[]).filter(b=>WIDGETS[b.type]).map(b=>mkBlock(b.type,{...b.props,accent:style}))
+  }));
+  if(!slides.length) return false;
+  state.pages=slides; state.currentPageId=slides[0].id; state.theme.accent=style; selectedId=null;
+  return true;
+}
+function generateAIDeckRuleBody(style){
+  const topic=$('#aiTopic').value.trim()||'Your product';
+  const audience=$('#aiAudience').value.trim()||'Decision makers';
+  const goal=$('#aiGoal').value;
+  const acc=()=>({accent:style});
+  const slides=[];
+  slides.push({name:'Opening',blocks:[mkBlock('hero',{eyebrow:goal.toUpperCase(),title:topic,body:`Crafted for ${audience}.`,cta:goal==='convert'?'Get started':goal==='pitch'?'View deck':'Learn more',accent:style}),mkBlock('stats',acc()),mkBlock('logos',acc())]});
+  slides.push({name:'Story',blocks:[mkBlock('heading',{eyebrow:'Overview',title:`Why ${topic} matters`,body:`A focused narrative for ${audience}.`,accent:style}),mkBlock('badges',acc()),mkBlock('testimonial',acc())]});
+  if(goal==='pitch'||goal==='convert') slides.push({name:'Offer',blocks:[mkBlock('pricing',acc()),mkBlock('faq',acc())]});
+  else slides.push({name:'Details',blocks:[mkBlock('timeline',acc()),mkBlock('video',acc())]});
+  slides.push({name:'Close',blocks:[mkBlock('cta',{title:goal==='convert'?`Start with ${topic}`:`Explore ${topic}`,body:`Built for ${audience}.`,button:goal==='convert'?'Sign up now':'Contact us',accent:style})]});
+  state.pages=slides.map(s=>({id:uid('p'),name:s.name,blocks:s.blocks})); state.currentPageId=state.pages[0].id; state.theme.accent=style; selectedId=null;
+}
+function generateAIDeckRule(){
+  const style=$('#aiStyle').value;
+  commit(()=>generateAIDeckRuleBody(style));
+  $('#aiModal').classList.add('hidden');
+}
+async function generateAIDeck(){
+  const spinner=$('#aiSpinner'),label=$('#aiGenLabel');
+  const useAI=$('#aiUseOpenAI')?.checked&&hasOpenAIKey();
+  if(useAI){
+    spinner?.classList.remove('hidden'); label.textContent='Generating…';
+    try{
+      const layout=await callOpenAIDeck($('#aiTopic').value.trim()||'Product',$('#aiAudience').value.trim()||'Audience',$('#aiGoal').value,$('#aiStyle').value);
+      const style=$('#aiStyle').value;
+      commit(()=>{ if(!applyAIDeckLayout(layout,style)) generateAIDeckRuleBody(style); });
+    }catch(_){ generateAIDeckRule(); }
+    finally{ spinner?.classList.add('hidden'); label.textContent='Generate deck'; }
+  } else generateAIDeckRule();
+  $('#aiModal').classList.add('hidden');
 }
 
 const TEMPLATES={
@@ -442,28 +784,6 @@ function applyTemplate(key, mode){
   });
 }
 
-function generateAIDeck(){
-  const topic=$('#aiTopic').value.trim()||'Your product';
-  const audience=$('#aiAudience').value.trim()||'Decision makers';
-  const goal=$('#aiGoal').value;
-  const style=$('#aiStyle').value;
-  const acc=()=>({accent:style});
-  const slides=[];
-  slides.push({name:'Opening',blocks:[
-    mkBlock('hero',{eyebrow:goal.toUpperCase(),title:topic,body:`Crafted for ${audience}.`,cta:goal==='convert'?'Get started':goal==='pitch'?'View deck':'Learn more',accent:style}),
-    mkBlock('stats',acc()), mkBlock('logos',acc())
-  ]});
-  slides.push({name:'Story',blocks:[
-    mkBlock('heading',{eyebrow:'Overview',title:`Why ${topic} matters`,body:`A focused narrative for ${audience}.`,accent:style}),
-    mkBlock('badges',acc()), mkBlock('testimonial',acc())
-  ]});
-  if(goal==='pitch'||goal==='convert') slides.push({name:'Offer',blocks:[mkBlock('pricing',acc()),mkBlock('faq',acc())]});
-  else slides.push({name:'Details',blocks:[mkBlock('timeline',acc()),mkBlock('video',acc())]});
-  slides.push({name:'Close',blocks:[mkBlock('cta',{title:goal==='convert'?`Start with ${topic}`:`Explore ${topic}`,body:`Built for ${audience}.`,button:goal==='convert'?'Sign up now':'Contact us',accent:style})]});
-  commit(()=>{ state.pages=slides.map(s=>({id:uid('p'),name:s.name,blocks:s.blocks})); state.currentPageId=state.pages[0].id; state.theme.accent=style; selectedId=null; });
-  $('#aiModal').classList.add('hidden');
-}
-
 function renderLibrary(){
   $('#leftPanel').innerHTML=`<p class="px-1 pb-2 text-[10px] font-bold uppercase tracking-[.18em] text-mist-400">Drag or click to add</p><div id="library" class="space-y-2.5">${Object.entries(WIDGETS).map(([type,w])=>`<div class="wcard glass-soft ${glassRadius()} p-3" data-type="${type}"><div class="flex items-start gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center ${glassRadius()} bg-gradient-to-br from-volt-500/25 to-gold-400/15 text-volt-300">${svg(w.icon)}</span><div class="min-w-0"><p class="text-[12.5px] font-bold">${w.label}</p><p class="mt-0.5 text-[10.5px] text-mist-400">${w.hint}</p></div></div></div>`).join('')}</div>`;
   if(window._libSort) window._libSort.destroy();
@@ -476,7 +796,7 @@ function renderTemplates(){
 
 function renderLayers(){
   const bs=blocks();
-  $('#leftPanel').innerHTML=`<p class="mb-2 text-[10px] font-bold uppercase text-mist-400">Layers · drag to reorder</p><div id="layerList" class="space-y-1">${bs.length?bs.map((b,i)=>{const w=WIDGETS[b.type];const vis=b.props.visible!==false;return `<div class="layer-row tr flex items-center gap-2 rounded-xl border border-white/8 px-2 py-2 ${b.id===selectedId?'active':''}" data-id="${b.id}"><button class="handle text-mist-400">⠿</button><span class="min-w-0 flex-1 truncate text-[11px] font-semibold">${i+1}. ${esc(w.label)}</span><button data-lact="vis" class="text-[11px] ${vis?'text-volt-300':'text-mist-500'}" title="Toggle visibility">${vis?'👁':'◌'}</button><button data-lact="sel" class="text-[11px] text-mist-300">✎</button><button data-lact="dup" class="text-[11px] text-volt-300">⧉</button><button data-lact="del" class="text-[11px] text-rose-300">🗑</button></div>`;}).join(''):'<p class="text-[11px] text-mist-400">No blocks on this slide.</p>'}</div>`;
+  $('#leftPanel').innerHTML=`<p class="mb-2 text-[10px] font-bold uppercase text-mist-400">Layers · drag to reorder</p><div id="layerList" class="space-y-1">${bs.length?bs.map((b,i)=>{const w=WIDGETS[b.type];const vis=b.props.visible!==false;const cms=hasCmsBinding(b.props);return `<div class="layer-row tr flex items-center gap-2 rounded-xl border border-white/8 px-2 py-2 ${b.id===selectedId?'active':''}" data-id="${b.id}"><button class="handle text-mist-400">⠿</button><span class="min-w-0 flex-1 truncate text-[11px] font-semibold ${cms?'cms-bound':''}">${i+1}. ${esc(w.label)}</span><button data-lact="vis" class="text-[11px] ${vis?'text-volt-300':'text-mist-500'}" title="Toggle visibility">${vis?'👁':'◌'}</button><button data-lact="sel" class="text-[11px] text-mist-300">✎</button><button data-lact="dup" class="text-[11px] text-volt-300">⧉</button><button data-lact="del" class="text-[11px] text-rose-300">🗑</button></div>`;}).join(''):'<p class="text-[11px] text-mist-400">No blocks on this slide.</p>'}</div>`;
   const list=$('#layerList');
   if(list&&bs.length){
     if(window._layerSort) window._layerSort.destroy();
@@ -484,14 +804,25 @@ function renderLayers(){
   }
 }
 
+function renderImport(){
+  $('#leftPanel').innerHTML=`<div class="import-panel space-y-3"><p class="text-[10px] font-bold uppercase text-mist-400">Paste HTML</p><textarea id="importHtml" class="fld" rows="6" placeholder="<section>...</section>"></textarea><button id="btnImportHtml" class="tr w-full rounded-xl border border-white/10 py-2 text-[11px] font-semibold text-volt-300">Create HTML block</button><p class="text-[10px] font-bold uppercase text-mist-400 pt-2">Import URL</p><input id="importUrl" class="fld" placeholder="https://example.com" /><button id="btnImportUrl" class="tr w-full rounded-xl border border-white/10 py-2 text-[11px] font-semibold">Fetch &amp; import</button><button id="btnSmartParse" class="tr w-full rounded-xl bg-gradient-to-r from-volt-400/80 to-volt-600/80 py-2 text-[11px] font-bold text-ink-900">Smart parse → native blocks</button></div>`;
+}
+
+function renderCollab(){
+  const room=collab.room;
+  $('#leftPanel').innerHTML=`<div class="space-y-3"><p class="text-[12px] text-mist-300">Real-time P2P collaboration via PeerJS.</p>${room?`<div class="glass-soft ${glassRadius()} p-3"><p class="text-[10px] uppercase text-mist-400">Room code</p><p class="text-[20px] font-black tracking-widest text-volt-300">${esc(room)}</p><p class="mt-1 text-[10px] text-mist-400">${collab.isHost?'You are hosting':'Connected as guest'}</p></div><button id="btnShareLink" class="tr w-full rounded-xl border border-white/10 py-2 text-[11px] font-semibold text-volt-300">Copy share link</button><button id="btnLeaveRoom" class="tr w-full rounded-xl border border-rose-400/30 py-2 text-[11px] font-semibold text-rose-300">Leave room</button>`:`<button id="btnHostRoom" class="tr w-full ${glassRadius()} bg-gradient-to-r from-volt-400 to-volt-600 py-2.5 text-[12px] font-bold text-ink-900">Create room</button><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Join room</label><div class="flex gap-2"><input id="joinCode" class="fld flex-1 uppercase" maxlength="6" placeholder="ABC123" /><button id="btnJoinRoom" class="tr shrink-0 rounded-xl border border-white/10 px-3 text-[11px] font-semibold">Join</button></div></div>`}<p class="text-[10px] text-mist-400">Same-browser tabs sync via BroadcastChannel fallback.</p></div>`;
+}
+
 function renderAI(){
-  $('#leftPanel').innerHTML=`<div class="space-y-3"><p class="text-[12px] text-mist-300">Generate a multi-slide deck from a brief using built-in rules.</p><button id="openAiModal" class="tr w-full ${glassRadius()} bg-gradient-to-r from-volt-400 to-volt-600 py-2.5 text-[12px] font-bold text-ink-900">Open AI Wizard</button></div>`;
+  $('#leftPanel').innerHTML=`<div class="space-y-3"><p class="text-[12px] text-mist-300">Generate a multi-slide deck from a brief.${hasOpenAIKey()?' OpenAI enabled.':''}</p><button id="openAiModal" class="tr w-full ${glassRadius()} bg-gradient-to-r from-volt-400 to-volt-600 py-2.5 text-[12px] font-bold text-ink-900">Open AI Wizard</button></div>`;
 }
 
 function renderLeftPanel(){
   if(leftTab==='elements') renderLibrary();
   else if(leftTab==='templates') renderTemplates();
   else if(leftTab==='layers') renderLayers();
+  else if(leftTab==='import') renderImport();
+  else if(leftTab==='collab') renderCollab();
   else renderAI();
 }
 
@@ -507,7 +838,7 @@ function renderCanvas(){
   const bs=blocks();
   $('#canvas').innerHTML=bs.map(b=>{
     const vis=b.props.visible!==false;
-    return `<div class="block ${b.id===selectedId?'sel':''} ${!vis?'hidden-block':''}" data-id="${b.id}"><div class="tools absolute right-3 top-3 z-20 flex items-center gap-1 rounded-xl border border-white/10 bg-ink-900/85 p-1 backdrop-blur"><button class="handle tr grid h-7 w-7 place-items-center rounded-lg text-mist-300 hover:bg-white/10">⠿</button><button data-act="up" class="tr grid h-7 w-7 place-items-center rounded-lg text-mist-300">↑</button><button data-act="down" class="tr grid h-7 w-7 place-items-center rounded-lg text-mist-300">↓</button><button data-act="dup" class="tr grid h-7 w-7 place-items-center rounded-lg text-volt-300">⧉</button><button data-act="del" class="tr grid h-7 w-7 place-items-center rounded-lg text-rose-300">🗑</button></div>${WIDGETS[b.type].render(b.props)}</div>`;
+    return `<div class="block ${b.id===selectedId?'sel':''} ${!vis?'hidden-block':''}" data-id="${b.id}" data-anim="${esc(b.props.anim?.preset||'fadeUp')}"><div class="tools absolute right-3 top-3 z-20 flex items-center gap-1 rounded-xl border border-white/10 bg-ink-900/85 p-1 backdrop-blur"><button class="handle tr grid h-7 w-7 place-items-center rounded-lg text-mist-300 hover:bg-white/10">⠿</button><button data-act="up" class="tr grid h-7 w-7 place-items-center rounded-lg text-mist-300">↑</button><button data-act="down" class="tr grid h-7 w-7 place-items-center rounded-lg text-mist-300">↓</button><button data-act="dup" class="tr grid h-7 w-7 place-items-center rounded-lg text-volt-300">⧉</button><button data-act="del" class="tr grid h-7 w-7 place-items-center rounded-lg text-rose-300">🗑</button></div>${renderWidget(b.type,b.props)}</div>`;
   }).join('');
   $('#dropHint').style.opacity=bs.length?'0':'1';
   $('#dropHint').style.height=bs.length?'0px':'';
@@ -516,16 +847,17 @@ function renderCanvas(){
   $('#canvasInner').style.maxWidth=state.device+'px';
   document.body.classList.toggle('grid-on',state.grid);
   if(theme().animations&&!previewMode&&!presentMode) setupReveal();
+  if(theme().gsapEnabled&&(previewMode||presentMode)) setTimeout(runBlockAnimations,80);
   bindFaq();
 }
 
 function setupReveal(){
   const obs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(en.isIntersecting){en.target.classList.remove('reveal-ready');en.target.classList.add('reveal-in');obs.unobserve(en.target);}});},{threshold:.12});
-  $('#canvas section.reveal-ready').forEach(el=>obs.observe(el));
+  $$('#canvas section.reveal-ready').forEach(el=>obs.observe(el));
 }
 
 function bindFaq(){
-  $('#canvas .faq-toggle').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.faq-item').classList.toggle('open');}));
+  $$('#canvas .faq-toggle').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.faq-item').classList.toggle('open');}));
 }
 
 function renderField(fl){
@@ -546,8 +878,9 @@ function renderField(fl){
 function renderProperties(){
   const b=blocks().find(x=>x.id===selectedId);
   if(!b){ $('#rightPanel').innerHTML=`<div class="grid h-full place-items-center px-4 text-center"><p class="text-[12.5px] font-semibold text-mist-300">No element selected</p><p class="mt-1 text-[11px] text-mist-400">Click a block to edit properties.</p></div>`; return; }
-  const w=WIDGETS[b.type];
-  $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><div class="glass-soft ${glassRadius()} px-3 py-2.5"><p class="text-[12px] font-bold">${w.label}</p><p class="text-[10px] text-mist-400">${b.id}</p></div>${w.fields(b.props).map(renderField).join('')}<div class="grid grid-cols-2 gap-2"><button data-act="dup" data-target="${b.id}" class="tr rounded-xl border border-white/10 py-2 text-[11.5px] font-semibold text-volt-300">Duplicate</button><button data-act="del" data-target="${b.id}" class="tr rounded-xl border border-white/10 py-2 text-[11.5px] font-semibold text-rose-300">Delete</button></div></div>`;
+  const w=WIDGETS[b.type]; const anim=b.props.anim||DEFAULT_ANIM;
+  const animFields=`<div class="glass-soft ${glassRadius()} space-y-2 p-2"><p class="text-[10px] font-bold uppercase text-mist-400">Animation</p><div><label class="mb-1 block text-[10px] text-mist-400">Preset</label><select id="blkAnimPreset" class="fld">${ANIM_PRESETS.map(([v,l])=>`<option value="${v}" ${anim.preset===v?'selected':''}>${l}</option>`).join('')}</select></div><div class="grid grid-cols-2 gap-2"><div><label class="mb-1 block text-[10px] text-mist-400">Duration</label><input id="blkAnimDur" class="fld" type="number" step="0.1" value="${anim.duration}" /></div><div><label class="mb-1 block text-[10px] text-mist-400">Delay</label><input id="blkAnimDelay" class="fld" type="number" step="0.1" value="${anim.delay}" /></div></div></div>`;
+  $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><div class="glass-soft ${glassRadius()} px-3 py-2.5"><p class="text-[12px] font-bold">${w.label}</p><p class="text-[10px] text-mist-400">${b.id}</p></div>${w.fields(b.props).map(renderField).join('')}${animFields}<div class="grid grid-cols-2 gap-2"><button data-act="dup" data-target="${b.id}" class="tr rounded-xl border border-white/10 py-2 text-[11.5px] font-semibold text-volt-300">Duplicate</button><button data-act="del" data-target="${b.id}" class="tr rounded-xl border border-white/10 py-2 text-[11.5px] font-semibold text-rose-300">Delete</button></div></div>`;
 }
 
 function renderDesign(){
@@ -555,12 +888,35 @@ function renderDesign(){
   $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><p class="text-[10px] font-bold uppercase text-mist-400">Global theme</p><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Accent</label><select id="thAccent" class="fld">${ACCENT_OPTS.map(([v,l])=>`<option value="${v}" ${t.accent===v?'selected':''}>${l}</option>`).join('')}</select></div><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Font</label><select id="thFont" class="fld"><option value="inter" ${t.font==='inter'?'selected':''}>Inter</option><option value="sora" ${t.font==='sora'?'selected':''}>Sora</option><option value="space" ${t.font==='space'?'selected':''}>Space Grotesk</option></select></div><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Corner radius</label><select id="thRadius" class="fld"><option value="sm" ${t.radius==='sm'?'selected':''}>Small</option><option value="md" ${t.radius==='md'?'selected':''}>Medium</option><option value="lg" ${t.radius==='lg'?'selected':''}>Large</option><option value="xl" ${t.radius==='xl'?'selected':''}>Extra large</option></select></div><label class="flex items-center gap-2 text-[12px]"><input id="thAnim" type="checkbox" ${t.animations?'checked':''} /> Scroll-reveal animations</label></div>`;
 }
 
+function renderMotion(){
+  const t=theme(); const b=blocks().find(x=>x.id===selectedId); const anim=b?.props?.anim||DEFAULT_ANIM;
+  $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><p class="text-[10px] font-bold uppercase text-mist-400">GSAP Motion</p><label class="flex items-center gap-2 text-[12px]"><input id="thGsap" type="checkbox" ${t.gsapEnabled?'checked':''} /> Enable GSAP animations</label><p class="text-[11px] text-mist-400">ScrollTrigger in editor · timeline in preview/present.</p>${b?`<div class="glass-soft ${glassRadius()} space-y-2 p-2"><p class="text-[10px] font-bold uppercase text-mist-400">Selected block</p><div><label class="mb-1 block text-[10px] text-mist-400">Preset</label><select id="motPreset" class="fld">${ANIM_PRESETS.map(([v,l])=>`<option value="${v}" ${anim.preset===v?'selected':''}>${l}</option>`).join('')}</select></div><div class="grid grid-cols-2 gap-2"><div><label class="mb-1 block text-[10px] text-mist-400">Duration</label><input id="motDur" class="fld" type="number" step="0.1" value="${anim.duration}" /></div><div><label class="mb-1 block text-[10px] text-mist-400">Delay</label><input id="motDelay" class="fld" type="number" step="0.1" value="${anim.delay}" /></div></div><div><label class="mb-1 block text-[10px] text-mist-400">Ease</label><input id="motEase" class="fld" value="${esc(anim.ease)}" /></div></div>`:'<p class="text-[11px] text-mist-400">Select a block for per-block motion controls.</p>'}</div>`;
+}
+
+function renderCMS(){
+  const c=state.cms;
+  $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><p class="text-[10px] font-bold uppercase text-mist-400">Live CMS binding</p><p class="text-[11px] text-mist-400">Use <code class="text-volt-300">{{field}}</code> or <code class="text-volt-300">{{nested.field}}</code> in any text prop.</p><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Inline JSON</label><textarea id="cmsInline" class="fld" rows="5">${esc(c.inline)}</textarea></div><button id="btnCmsSample" class="tr w-full rounded-xl border border-white/10 py-2 text-[11px] font-semibold">Load sample data</button><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Fetch URL</label><input id="cmsUrl" class="fld" value="${esc(c.url)}" placeholder="https://api.example.com/data.json" /></div><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Refresh interval</label><select id="cmsRefresh" class="fld"><option value="0" ${+c.refreshInterval===0?'selected':''}>Manual</option><option value="30" ${+c.refreshInterval===30?'selected':''}>30 sec</option><option value="60" ${+c.refreshInterval===60?'selected':''}>60 sec</option></select></div><button id="btnCmsFetch" class="tr w-full rounded-xl border border-white/10 py-2 text-[11px] font-semibold text-volt-300">Fetch CMS data</button><button id="btnCmsApply" class="tr w-full rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 py-2 text-[11px] font-bold text-ink-900">Apply CMS to deck</button></div>`;
+}
+
+async function renderCloud(){
+  const versions=await listCloudVersions().catch(()=>[]);
+  const key=localStorage.getItem(LS_OPENAI)||'';
+  $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><p class="text-[10px] font-bold uppercase text-mist-400">Cloud versions</p><div class="flex gap-2"><button id="btnCloudSave" class="tr flex-1 rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 py-2 text-[11px] font-bold text-ink-900">Save version</button><label class="flex items-center gap-1 text-[10px]"><input id="cloudAuto" type="checkbox" ${state.cloud.autoSnapshot?'checked':''} /> Auto 5min</label></div><div class="space-y-1.5 version-list">${versions.length?versions.slice(0,20).map(v=>`<div class="version-row"><span class="min-w-0 flex-1 truncate">${esc(v.name)}</span><button data-vrestore="${v.id}" class="text-volt-300">↺</button><button data-vexport="${v.id}" class="text-mist-300">⬇</button><button data-vdel="${v.id}" class="text-rose-300">🗑</button></div>`).join(''):'<p class="text-[11px] text-mist-400">No saved versions yet.</p>'}</div><button id="btnImportJson" class="tr w-full rounded-xl border border-white/10 py-2 text-[11px] font-semibold">Import JSON file</button><input id="importJsonFile" type="file" accept=".json" class="hidden" /><hr class="border-white/10" /><p class="text-[10px] font-bold uppercase text-mist-400">OpenAI settings</p><div><label class="mb-1 block text-[10px] text-mist-400">API key (local only)</label><input id="openaiKey" class="fld" type="password" value="${esc(key)}" placeholder="sk-..." /></div><div><label class="mb-1 block text-[10px] text-mist-400">Model</label><select id="openaiModel" class="fld"><option value="gpt-4o-mini" ${state.cloud.openaiModel==='gpt-4o-mini'?'selected':''}>gpt-4o-mini</option><option value="gpt-4o" ${state.cloud.openaiModel==='gpt-4o'?'selected':''}>gpt-4o</option></select></div></div>`;
+}
+
 function renderSEO(){
   const s=state.seo;
   $('#rightPanel').innerHTML=`<div class="panel-in space-y-3"><p class="text-[10px] font-bold uppercase text-mist-400">Export SEO</p><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Page title</label><input id="seoTitle" class="fld" value="${esc(s.title)}" /></div><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">Meta description</label><textarea id="seoDesc" class="fld" rows="3">${esc(s.description)}</textarea></div><div><label class="mb-1 block text-[10px] font-bold uppercase text-mist-400">OG image URL</label><input id="seoOg" class="fld" value="${esc(s.ogImage)}" /></div></div>`;
 }
 
-function renderRightPanel(){ if(rightTab==='properties') renderProperties(); else if(rightTab==='design') renderDesign(); else renderSEO(); }
+function renderRightPanel(){
+  if(rightTab==='properties') renderProperties();
+  else if(rightTab==='design') renderDesign();
+  else if(rightTab==='motion') renderMotion();
+  else if(rightTab==='cms') renderCMS();
+  else if(rightTab==='cloud') renderCloud();
+  else renderSEO();
+}
 function renderAll(){ renderSlideStrip(); renderLeftPanel(); renderCanvas(); renderRightPanel(); updateUndoButtons(); }
 
 function addBlock(type,index){
@@ -582,17 +938,30 @@ function exportThemeCSS(){
 }
 
 function slideHTML(page){
-  return page.blocks.filter(b=>b.props.visible!==false).map(b=>WIDGETS[b.type].render(b.props)).join('\n');
+  return page.blocks.filter(b=>b.props.visible!==false).map(b=>`<div data-anim="${esc(b.props.anim?.preset||'fadeUp')}">${renderWidget(b.type,b.props)}</div>`).join('\n');
+}
+
+function gsapExportScript(){
+  return `if(typeof gsap!=='undefined'){gsap.registerPlugin(ScrollTrigger);document.querySelectorAll('[data-anim]').forEach((el,i)=>{const p=el.dataset.anim;if(!p||p==='none')return;const t=el.querySelector('section')||el;const from={fadeUp:{opacity:0,y:40},fadeIn:{opacity:0},slideLeft:{opacity:0,x:-60},slideRight:{opacity:0,x:60},scaleIn:{opacity:0,scale:.85},blurIn:{opacity:0,filter:'blur(12px)'}}[p]||{opacity:0,y:40};gsap.set(t,from);gsap.to(t,{opacity:1,y:0,x:0,scale:1,filter:'blur(0px)',duration:.8,delay:i*.08,ease:'power2.out',scrollTrigger:{trigger:t,start:'top 85%'}});});}`;
 }
 
 function exportHTML(){
-  const s=state.seo; const anim=theme().animations;
+  const s=state.seo; const anim=theme().animations; const gsapOn=theme().gsapEnabled;
   const sections=state.pages.map((p,i)=>`<section id="slide-${i+1}" class="mx-auto max-w-5xl space-y-4 px-4 py-10">${slideHTML(p)}</section>`).join('\n');
-  const doc=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${esc(s.title)}</title><meta name="description" content="${esc(s.description)}"/>${s.ogImage?`<meta property="og:image" content="${esc(s.ogImage)}"/>`:''}<meta property="og:title" content="${esc(s.title)}"/><script src="https://cdn.tailwindcss.com"><\/script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Sora:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet"/><style>${exportThemeCSS()}</style></head><body class="antialiased">${sections}<script>${anim?`const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('reveal-in');o.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal-ready').forEach(el=>o.observe(el));`:''}<\/script></body></html>`;
+  const gsapScripts=gsapOn?`<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>`:'';
+  const doc=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${esc(s.title)}</title><meta name="description" content="${esc(s.description)}"/>${s.ogImage?`<meta property="og:image" content="${esc(s.ogImage)}"/>`:''}<meta property="og:title" content="${esc(s.title)}"/><script src="https://cdn.tailwindcss.com"><\/script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Sora:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet"/>${gsapScripts}<style>${exportThemeCSS()}</style></head><body class="antialiased">${sections}<script>${anim&&!gsapOn?`const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('reveal-in');o.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal-ready').forEach(el=>o.observe(el));`:''}${gsapOn?gsapExportScript():''}<\/script></body></html>`;
   downloadBlob(doc,'nova-deck.html','text/html');
 }
 
-function exportJSON(){ downloadBlob(JSON.stringify({pages:state.pages,theme:state.theme,seo:state.seo},null,2),'nova-layout.json','application/json'); }
+function exportJSON(){ downloadBlob(JSON.stringify({pages:state.pages,theme:state.theme,seo:state.seo,cms:state.cms},null,2),'nova-layout.json','application/json'); }
+
+function exportShareState(){
+  const data=snapshot();
+  if(data.length>2*1024*1024){ alert('State too large for URL sharing (>2MB)'); return; }
+  const b64=btoa(unescape(encodeURIComponent(data)));
+  const url=location.origin+location.pathname+`#state=${encodeURIComponent(b64)}`;
+  navigator.clipboard?.writeText(url).then(()=>alert('Share URL copied!')).catch(()=>prompt('Copy URL:',url));
+}
 
 async function exportPNG(){
   const el=$('#canvasInner'); const canvas=await html2canvas(el,{backgroundColor:'#05070f',scale:2,useCORS:true});
@@ -612,7 +981,7 @@ async function exportPDF(){
 
 function downloadBlob(content,name,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-function setPreview(on){ previewMode=on; document.body.classList.toggle('preview',on); $('#exitPreview').classList.toggle('hidden',!on); if(on){selectedId=null;renderAll();} }
+function setPreview(on){ previewMode=on; document.body.classList.toggle('preview',on); $('#exitPreview').classList.toggle('hidden',!on); if(on){selectedId=null;renderAll();runBlockAnimations();} }
 let presentReturnPageId=null;
 function setPresent(on){
   if(on){
@@ -626,7 +995,7 @@ function setPresent(on){
   presentMode=on;
   document.body.classList.toggle('present',on);
   $('#exitPresent').classList.toggle('hidden',!on);
-  if(on){ selectedId=null; renderCanvas(); setupReveal(); }
+  if(on){ selectedId=null; renderCanvas(); setupReveal(); runBlockAnimations(); }
   else renderAll();
 }
 function presentNav(dir){
@@ -637,6 +1006,7 @@ function presentNav(dir){
   selectedId=null;
   renderCanvas();
   setupReveal();
+  runBlockAnimations();
 }
 
 $('#rightPanel').addEventListener('input',e=>{
@@ -650,18 +1020,48 @@ $('#rightPanel').addEventListener('input',e=>{
       else if(sub!==undefined) b.props[key][+idx][sub]=el.value;
       else b.props[key][+idx]=el.value;
     });
-    const host=document.querySelector(`.block[data-id="${b.id}"] > section`); if(host) host.outerHTML=WIDGETS[b.type].render(b.props);
+    const host=document.querySelector(`.block[data-id="${b.id}"] > section`); if(host) host.outerHTML=renderWidget(b.type,b.props);
+    const preset=$('#blkAnimPreset'),dur=$('#blkAnimDur'),delay=$('#blkAnimDelay');
+    if(preset||dur||delay) mutate(()=>{ b.props.anim={...b.props.anim,preset:preset?.value||b.props.anim.preset,duration:+(dur?.value||b.props.anim.duration),delay:+(delay?.value||b.props.anim.delay)}; });
     return;
   }
   if(rightTab==='design'){
     mutate(()=>{ state.theme.accent=$('#thAccent').value; state.theme.font=$('#thFont').value; state.theme.radius=$('#thRadius').value; state.theme.animations=$('#thAnim').checked; applyThemeCSS(); });
   }
+  if(rightTab==='motion'){
+    mutate(()=>{
+      state.theme.gsapEnabled=$('#thGsap')?.checked??state.theme.gsapEnabled;
+      const b=blocks().find(x=>x.id===selectedId);
+      if(b){ b.props.anim={preset:$('#motPreset')?.value||'fadeUp',duration:+($('#motDur')?.value||0.8),delay:+($('#motDelay')?.value||0),ease:$('#motEase')?.value||'power2.out'}; }
+    });
+  }
+  if(rightTab==='cms'){
+    mutate(()=>{ state.cms.inline=$('#cmsInline')?.value||''; state.cms.url=$('#cmsUrl')?.value||''; state.cms.refreshInterval=+($('#cmsRefresh')?.value||0); });
+    setupCmsRefresh();
+  }
   if(rightTab==='seo'){
     mutate(()=>{ state.seo.title=$('#seoTitle').value; state.seo.description=$('#seoDesc').value; state.seo.ogImage=$('#seoOg').value; });
   }
+  if(rightTab==='cloud'){
+    const keyEl=$('#openaiKey');
+    if(keyEl){ const v=keyEl.value.trim(); if(v) localStorage.setItem(LS_OPENAI,v); else localStorage.removeItem(LS_OPENAI); updateAiModal(); }
+    if($('#openaiModel')) state.cloud.openaiModel=$('#openaiModel').value;
+    if($('#cloudAuto')){ state.cloud.autoSnapshot=$('#cloudAuto').checked; startAutoSnapshot(); }
+  }
 });
 
-$('#rightPanel').addEventListener('click',e=>{ const btn=e.target.closest('[data-act]'); if(btn) act(btn.dataset.act,btn.dataset.target); });
+$('#rightPanel').addEventListener('click',async e=>{
+  const btn=e.target.closest('[data-act]'); if(btn) return act(btn.dataset.act,btn.dataset.target);
+  if(e.target.id==='btnCmsSample'){ mutate(()=>{ state.cms.inline=JSON.stringify(CMS_SAMPLE,null,2); state.cms.data=CMS_SAMPLE; }); renderCMS(); }
+  if(e.target.id==='btnCmsFetch'){ parseCmsInline(); await fetchCmsUrl(); }
+  if(e.target.id==='btnCmsApply'){ parseCmsInline(); applyCmsToDeck(); }
+  if(e.target.id==='btnCloudSave'){ const n=prompt('Version name',''); await saveCloudVersion(n||undefined); }
+  if(e.target.id==='btnImportJson') $('#importJsonFile')?.click();
+  const rid=e.target.closest('[data-vrestore]'); if(rid) return restoreCloudVersion(+rid.dataset.vrestore);
+  const did=e.target.closest('[data-vdel]'); if(did) return deleteCloudVersion(+did.dataset.vdel);
+  const eid=e.target.closest('[data-vexport]');
+  if(eid){ const versions=await listCloudVersions(); const v=versions.find(x=>x.id===+eid.dataset.vexport); if(v) downloadBlob(v.data,(v.name||'version')+'.json','application/json'); }
+});
 
 $('#canvas').addEventListener('click',e=>{
   if(previewMode||presentMode) return;
@@ -673,7 +1073,14 @@ $('#canvas').addEventListener('click',e=>{
 $('#leftPanel').addEventListener('click',e=>{
   const card=e.target.closest('[data-type]'); if(card&&leftTab==='elements') return addBlock(card.dataset.type);
   const tpl=e.target.closest('[data-tpl]'); if(tpl) return applyTemplate(tpl.dataset.tpl,tpl.dataset.mode);
-  if(e.target.id==='openAiModal') $('#aiModal').classList.remove('hidden');
+  if(e.target.id==='openAiModal'){ updateAiModal(); $('#aiModal').classList.remove('hidden'); }
+  if(e.target.id==='btnImportHtml'){ const html=$('#importHtml')?.value; if(html) importHtmlBlock(html); }
+  if(e.target.id==='btnImportUrl'){ importFromUrl($('#importUrl')?.value); }
+  if(e.target.id==='btnSmartParse'){ const html=$('#importHtml')?.value; if(html) smartParseHtml(html); }
+  if(e.target.id==='btnHostRoom') hostRoom();
+  if(e.target.id==='btnJoinRoom') joinRoom($('#joinCode')?.value);
+  if(e.target.id==='btnShareLink') copyShareLink();
+  if(e.target.id==='btnLeaveRoom') leaveRoom();
   const row=e.target.closest('.layer-row'); if(!row||leftTab!=='layers') return;
   const id=row.dataset.id; const lact=e.target.closest('[data-lact]');
   if(lact){
@@ -694,10 +1101,10 @@ $('#slideStrip').addEventListener('click',e=>{
   if(e.target.id==='delSlide') commit(()=>deletePage(state.currentPageId));
 });
 
-$('#leftTabs [data-ltab]').forEach(btn=>btn.addEventListener('click',()=>{ leftTab=btn.dataset.ltab; $('#leftTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderLeftPanel(); }));
-$('#rightTabs [data-rtab]').forEach(btn=>btn.addEventListener('click',()=>{ rightTab=btn.dataset.rtab; $('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderRightPanel(); }));
+$$('#leftTabs [data-ltab]').forEach(btn=>btn.addEventListener('click',()=>{ leftTab=btn.dataset.ltab; $$('#leftTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderLeftPanel(); }));
+$$('#rightTabs [data-rtab]').forEach(btn=>btn.addEventListener('click',()=>{ rightTab=btn.dataset.rtab; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderRightPanel(); }));
 
-$('#deviceGroup [data-dev]').forEach(btn=>btn.addEventListener('click',()=>{ state.device=+btn.dataset.dev; $('#deviceGroup .dev-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderCanvas(); }));
+$$('#deviceGroup [data-dev]').forEach(btn=>btn.addEventListener('click',()=>{ state.device=+btn.dataset.dev; $$('#deviceGroup .dev-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderCanvas(); }));
 
 $('#btnUndo').addEventListener('click',undo);
 $('#btnRedo').addEventListener('click',redo);
@@ -708,7 +1115,8 @@ $('#exitPreview').addEventListener('click',()=>setPreview(false));
 $('#exitPresent').addEventListener('click',()=>setPresent(false));
 $('#btnSave').addEventListener('click',()=>{ persist(); const b=$('#btnSave'),t=b.textContent; b.textContent='✓ Saved'; setTimeout(()=>b.textContent=t,1400); });
 $('#btnClear').addEventListener('click',()=>{ if(confirm('Clear all blocks on this slide?')) commit(()=>{ currentPage().blocks=[]; selectedId=null; }); });
-$('[data-export]').forEach(btn=>btn.addEventListener('click',()=>{ if(btn.dataset.export==='html') exportHTML(); if(btn.dataset.export==='json') exportJSON(); if(btn.dataset.export==='png') exportPNG(); if(btn.dataset.export==='pdf') exportPDF(); }));
+$('#btnCloudQuick').addEventListener('click',async()=>{ rightTab='cloud'; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.rtab==='cloud')); await saveCloudVersion(); const b=$('#btnCloudQuick'); b.textContent='✓'; setTimeout(()=>b.textContent='☁',1200); });
+$$('[data-export]').forEach(btn=>btn.addEventListener('click',()=>{ if(btn.dataset.export==='html') exportHTML(); if(btn.dataset.export==='json') exportJSON(); if(btn.dataset.export==='png') exportPNG(); if(btn.dataset.export==='pdf') exportPDF(); if(btn.dataset.export==='share') exportShareState(); }));
 $('#aiCancel').addEventListener('click',()=>$('#aiModal').classList.add('hidden'));
 $('#aiGenerate').addEventListener('click',generateAIDeck);
 
@@ -733,7 +1141,13 @@ window._canvasSort=Sortable.create($('#canvas'),{
   onEnd(evt){ if(evt.from!==evt.to) return; const {oldIndex,newIndex}=evt; if(oldIndex===newIndex) return; commit(()=>{ blocks().splice(newIndex,0,blocks().splice(oldIndex,1)[0]); }); }
 });
 
-applyThemeCSS(); restore(); renderAll(); pushHistory();
+applyThemeCSS(); initBroadcastChannel(); restore(); renderAll(); pushHistory(); updateAiModal(); startAutoSnapshot();
+$('#importJsonFile')?.addEventListener('change',e=>{
+  const file=e.target.files?.[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{ try{ restoreSnapshot(reader.result); persist(); }catch(_){ alert('Invalid JSON file'); } e.target.value=''; };
+  reader.readAsText(file);
+});
 
 </script>
 </body>
