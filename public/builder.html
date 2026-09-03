@@ -94,6 +94,55 @@ tailwind.config = { theme: { extend: {
   .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.15);border-top-color:#35e2c8;border-radius:50%;animation:spin .7s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   .cms-bound::after{content:'🔗';margin-left:4px;font-size:10px}
+  #canvasWrap{display:flex;flex-direction:column;min-height:0;background:radial-gradient(ellipse at 50% 0%,rgba(15,211,182,.06),transparent 55%)}
+  #deviceViewport{position:relative;flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:1rem 1rem 2rem;scroll-behavior:smooth}
+  #deviceMeta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:.75rem;transition:opacity .3s}
+  #deviceMeta.hidden-meta{opacity:0;height:0;margin:0;overflow:hidden;pointer-events:none}
+  .device-pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);padding:.35rem .75rem;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93a1c4}
+  .device-pill strong{color:#7ff3e4;font-weight:800}
+  #deviceScaler{transform-origin:top center;transition:transform .35s cubic-bezier(.22,1,.36,1);will-change:transform;width:100%;display:flex;justify-content:center}
+  #deviceFrame{width:100%;transition:width .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-radius .35s,border-color .35s}
+  #deviceFrame.is-sim{border-radius:1.35rem;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 40px 90px -30px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06);background:#080c18;overflow:hidden}
+  #deviceFrame.is-sim::before{content:"";display:block;height:28px;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent);border-bottom:1px solid rgba(255,255,255,.06)}
+  #deviceFrame.is-mobile::after{content:"";position:absolute;bottom:8px;left:50%;width:96px;height:4px;transform:translateX(-50%);border-radius:99px;background:rgba(255,255,255,.18);pointer-events:none}
+  #deviceFrame.is-mobile{position:relative;border-radius:2rem;padding-bottom:18px}
+  #deviceFrame.is-tablet{border-radius:1.5rem}
+  #canvasInner{margin:0 auto;width:100%;transition:max-width .35s cubic-bezier(.22,1,.36,1),padding .35s}
+  #canvasInner.dev-mobile,#canvasInner.dev-tablet{padding-left:.75rem;padding-right:.75rem}
+  #canvasInner.dev-mobile .nova-hero-title{font-size:1.65rem!important;line-height:1.12!important}
+  #canvasInner.dev-mobile .nova-hero-body{font-size:.82rem!important}
+  #canvasInner.dev-mobile .nova-section-title{font-size:1.15rem!important}
+  #canvasInner.dev-mobile .nova-stat-value{font-size:1.35rem!important}
+  #canvasInner.dev-tablet .nova-hero-title{font-size:2rem!important}
+  #canvasInner.dev-mobile .md\:grid-cols-2,#canvasInner.dev-mobile .md\:grid-cols-3,#canvasInner.dev-mobile .md\:grid-cols-4{grid-template-columns:repeat(1,minmax(0,1fr))!important}
+  #canvasInner.dev-mobile .md\:flex-row{flex-direction:column!important}
+  #canvasInner.dev-mobile .md\:order-1,#canvasInner.dev-mobile .md\:order-2{order:unset!important}
+  #canvasInner.dev-mobile .nova-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #canvasInner.dev-tablet .nova-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .nova-badge-grid{grid-template-columns:repeat(var(--nova-cols,4),minmax(0,1fr))}
+  #canvasInner.dev-tablet .md\:grid-cols-4{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #canvasInner.dev-tablet .md\:grid-cols-3{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #canvasInner.dev-mobile .nova-table-shell{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #canvasInner.dev-mobile .nova-table-shell table{min-width:520px;font-size:11px}
+  #canvasInner.dev-mobile .nova-table-shell th,#canvasInner.dev-mobile .nova-table-shell td{padding:.55rem .45rem!important}
+  #canvasInner.dev-mobile .nova-cta-band{flex-direction:column!important;align-items:flex-start!important}
+  #canvasInner.dev-mobile .nova-cta-band a{width:100%;text-align:center}
+  #canvasInner.dev-mobile .nova-pricing-card{text-align:left}
+  #canvasInner.dev-mobile section.glass{padding:1rem!important}
+  #canvasInner.dev-tablet section.glass{padding:1.25rem!important}
+  body.preview #deviceMeta,body.preview #deviceFrame.is-sim::before{display:none}
+  body.preview #deviceFrame.is-sim{border:none;box-shadow:none;background:transparent}
+  body.preview #deviceScaler{transform:none!important}
+  @media(max-width:1024px){#libPanel,#inspPanel{width:14rem}}
+  @media(max-width:768px){
+    body{overflow:auto}
+    .relative.z-10.flex.h-screen{height:auto;min-height:100dvh}
+    #libPanel,#inspPanel{position:fixed;z-index:90;top:4.5rem;bottom:.75rem;width:min(88vw,18rem);transform:translateX(-110%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+    #inspPanel{right:.75rem;left:auto;transform:translateX(110%)}
+    body.panel-left-open #libPanel{transform:none}
+    body.panel-right-open #inspPanel{transform:none}
+    #canvasWrap{min-height:60dvh}
+  }
 </style>
 </head>
 <body class="antialiased">
@@ -113,9 +162,9 @@ tailwind.config = { theme: { extend: {
     </div>
     <span class="h-7 w-px bg-white/10"></span>
     <div id="deviceGroup" class="flex items-center gap-1">
-      <button data-dev="1280" class="dev-btn tr active rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Desktop</button>
-      <button data-dev="768" class="dev-btn tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Tablet</button>
-      <button data-dev="390" class="dev-btn tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Mobile</button>
+      <button data-dev="desktop" class="dev-btn tr active rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Desktop</button>
+      <button data-dev="tablet" class="dev-btn tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Tablet</button>
+      <button data-dev="mobile" class="dev-btn tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold">Mobile</button>
     </div>
     <span class="h-7 w-px bg-white/10"></span>
     <button id="btnGrid" class="tr rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-mist-300">Grid</button>
@@ -154,17 +203,27 @@ tailwind.config = { theme: { extend: {
       </div>
       <div id="leftPanel" class="min-h-0 flex-1 overflow-y-auto pr-1"></div>
     </aside>
-    <main id="canvasWrap" class="min-w-0 flex-1 overflow-y-auto rounded-2xl">
-      <div id="slideStrip" class="glass-soft mb-2 flex items-center gap-2 overflow-x-auto rounded-xl px-2 py-2"></div>
-      <div id="canvasInner" class="mx-auto px-2 pb-24 transition-all duration-300" style="max-width:1280px">
-        <div id="canvas" class="min-h-[70vh] space-y-4 rounded-2xl py-4"></div>
-        <div id="dropHint" class="drop-hint mt-2 grid place-items-center rounded-2xl border-2 border-dashed border-white/12 py-16 text-center">
-          <p class="text-[13px] font-semibold text-mist-300">Drop widgets here</p>
-          <p class="mt-1 text-[11px] text-mist-400">Slide canvas · reorder · click to edit</p>
-          <div id="emptyActions" class="mt-6 hidden flex flex-wrap justify-center gap-2">
-            <button id="btnLoadDemo" type="button" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[11px] font-bold text-ink-900">Load demo deck</button>
-            <button id="btnOpenTemplates" type="button" class="tr rounded-xl border border-white/10 px-4 py-2 text-[11px] font-semibold text-volt-300">Browse templates</button>
-            <button id="btnOpenAI" type="button" class="tr rounded-xl border border-white/10 px-4 py-2 text-[11px] font-semibold text-mist-200">AI Wizard</button>
+    <main id="canvasWrap" class="min-w-0 flex-1 overflow-hidden rounded-2xl">
+      <div id="slideStrip" class="glass-soft mb-2 flex shrink-0 items-center gap-2 overflow-x-auto rounded-xl px-2 py-2"></div>
+      <div id="deviceViewport">
+        <div id="deviceMeta" class="device-meta">
+          <span id="deviceBadge" class="device-pill"><strong>Desktop</strong> · 1280px</span>
+          <span id="deviceScale" class="device-pill">100% fit</span>
+        </div>
+        <div id="deviceScaler">
+          <div id="deviceFrame">
+            <div id="canvasInner" class="mx-auto px-2 pb-24 transition-all duration-300" style="max-width:1280px">
+              <div id="canvas" class="min-h-[70vh] space-y-4 rounded-2xl py-4"></div>
+              <div id="dropHint" class="drop-hint mt-2 grid place-items-center rounded-2xl border-2 border-dashed border-white/12 py-16 text-center">
+                <p class="text-[13px] font-semibold text-mist-300">Drop widgets here</p>
+                <p class="mt-1 text-[11px] text-mist-400">Slide canvas · reorder · click to edit</p>
+                <div id="emptyActions" class="mt-6 hidden flex flex-wrap justify-center gap-2">
+                  <button id="btnLoadDemo" type="button" class="tr rounded-xl bg-gradient-to-r from-volt-400 to-volt-600 px-4 py-2 text-[11px] font-bold text-ink-900">Load demo deck</button>
+                  <button id="btnOpenTemplates" type="button" class="tr rounded-xl border border-white/10 px-4 py-2 text-[11px] font-semibold text-volt-300">Browse templates</button>
+                  <button id="btnOpenAI" type="button" class="tr rounded-xl border border-white/10 px-4 py-2 text-[11px] font-semibold text-mist-200">AI Wizard</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -242,6 +301,14 @@ const IDB_NAME='nova-cloud';
 const IDB_STORE='versions';
 const MAX_UNDO=50;
 
+const DEVICE_PRESETS={
+  desktop:{key:'desktop',width:1280,height:800,label:'Desktop',frame:false},
+  tablet:{key:'tablet',width:768,height:1024,label:'iPad',frame:true},
+  mobile:{key:'mobile',width:390,height:844,label:'iPhone',frame:true}
+};
+function devicePreset(key){ return DEVICE_PRESETS[key]||DEVICE_PRESETS.desktop; }
+function currentDevice(){ return devicePreset(state.deviceKey||'desktop'); }
+
 const ACCENTS={
   volt:{text:'text-volt-300',grad:'from-volt-400 to-volt-600',eye:'text-volt-300 border-volt-400/30 bg-volt-500/10',star:'col-star',soft:'rgba(15,211,182,.15)'},
   gold:{text:'text-gold-300',grad:'from-gold-300 to-gold-500',eye:'text-gold-300 border-gold-400/30 bg-gold-500/10',star:'col-star-gold',soft:'rgba(245,196,82,.15)'},
@@ -279,37 +346,37 @@ const WIDGETS = {
   table:{
     label:'Premium Comparison Table', icon:'grid', hint:'Spec matrix with highlighted column',
     defaults:()=>({title:'Compare the line-up',subtitle:'Specification matrix',accent:'volt',highlight:4,columns:['Core','Long Range','Performance','Signature'],prices:['$41,900','$52,400','$63,900','$78,500'],rows:[{icon:'battery',name:'Battery capacity',values:['62 kWh','84 kWh','96 kWh','108 kWh']},{icon:'range',name:'Range (WLTP)',values:['412 km','548 km','571 km','612 km']},{icon:'bolt',name:'Peak power',values:['210 kW','290 kW','440 kW','570 kW']},{icon:'speed',name:'0 – 100 km/h',values:['6.8 s','5.4 s','3.6 s','3.1 s']},{icon:'charge',name:'DC charge 10→80%',values:['31 min','26 min','21 min','18 min']},{icon:'shield',name:'Battery warranty',values:['6 yrs','8 yrs','8 yrs','10 yrs']}],visible:true}),
-    render(p){ const acc=blockAccent(p); const star=acc.star; const head=p.columns.map((c,i)=>`<th class="px-5 py-5 text-left ${i+1===+p.highlight?star+' '+acc.text:''}">${i+1===+p.highlight?`<span class="mb-1.5 inline-block rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.16em]">Top model</span><br>`:''}<span class="text-[15px] font-extrabold">${esc(c)}</span><span class="mt-1 block text-[12px] font-medium ${i+1===+p.highlight?acc.text:'text-mist-400'}">${esc(p.prices[i]||'')}</span></th>`).join(''); const body=p.rows.map(r=>`<tr class="border-b border-white/6 last:border-0 hover:bg-white/[.04]"><th scope="row" class="px-6 py-4 text-left text-[13px] font-semibold text-mist-200"><span class="flex items-center gap-3"><span class="grid h-8 w-8 place-items-center ${glassRadius()} border border-white/10 bg-white/5 ${acc.text}">${svg(r.icon)}</span>${esc(r.name)}</span></th>${r.values.map((v,j)=>`<td class="px-5 py-4 text-[13.5px] text-mist-200 ${j+1===+p.highlight?star+' font-bold '+acc.text:''}">${esc(v)}</td>`).join('')}</tr>`).join(''); return `<section class="glass ${glassRadius()} overflow-hidden ${revealClass()}"><div class="px-6 pt-6"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.subtitle)}</p><h2 class="mt-1.5 text-[26px] font-black tracking-tight">${esc(p.title)}</h2></div><div class="mt-5 overflow-x-auto"><table class="w-full min-w-[760px] border-collapse"><thead><tr class="border-b border-white/10"><th class="w-[26%] px-6 py-5 text-left text-[11px] font-bold uppercase tracking-[.18em] text-mist-400">Specification</th>${head}</tr></thead><tbody>${body}</tbody></table></div></section>`; },
+    render(p){ const acc=blockAccent(p); const star=acc.star; const head=p.columns.map((c,i)=>`<th class="px-5 py-5 text-left ${i+1===+p.highlight?star+' '+acc.text:''}">${i+1===+p.highlight?`<span class="mb-1.5 inline-block rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.16em]">Top model</span><br>`:''}<span class="text-[15px] font-extrabold">${esc(c)}</span><span class="mt-1 block text-[12px] font-medium ${i+1===+p.highlight?acc.text:'text-mist-400'}">${esc(p.prices[i]||'')}</span></th>`).join(''); const body=p.rows.map(r=>`<tr class="border-b border-white/6 last:border-0 hover:bg-white/[.04]"><th scope="row" class="px-6 py-4 text-left text-[13px] font-semibold text-mist-200"><span class="flex items-center gap-3"><span class="grid h-8 w-8 place-items-center ${glassRadius()} border border-white/10 bg-white/5 ${acc.text}">${svg(r.icon)}</span>${esc(r.name)}</span></th>${r.values.map((v,j)=>`<td class="px-5 py-4 text-[13.5px] text-mist-200 ${j+1===+p.highlight?star+' font-bold '+acc.text:''}">${esc(v)}</td>`).join('')}</tr>`).join(''); return `<section class="glass ${glassRadius()} overflow-hidden ${revealClass()}"><div class="px-6 pt-6"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.subtitle)}</p><h2 class="nova-section-title mt-1.5 text-[26px] font-black tracking-tight">${esc(p.title)}</h2></div><div class="nova-table-shell mt-5 overflow-x-auto"><table class="w-full min-w-[760px] border-collapse"><thead><tr class="border-b border-white/10"><th class="w-[26%] px-6 py-5 text-left text-[11px] font-bold uppercase tracking-[.18em] text-mist-400">Specification</th>${head}</tr></thead><tbody>${body}</tbody></table></div></section>`; },
     fields(p){ return [f('text','title','Heading',p.title),f('text','subtitle','Eyebrow',p.subtitle),f('select','accent','Accent',p.accent,ACCENT_OPTS),f('select','highlight','Highlighted column',p.highlight,p.columns.map((c,i)=>[i+1,c])),f('list','columns','Column titles',p.columns),f('list','prices','Column prices',p.prices),f('rows','rows','Specification rows',p.rows)]; }
   },
   hero:{
     label:'Hero Image Split', icon:'image', hint:'Product visual + futuristic type',
     defaults:()=>({eyebrow:'2026 Platform',title:'Engineered light. Driven further.',body:'A dual-motor architecture built on an 800 V skateboard chassis, tuned for range and thermal headroom.',cta:'Configure yours',image:'https://images.unsplash.com/photo-1554744512-d6c603f27c54?auto=format&fit=crop&w=1200&q=80',side:'left',accent:'volt',visible:true}),
-    render(p){ const acc=blockAccent(p); const img=`<div class="glass overflow-hidden ${glassRadius()} p-3 ${p.side==='right'?'md:order-2':''}"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" class="aspect-[4/3] w-full rounded-[calc(var(--nova-radius)-.35rem)] object-cover" /></div>`; const txt=`<div class="${p.side==='right'?'md:order-1':''}"><span class="inline-flex rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[.18em] ${acc.eye}">${esc(p.eyebrow)}</span><h1 class="mt-4 text-[34px] font-black leading-[1.05] tracking-tight">${esc(p.title)}</h1><p class="mt-4 text-[14px] leading-relaxed text-mist-300">${esc(p.body)}</p><a href="#" class="mt-6 inline-block ${glassRadius()} bg-gradient-to-r ${acc.grad} px-6 py-3.5 text-[13px] font-bold text-ink-900">${esc(p.cta)}</a></div>`; return `<section class="glass grid items-center gap-8 ${glassRadius()} p-6 md:grid-cols-2 md:p-9 ${revealClass()}">${img}${txt}</section>`; },
+    render(p){ const acc=blockAccent(p); const img=`<div class="glass overflow-hidden ${glassRadius()} p-3 ${p.side==='right'?'md:order-2':''}"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" class="aspect-[4/3] w-full rounded-[calc(var(--nova-radius)-.35rem)] object-cover" /></div>`; const txt=`<div class="${p.side==='right'?'md:order-1':''}"><span class="inline-flex rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[.18em] ${acc.eye}">${esc(p.eyebrow)}</span><h1 class="nova-hero-title mt-4 text-[34px] font-black leading-[1.05] tracking-tight">${esc(p.title)}</h1><p class="nova-hero-body mt-4 text-[14px] leading-relaxed text-mist-300">${esc(p.body)}</p><a href="#" class="mt-6 inline-block ${glassRadius()} bg-gradient-to-r ${acc.grad} px-6 py-3.5 text-[13px] font-bold text-ink-900">${esc(p.cta)}</a></div>`; return `<section class="glass grid items-center gap-8 ${glassRadius()} p-6 md:grid-cols-2 md:p-9 ${revealClass()}">${img}${txt}</section>`; },
     fields(p){ return [f('text','eyebrow','Eyebrow',p.eyebrow),f('text','title','Headline',p.title),f('area','body','Body copy',p.body),f('text','cta','Button label',p.cta),f('text','image','Image URL',p.image),f('select','side','Image side',p.side,[['left','Left'],['right','Right']]),f('select','accent','Accent',p.accent,ACCENT_OPTS)]; }
   },
   badges:{
     label:'Feature Badges', icon:'shield', hint:'Row of icon + label chips',
     defaults:()=>({title:'Standard across the range',accent:'volt',cols:4,items:[{icon:'shield',title:'Reliable Warranty',sub:'Up to 10 years'},{icon:'charge',title:'Fast Charging',sub:'350 kW capable'},{icon:'battery',title:'LFP Cell Pack',sub:'Thermally managed'},{icon:'screen',title:'OTA Updates',sub:'Lifetime, free'}],visible:true}),
-    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-6 md:p-8 ${revealClass()}"><h3 class="text-[20px] font-black tracking-tight">${esc(p.title)}</h3><div class="mt-5 grid gap-3" style="grid-template-columns:repeat(${+p.cols||4},minmax(0,1fr))">${p.items.map(b=>`<div class="glass-soft ${glassRadius()} px-4 py-5 text-center"><span class="mx-auto grid h-11 w-11 place-items-center ${glassRadius()} bg-white/6 ${acc.text}">${svg(b.icon,'h-5 w-5')}</span><p class="mt-3 text-[12.5px] font-bold">${esc(b.title)}</p><p class="mt-0.5 text-[11px] text-mist-400">${esc(b.sub)}</p></div>`).join('')}</div></section>`; },
+    render(p){ const acc=blockAccent(p); const cols=Math.min(Math.max(+p.cols||4,1),6); return `<section class="glass ${glassRadius()} p-6 md:p-8 ${revealClass()}"><h3 class="nova-section-title text-[20px] font-black tracking-tight">${esc(p.title)}</h3><div class="nova-badge-grid mt-5 grid gap-3" style="--nova-cols:${cols}">${p.items.map(b=>`<div class="glass-soft ${glassRadius()} px-4 py-5 text-center"><span class="mx-auto grid h-11 w-11 place-items-center ${glassRadius()} bg-white/6 ${acc.text}">${svg(b.icon,'h-5 w-5')}</span><p class="mt-3 text-[12.5px] font-bold">${esc(b.title)}</p><p class="mt-0.5 text-[11px] text-mist-400">${esc(b.sub)}</p></div>`).join('')}</div></section>`; },
     fields(p){ return [f('text','title','Heading',p.title),f('select','accent','Accent',p.accent,ACCENT_OPTS),f('num','cols','Columns',p.cols),f('items','items','Badges',p.items)]; }
   },
   heading:{
     label:'Section Heading', icon:'quote', hint:'Eyebrow + title + copy',
     defaults:()=>({eyebrow:'Specification',title:'Built for the long route',body:'Every variant shares the same safety cell and thermal platform.',align:'left',accent:'volt',visible:true}),
-    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-8 text-${esc(p.align)} ${revealClass()}"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.eyebrow)}</p><h2 class="mt-2 text-[28px] font-black tracking-tight">${esc(p.title)}</h2><p class="mt-3 max-w-2xl text-[14px] text-mist-300 ${p.align==='center'?'mx-auto':''}">${esc(p.body)}</p></section>`; },
+    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-8 text-${esc(p.align)} ${revealClass()}"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.eyebrow)}</p><h2 class="nova-section-title mt-2 text-[28px] font-black tracking-tight">${esc(p.title)}</h2><p class="mt-3 max-w-2xl text-[14px] text-mist-300 ${p.align==='center'?'mx-auto':''}">${esc(p.body)}</p></section>`; },
     fields(p){ return [f('text','eyebrow','Eyebrow',p.eyebrow),f('text','title','Title',p.title),f('area','body','Body',p.body),f('select','align','Alignment',p.align,[['left','Left'],['center','Center']]),f('select','accent','Accent',p.accent,ACCENT_OPTS)]; }
   },
   cta:{
     label:'Call To Action', icon:'cta', hint:'Closing conversion band',
     defaults:()=>({title:'Reserve your build slot',body:'Fully refundable within 14 days.',button:'Start configuration',accent:'volt',visible:true}),
-    render(p){ const acc=blockAccent(p); return `<section class="glass flex flex-wrap items-center justify-between gap-5 ${glassRadius()} p-8 ${revealClass()}"><div><h3 class="text-[22px] font-black tracking-tight">${esc(p.title)}</h3><p class="mt-1.5 text-[13px] text-mist-300">${esc(p.body)}</p></div><a href="#" class="${glassRadius()} bg-gradient-to-r ${acc.grad} px-6 py-3.5 text-[13px] font-bold text-ink-900">${esc(p.button)}</a></section>`; },
+    render(p){ const acc=blockAccent(p); return `<section class="nova-cta-band glass flex flex-wrap items-center justify-between gap-5 ${glassRadius()} p-8 ${revealClass()}"><div><h3 class="nova-section-title text-[22px] font-black tracking-tight">${esc(p.title)}</h3><p class="mt-1.5 text-[13px] text-mist-300">${esc(p.body)}</p></div><a href="#" class="${glassRadius()} bg-gradient-to-r ${acc.grad} px-6 py-3.5 text-[13px] font-bold text-ink-900">${esc(p.button)}</a></section>`; },
     fields(p){ return [f('text','title','Title',p.title),f('text','body','Sub copy',p.body),f('text','button','Button label',p.button),f('select','accent','Accent',p.accent,ACCENT_OPTS)]; }
   },
   stats:{
     label:'Stats Row', icon:'stats', hint:'Four KPI metrics',
     defaults:()=>({title:'By the numbers',accent:'volt',items:[{value:'98%',label:'Uptime SLA'},{value:'4.2×',label:'ROI average'},{value:'12K+',label:'Active users'},{value:'<2min',label:'Setup time'}],visible:true}),
-    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-6 md:p-8 ${revealClass()}"><h3 class="text-[18px] font-black">${esc(p.title)}</h3><div class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">${p.items.map(it=>`<div class="glass-soft ${glassRadius()} px-4 py-5 text-center"><p class="text-[28px] font-black ${acc.text}">${esc(it.value)}</p><p class="mt-1 text-[11px] font-semibold uppercase tracking-[.12em] text-mist-400">${esc(it.label)}</p></div>`).join('')}</div></section>`; },
+    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-6 md:p-8 ${revealClass()}"><h3 class="nova-section-title text-[18px] font-black">${esc(p.title)}</h3><div class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">${p.items.map(it=>`<div class="glass-soft ${glassRadius()} px-4 py-5 text-center"><p class="nova-stat-value text-[28px] font-black ${acc.text}">${esc(it.value)}</p><p class="mt-1 text-[11px] font-semibold uppercase tracking-[.12em] text-mist-400">${esc(it.label)}</p></div>`).join('')}</div></section>`; },
     fields(p){ return [f('text','title','Heading',p.title),f('select','accent','Accent',p.accent,ACCENT_OPTS),f('stats','items','Stats',p.items)]; }
   },
   testimonial:{
@@ -321,7 +388,7 @@ const WIDGETS = {
   pricing:{
     label:'Pricing Cards', icon:'price', hint:'Three tier pricing',
     defaults:()=>({title:'Simple pricing',subtitle:'Choose your plan',accent:'volt',highlight:2,tiers:[{name:'Starter',price:'$29',period:'/mo',features:['5 projects','Basic analytics','Email support'],cta:'Start free'},{name:'Pro',price:'$79',period:'/mo',features:['Unlimited projects','Advanced analytics','Priority support'],cta:'Go Pro'},{name:'Enterprise',price:'Custom',period:'',features:['SSO & SAML','Dedicated CSM','Custom SLA'],cta:'Contact sales'}],visible:true}),
-    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-6 md:p-8 ${revealClass()}"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.subtitle)}</p><h3 class="mt-1 text-[24px] font-black">${esc(p.title)}</h3><div class="mt-6 grid gap-4 md:grid-cols-3">${p.tiers.map((t,i)=>`<div class="glass-soft ${glassRadius()} p-5 ${i+1===+p.highlight?'ring-2 ring-volt-400/50':''}"><p class="text-[12px] font-bold uppercase tracking-[.14em] text-mist-400">${esc(t.name)}</p><p class="mt-3 text-[32px] font-black ${i+1===+p.highlight?acc.text:''}">${esc(t.price)}<span class="text-[14px] font-medium text-mist-400">${esc(t.period)}</span></p><ul class="mt-4 space-y-2">${t.features.map(fe=>`<li class="text-[12px] text-mist-300">✓ ${esc(fe)}</li>`).join('')}</ul><a href="#" class="mt-5 inline-block w-full ${glassRadius()} bg-gradient-to-r ${i+1===+p.highlight?acc.grad:'from-white/10 to-white/5'} px-4 py-2.5 text-center text-[12px] font-bold ${i+1===+p.highlight?'text-ink-900':'text-mist-200'}">${esc(t.cta)}</a></div>`).join('')}</div></section>`; },
+    render(p){ const acc=blockAccent(p); return `<section class="glass ${glassRadius()} p-6 md:p-8 ${revealClass()}"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.subtitle)}</p><h3 class="nova-section-title mt-1 text-[24px] font-black">${esc(p.title)}</h3><div class="mt-6 grid gap-4 md:grid-cols-3">${p.tiers.map((t,i)=>`<div class="nova-pricing-card glass-soft ${glassRadius()} p-5 ${i+1===+p.highlight?'ring-2 ring-volt-400/50':''}"><p class="text-[12px] font-bold uppercase tracking-[.14em] text-mist-400">${esc(t.name)}</p><p class="mt-3 text-[32px] font-black ${i+1===+p.highlight?acc.text:''}">${esc(t.price)}<span class="text-[14px] font-medium text-mist-400">${esc(t.period)}</span></p><ul class="mt-4 space-y-2">${t.features.map(fe=>`<li class="text-[12px] text-mist-300">✓ ${esc(fe)}</li>`).join('')}</ul><a href="#" class="mt-5 inline-block w-full ${glassRadius()} bg-gradient-to-r ${i+1===+p.highlight?acc.grad:'from-white/10 to-white/5'} px-4 py-2.5 text-center text-[12px] font-bold ${i+1===+p.highlight?'text-ink-900':'text-mist-200'}">${esc(t.cta)}</a></div>`).join('')}</div></section>`; },
     fields(p){ return [f('text','title','Heading',p.title),f('text','subtitle','Eyebrow',p.subtitle),f('select','accent','Accent',p.accent,ACCENT_OPTS),f('select','highlight','Featured tier',p.highlight,p.tiers.map((t,i)=>[i+1,t.name])),f('tiers','tiers','Pricing tiers',p.tiers)]; }
   },
   faq:{
@@ -399,6 +466,7 @@ let state={
   theme:{accent:'volt',font:'inter',radius:'md',animations:true,gsapEnabled:true},
   seo:{title:'NOVA Exported Page',description:'Built with NOVA Builder by AURORA.STUDIO',ogImage:''},
   cms:{inline:'',url:'',refreshInterval:0,data:{}},
+  deviceKey:'desktop',
   device:1280,
   grid:false,
   cloud:{autoSnapshot:false,openaiModel:'gpt-4o-mini'}
@@ -429,6 +497,13 @@ function ensureValidState(){
   if(!state.seo) state.seo={title:'NOVA Exported Page',description:'Built with NOVA Builder by AURORA.STUDIO',ogImage:''};
   if(!state.cms) state.cms={inline:'',url:'',refreshInterval:0,data:{}};
   if(!state.cloud) state.cloud={autoSnapshot:false,openaiModel:'gpt-4o-mini'};
+  if(!state.deviceKey){
+    if(state.device<=420) state.deviceKey='mobile';
+    else if(state.device<=900) state.deviceKey='tablet';
+    else state.deviceKey='desktop';
+  }
+  const dev=currentDevice();
+  state.device=dev.width;
   state.pages.forEach(pg=>{
     if(!Array.isArray(pg.blocks)) pg.blocks=[];
     pg.blocks.forEach(ensureBlockAnim);
@@ -440,7 +515,7 @@ let cmsRefreshTimer=null;
 let autoSnapshotTimer=null;
 
 function snapshot(){
-  return JSON.stringify({pages:state.pages,currentPageId:state.currentPageId,theme:state.theme,seo:state.seo,cms:state.cms});
+  return JSON.stringify({pages:state.pages,currentPageId:state.currentPageId,theme:state.theme,seo:state.seo,cms:state.cms,deviceKey:state.deviceKey,device:state.device});
 }
 function pushHistory(){
   if(snapshotLock) return;
@@ -455,7 +530,9 @@ function restoreSnapshot(json){
     const s=JSON.parse(json);
     state.pages=s.pages; state.currentPageId=s.currentPageId; state.theme={...state.theme,...s.theme}; state.seo=s.seo;
     if(s.cms) state.cms={...state.cms,...s.cms};
-    state.pages.forEach(pg=>pg.blocks.forEach(ensureBlockAnim));
+    if(s.deviceKey) state.deviceKey=s.deviceKey;
+    if(s.device) state.device=s.device;
+    ensureValidState();
     if(!state.pages.find(p=>p.id===state.currentPageId)) state.currentPageId=state.pages[0]?.id;
     selectedId=null; applyThemeCSS(); renderAll();
   }finally{ snapshotLock=false; }
@@ -861,6 +938,43 @@ function renderSlideStrip(){
   `<button id="delSlide" class="tr shrink-0 rounded-lg border border-white/10 px-2 py-1.5 text-[11px] text-rose-300" title="Delete slide">🗑</button>`;
 }
 
+function updateDevicePreview(){
+  const dev=currentDevice();
+  const inner=$('#canvasInner');
+  const frame=$('#deviceFrame');
+  const scaler=$('#deviceScaler');
+  const viewport=$('#deviceViewport');
+  const meta=$('#deviceMeta');
+  if(!inner||!frame||!scaler) return;
+  inner.style.maxWidth=dev.width+'px';
+  inner.classList.remove('dev-desktop','dev-tablet','dev-mobile');
+  inner.classList.add('dev-'+dev.key);
+  frame.classList.toggle('is-sim',!!dev.frame&&!previewMode&&!presentMode);
+  frame.classList.toggle('is-mobile',dev.key==='mobile'&&!previewMode&&!presentMode);
+  frame.classList.toggle('is-tablet',dev.key==='tablet'&&!previewMode&&!presentMode);
+  frame.style.width=dev.frame&&!previewMode&&!presentMode?dev.width+'px':'100%';
+  meta?.classList.toggle('hidden-meta',!dev.frame||previewMode||presentMode);
+  const badge=$('#deviceBadge');
+  if(badge) badge.innerHTML=`<strong>${dev.label}</strong> · ${dev.width}×${dev.height}`;
+  $$('#deviceGroup [data-dev]').forEach(b=>b.classList.toggle('active',b.dataset.dev===dev.key));
+  if(previewMode||presentMode||!dev.frame){
+    scaler.style.transform='none';
+    scaler.style.width='100%';
+    $('#deviceScale')&&( $('#deviceScale').textContent='Full width');
+    return;
+  }
+  const pad=32;
+  const availW=Math.max(240,(viewport?.clientWidth||window.innerWidth)-pad);
+  const availH=Math.max(320,(viewport?.clientHeight||window.innerHeight)-pad);
+  const frameH=Math.min(dev.height,Math.max(480,availH));
+  frame.style.minHeight=frameH+'px';
+  const scale=Math.min(1,availW/dev.width,availH/frameH);
+  scaler.style.width=dev.width+'px';
+  scaler.style.transform=`scale(${scale})`;
+  const scaleEl=$('#deviceScale');
+  if(scaleEl) scaleEl.textContent=scale>=.995?'100% fit':`${Math.round(scale*100)}% fit`;
+}
+
 function renderCanvas(){
   const bs=blocks();
   $('#canvas').innerHTML=bs.map(b=>{
@@ -872,7 +986,7 @@ function renderCanvas(){
   $('#dropHint').style.overflow=bs.length?'hidden':'visible';
   $('#emptyActions')?.classList.toggle('hidden',!!bs.length);
   $('#blockCount').textContent=`${bs.length} block${bs.length===1?'':'s'} · ${state.pages.length} slide${state.pages.length===1?'':'s'}`;
-  $('#canvasInner').style.maxWidth=state.device+'px';
+  updateDevicePreview();
   document.body.classList.toggle('grid-on',state.grid);
   if(theme().animations&&!previewMode&&!presentMode) setupReveal();
   if(theme().gsapEnabled&&(previewMode||presentMode)) setTimeout(runBlockAnimations,80);
@@ -998,18 +1112,18 @@ async function exportPNG(){
 
 async function exportPDF(){
   const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[1280,720]});
-  const prevPage=state.currentPageId; const prevDev=state.device;
-  state.device=1280; for(let i=0;i<state.pages.length;i++){
+  const prevPage=state.currentPageId; const prevDevKey=state.deviceKey;
+  state.deviceKey='desktop'; state.device=1280; for(let i=0;i<state.pages.length;i++){
     state.currentPageId=state.pages[i].id; renderCanvas(); await new Promise(r=>setTimeout(r,120));
     const canvas=await html2canvas($('#canvasInner'),{backgroundColor:'#05070f',scale:1,useCORS:true,width:1280});
     const img=canvas.toDataURL('image/jpeg',0.92); if(i>0) pdf.addPage(); pdf.addImage(img,'JPEG',0,0,1280,720);
   }
-  state.currentPageId=prevPage; state.device=prevDev; renderCanvas(); pdf.save('nova-deck.pdf');
+  state.currentPageId=prevPage; state.deviceKey=prevDevKey; state.device=currentDevice().width; renderCanvas(); pdf.save('nova-deck.pdf');
 }
 
 function downloadBlob(content,name,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-function setPreview(on){ previewMode=on; document.body.classList.toggle('preview',on); $('#exitPreview').classList.toggle('hidden',!on); if(on){selectedId=null;renderAll();runBlockAnimations();} }
+function setPreview(on){ previewMode=on; document.body.classList.toggle('preview',on); $('#exitPreview').classList.toggle('hidden',!on); if(on){selectedId=null;renderAll();runBlockAnimations();}else updateDevicePreview(); }
 let presentReturnPageId=null;
 function setPresent(on){
   if(on){
@@ -1024,7 +1138,7 @@ function setPresent(on){
   document.body.classList.toggle('present',on);
   $('#exitPresent').classList.toggle('hidden',!on);
   if(on){ selectedId=null; renderCanvas(); setupReveal(); runBlockAnimations(); }
-  else renderAll();
+  else { renderAll(); updateDevicePreview(); }
 }
 function presentNav(dir){
   const next=presentIndex+dir;
@@ -1137,7 +1251,7 @@ $('#slideStrip').addEventListener('click',e=>{
 $$('#leftTabs [data-ltab]').forEach(btn=>btn.addEventListener('click',()=>{ leftTab=btn.dataset.ltab; $$('#leftTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderLeftPanel(); }));
 $$('#rightTabs [data-rtab]').forEach(btn=>btn.addEventListener('click',()=>{ rightTab=btn.dataset.rtab; $$('#rightTabs .tab-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderRightPanel(); }));
 
-$$('#deviceGroup [data-dev]').forEach(btn=>btn.addEventListener('click',()=>{ state.device=+btn.dataset.dev; $$('#deviceGroup .dev-btn').forEach(b=>b.classList.toggle('active',b===btn)); renderCanvas(); }));
+$$('#deviceGroup [data-dev]').forEach(btn=>btn.addEventListener('click',()=>{ state.deviceKey=btn.dataset.dev; const dev=currentDevice(); state.device=dev.width; renderCanvas(); }));
 
 $('#btnUndo').addEventListener('click',undo);
 $('#btnRedo').addEventListener('click',redo);
@@ -1175,6 +1289,11 @@ window._canvasSort=Sortable.create($('#canvas'),{
 });
 
 applyThemeCSS(); initBroadcastChannel();
+let _deviceResizeRaf=0;
+function scheduleDeviceReflow(){ cancelAnimationFrame(_deviceResizeRaf); _deviceResizeRaf=requestAnimationFrame(updateDevicePreview); }
+window.addEventListener('resize',scheduleDeviceReflow,{passive:true});
+window.addEventListener('orientationchange',scheduleDeviceReflow,{passive:true});
+if(window.ResizeObserver){ new ResizeObserver(scheduleDeviceReflow).observe($('#deviceViewport')||$('#canvasWrap')); }
 try{
   restore(); ensureValidState();
   renderAll(); pushHistory(); updateAiModal(); startAutoSnapshot();
