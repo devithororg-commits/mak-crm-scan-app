@@ -61,6 +61,35 @@
   }
 
   /* ── QR Code (client-side, no API) ── */
+  function stockURL(q, i) {
+    return 'https://picsum.photos/seed/' + encodeURIComponent(q + '-' + i) + '/900/1200';
+  }
+
+  function addStockImage(src) {
+    fabric.Image.fromURL(src, function (img) {
+      img.set({ objectName: 'Stock photo' });
+      img.scaleToWidth(Math.min(STATE.W * 0.72, 920));
+      ENGINE.add(img);
+      toast('Photo added');
+    }, { crossOrigin: 'anonymous' });
+  }
+
+  function renderStockGrid(q, container) {
+    if (!container) return;
+    container.innerHTML = '';
+    var query = (q || 'creative').trim() || 'creative';
+    for (var i = 0; i < 6; i++) {
+      var url = stockURL(query, i);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pro-stock-thumb tr';
+      btn.title = 'Add photo';
+      btn.innerHTML = '<img src="' + url + '" alt="" loading="lazy" />';
+      btn.onclick = function (u) { return function () { addStockImage(u); }; }(url);
+      container.appendChild(btn);
+    }
+  }
+
   function addQR(text) {
     if (!text) return toast('Enter URL or text');
     if (typeof QRCode === 'undefined') return toast('QR library loading…');
@@ -506,8 +535,12 @@
 
     PANELS.assets = function () {
       var pal = genPalette();
-      return '<p class="text-[11px] text-slate-400">QR, charts, patterns — all offline.</p>' +
-        '<p class="mt-3 text-[10px] font-bold uppercase tracking-[.18em] text-slate-500">QR Code</p>' +
+      return '<p class="text-[11px] text-slate-400">Stock photos, QR, charts, patterns — all offline-friendly.</p>' +
+        '<p class="mt-3 text-[10px] font-bold uppercase tracking-[.18em] text-slate-500">Stock photos</p>' +
+        '<input id="proStockQ" class="fld mt-1" placeholder="mountains, coffee, team…" value="creative" />' +
+        '<button type="button" id="proStockBtn" class="chip tr mt-2 w-full rounded-lg py-2 text-[11px] font-semibold">Search photos</button>' +
+        '<div id="proStockGrid" class="pro-stock-grid"></div>' +
+        '<p class="mt-4 text-[10px] font-bold uppercase tracking-[.18em] text-slate-500">QR Code</p>' +
         '<input id="proQrInput" class="fld mt-1" placeholder="https://yoursite.com" />' +
         '<button type="button" id="proQrBtn" class="chip tr mt-2 w-full rounded-lg py-2 text-[11px] font-semibold">Generate QR</button>' +
         '<p class="mt-4 text-[10px] font-bold uppercase tracking-[.18em] text-slate-500">Charts</p>' +
@@ -567,6 +600,10 @@
   function bindExtrasDrawer(tab) {
     var d = document.getElementById('drawer');
     if (tab === 'assets') {
+      renderStockGrid('creative', d.querySelector('#proStockGrid'));
+      d.querySelector('#proStockBtn')?.addEventListener('click', function () {
+        renderStockGrid(d.querySelector('#proStockQ')?.value, d.querySelector('#proStockGrid'));
+      });
       d.querySelector('#proQrBtn')?.addEventListener('click', function () {
         addQR(d.querySelector('#proQrInput').value.trim());
       });
@@ -769,6 +806,7 @@
   function registerCommands() {
     if (!window.AuroraToolHub) return;
     AuroraToolHub.register([
+      { id: 'extras-stock', label: 'Stock photo search', icon: '🖼', group: 'Tools', run: function () { DRAWER.open('assets'); } },
       { id: 'extras-assets', label: 'Assets & tools', icon: '📦', group: 'Tools', quick: true, run: function () { DRAWER.open('assets'); } },
       { id: 'extras-collab', label: 'Collab & QA', icon: '💬', group: 'Tools', run: function () { DRAWER.open('collab'); } },
       { id: 'extras-versions', label: 'Version history', icon: '🕐', group: 'Pro', run: openVersionsModal },

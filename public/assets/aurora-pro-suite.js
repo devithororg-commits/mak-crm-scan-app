@@ -704,12 +704,42 @@
     } catch (e) { /* cross-origin */ }
   }
 
-  /* ── Auto-layout frame ── */
+  /* ── Auto-layout frame (live reflow on resize/move) ── */
+  function ensureFrameId(frame) {
+    if (!frame.__alId) frame.__alId = 'al-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+    return frame.__alId;
+  }
+
+  function getAutoLayoutFrames() {
+    return canvas.getObjects().filter(function (o) { return o.autoLayout; });
+  }
+
+  function getFrameChildren(frame) {
+    if (!frame) return [];
+    var fid = ensureFrameId(frame);
+    var fRect = frame.getBoundingRect(true, true);
+    return canvas.getObjects().filter(function (o) {
+      if (o === frame || o.autoLayout || o.objectName === '__guide' || o.selectable === false) return false;
+      if (o.autoLayoutParent === fid) return true;
+      var b = o.getBoundingRect(true, true);
+      var cx = b.left + b.width / 2;
+      var cy = b.top + b.height / 2;
+      return cx >= fRect.left && cx <= fRect.left + fRect.width &&
+        cy >= fRect.top && cy <= fRect.top + fRect.height;
+    });
+  }
+
+  function tagFrameChildren(frame) {
+    var fid = ensureFrameId(frame);
+    getFrameChildren(frame).forEach(function (o) { o.autoLayoutParent = fid; });
+  }
+
   function createAutoLayoutFrame(dir) {
     var gap = 16;
     var pad = 24;
     var sel = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
     if (!sel.length && canvas.getActiveObject()) sel = [canvas.getActiveObject()];
+    sel = sel.filter(function (o) { return !o.autoLayout; });
     if (!sel.length) return toast('Select objects for auto-layout frame');
     var minL = Infinity, minT = Infinity, maxR = -Infinity, maxB = -Infinity;
     sel.forEach(function (o) {
@@ -730,42 +760,93 @@
       rx: 12,
       ry: 12,
       objectName: 'Auto-layout frame',
-      autoLayout: { direction: dir || 'v', gap: gap, padding: pad }
+      autoLayout: { direction: dir || 'v', gap: gap, padding: pad, autoFit: true }
     });
+    ensureFrameId(frame);
     canvas.add(frame);
     frame.sendToBack();
+    sel.forEach(function (o) { o.autoLayoutParent = frame.__alId; });
     reflowAutoLayout(frame);
     canvas.setActiveObject(frame);
     canvas.requestRenderAll();
     ENGINE.snapshot();
     LAYERS.render();
-    toast('Auto-layout frame created');
+    toast('Auto-layout frame created — drag to reflow');
   }
 
   function reflowAutoLayout(frame) {
     if (!frame || !frame.autoLayout) return;
     var al = frame.autoLayout;
-    var children = canvas.getObjects().filter(function (o) {
-      if (o === frame || o.objectName === '__guide') return false;
-      var b = o.getBoundingRect(true, true);
-      var f = frame.getBoundingRect(true, true);
-      return b.left >= f.left && b.top >= f.top && b.left + b.width <= f.left + f.width && b.top + b.height <= f.top + f.height;
-    });
+    var children = getFrameChildren(frame);
     if (!children.length) return;
-    var x = frame.left + al.padding;
-    var y = frame.top + al.padding;
-    children.forEach(function (o) {
-      if (al.direction === 'v') {
+    tagFrameChildren(frame);
+    var sx = frame.scaleX || 1;
+    var sy = frame.scaleY || 1;
+    var x = frame.left + al.padding * sx;
+    var y = frame.top + al.padding * sy;
+    var totalH = al.padding * 2;
+    var totalW = al.padding * 2;
+
+    if (al.direction === 'v') {
+      children.forEach(function (o, i) {
         o.set({ left: x, top: y, originX: 'left', originY: 'top' });
         o.setCoords();
-        y += o.getBoundingRect(true, true).height + al.gap;
-      } else {
-        o.set({ left: x, top: y, originX: 'left', originY: 'top' });
-        o.setCoords();
-        x += o.getBoundingRect(true, true).width + al.gap;
+        var b = o.getBoundingRect(true, true);
+        y += b.height + al.gap * sy;
+        if (i < children.length) totalH += b.height + (i < children.length - 1 ? al.gap : 0);
+      });
+      if (al.autoFit !== false) {
+        var needH = totalH * sy;
+        var curH = frame.height * sy;
+        if (needH > curH - 1) frame.set('height', needH / sy);
       }
-    });
+    } else {
+      children.forEach(function (o, i) {
+        o.set({ left: x, top: y, originX: 'left', originY: 'top' });
+        o.setCoords();
+        var b = o.getBoundingRect(true, true);
+        x += b.width + al.gap * sx;
+        if (i < children.length) totalW += b.width + (i < children.length - 1 ? al.gap : 0);
+      });
+      if (al.autoFit !== false) {
+        var needW = totalW * sx;
+        var curW = frame.width * sx;
+        if (needW > curW - 1) frame.set('width', needW / sx);
+      }
+    }
+    frame.setCoords();
     canvas.requestRenderAll();
+  }
+
+  function bindAutoLayoutEvents() {
+    if (canvas._autoLayoutBound) return;
+    canvas._autoLayoutBound = true;
+    canvas.on('object:modified', function (e) {
+      var t = e.target;
+      if (!t) return;
+      if (t.autoLayout) {
+        tagFrameChildren(t);
+        reflowAutoLayout(t);
+        ENGINE.snapshot();
+        LAYERS.render();
+        return;
+      }
+      getAutoLayoutFrames().forEach(function (f) {
+        var kids = getFrameChildren(f);
+        if (kids.indexOf(t) >= 0) {
+          tagFrameChildren(f);
+          reflowAutoLayout(f);
+          ENGINE.snapshot();
+        }
+      });
+    });
+    canvas.on('object:added', function (e) {
+      var t = e.target;
+      if (!t || t.autoLayout) return;
+      getAutoLayoutFrames().forEach(function (f) {
+        if (getFrameChildren(f).indexOf(t) >= 0) reflowAutoLayout(f);
+      });
+    });
   }
 
   /* ── Constraints ── */
@@ -923,6 +1004,7 @@
     bindContextMenu();
     bindSnapShortcuts();
     bindEraser();
+    bindAutoLayoutEvents();
     registerCommands();
     setTimeout(readOnlyBoot, 1200);
   }
@@ -939,6 +1021,7 @@
     shareLink: shareLink,
     curveText: curveText,
     createAutoLayoutFrame: createAutoLayoutFrame,
+    reflowAutoLayout: reflowAutoLayout,
     openShared: function (data) {
       if (!data) return;
       localStorage.setItem('aurora-pro-draft', JSON.stringify(data));

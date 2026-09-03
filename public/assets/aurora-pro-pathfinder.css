@@ -1,0 +1,6 @@
+/* Aurora Pro Pathfinder */
+
+#proPathfinder .chip:hover {
+  border-color: rgba(34, 211, 238, .45);
+  color: #e2e8f0;
+}

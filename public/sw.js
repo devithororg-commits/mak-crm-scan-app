@@ -1,5 +1,5 @@
 /* Aurora Studio — offline cache for core assets */
-const CACHE = 'aurora-pro-v1';
+const CACHE = 'aurora-pro-v2';
 const ASSETS = [
   './',
   './obsidian.html',
@@ -13,6 +13,8 @@ const ASSETS = [
   './assets/aurora-pro-extras.js',
   './assets/aurora-pro-phase2.css',
   './assets/aurora-pro-phase2.js',
+  './assets/aurora-pro-pathfinder.css',
+  './assets/aurora-pro-pathfinder.js',
   './assets/aurora-responsive.css',
   './assets/aurora-responsive.js',
   './assets/aurora-controls.css',
