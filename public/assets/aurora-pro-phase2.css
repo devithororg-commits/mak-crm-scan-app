@@ -1,0 +1,44 @@
+/* Aurora Pro Phase 2 — GIF, grid layout, video, PWA, onboarding */
+
+#proOnboard {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, .82);
+  backdrop-filter: blur(8px);
+}
+#proOnboard.open { display: flex; }
+#proOnboard .step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .25);
+}
+#proOnboard .step-dot.on { background: #22d3ee; width: 18px; border-radius: 99px; }
+
+#proGridLayoutBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem;
+  padding: .3rem .65rem;
+  border-radius: 1rem;
+  flex-shrink: 0;
+}
+
+.pro-video-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  z-index: 6;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  background: rgba(251, 146, 60, .9);
+  color: #0f172a;
+}

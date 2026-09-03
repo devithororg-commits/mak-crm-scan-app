@@ -1,0 +1,18 @@
+{
+  "name": "AURORA.STUDIO Pro",
+  "short_name": "Aurora Pro",
+  "description": "Professional graphic design workspace — posters, social media, print-ready export.",
+  "start_url": "/obsidian.html",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#22d3ee",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230b1220' width='100' height='100' rx='20'/><text x='50' y='62' text-anchor='middle' font-size='48' font-weight='bold' fill='%2322d3ee'>A</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
