@@ -95,7 +95,7 @@ tailwind.config = { theme: { extend: {
   @keyframes spin{to{transform:rotate(360deg)}}
   .cms-bound::after{content:'🔗';margin-left:4px;font-size:10px}
   #canvasWrap{display:flex;flex-direction:column;min-height:0;background:radial-gradient(ellipse at 50% 0%,rgba(15,211,182,.06),transparent 55%)}
-  #deviceViewport{position:relative;flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:1rem 1rem 2rem;scroll-behavior:smooth}
+  #deviceViewport{position:relative;flex:1;min-height:0;overflow:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;padding:1rem 1rem 2rem;scroll-behavior:smooth}
   #deviceMeta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:.75rem;transition:opacity .3s}
   #deviceMeta.hidden-meta{opacity:0;height:0;margin:0;overflow:hidden;pointer-events:none}
   .device-pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);padding:.35rem .75rem;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#93a1c4}
@@ -142,10 +142,21 @@ tailwind.config = { theme: { extend: {
     #canvasInner .nova-pricing-card{padding:1rem!important}
     #canvasInner .nova-cta-band{flex-direction:column!important;align-items:flex-start!important}
     #canvasInner .nova-cta-band a{width:100%;text-align:center}
-    #canvasInner .nova-table-shell{overflow-x:auto;-webkit-overflow-scrolling:touch}
-    #canvasInner .nova-table-shell table{min-width:520px;font-size:11px}
-    #canvasInner .nova-table-shell th,#canvasInner .nova-table-shell td{padding:.55rem .45rem!important}
+    #canvasInner .nova-table-desktop{display:none!important}
+    #canvasInner .nova-table-mobile{display:block!important}
+    #canvasInner .nova-table-cards{display:flex;flex-direction:column;gap:.75rem}
     #canvasInner section.glass{padding:1rem!important}
+  }
+  #canvasInner .nova-table-desktop{display:block}
+  #canvasInner .nova-table-mobile{display:none}
+  @container nova-canvas (min-width:560px) and (max-width:899px){
+    #canvasInner .nova-table-desktop{display:none!important}
+    #canvasInner .nova-table-mobile{display:block!important}
+    #canvasInner .nova-table-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+  }
+  @container nova-canvas (min-width:900px){
+    #canvasInner .nova-table-desktop{display:block!important}
+    #canvasInner .nova-table-mobile{display:none!important}
   }
   #canvasInner.dev-mobile .nova-hero-title{font-size:1.65rem!important;line-height:1.12!important}
   #canvasInner.dev-mobile .nova-hero-body{font-size:.82rem!important}
@@ -159,9 +170,8 @@ tailwind.config = { theme: { extend: {
   #canvasInner.dev-tablet .nova-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   #canvasInner.dev-tablet .md\:grid-cols-4{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   #canvasInner.dev-tablet .md\:grid-cols-3{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  #canvasInner.dev-mobile .nova-table-shell{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  #canvasInner.dev-mobile .nova-table-shell table{min-width:520px;font-size:11px}
-  #canvasInner.dev-mobile .nova-table-shell th,#canvasInner.dev-mobile .nova-table-shell td{padding:.55rem .45rem!important}
+  #canvasInner.dev-mobile .nova-table-desktop,#canvasInner.dev-tablet .nova-table-desktop{display:none!important}
+  #canvasInner.dev-mobile .nova-table-mobile,#canvasInner.dev-tablet .nova-table-mobile{display:block!important}
   #canvasInner.dev-mobile .nova-cta-band{flex-direction:column!important;align-items:flex-start!important}
   #canvasInner.dev-mobile .nova-cta-band a{width:100%;text-align:center}
   #canvasInner.dev-mobile .nova-pricing-card{text-align:left}
@@ -383,7 +393,19 @@ const WIDGETS = {
   table:{
     label:'Premium Comparison Table', icon:'grid', hint:'Spec matrix with highlighted column',
     defaults:()=>({title:'Compare the line-up',subtitle:'Specification matrix',accent:'volt',highlight:4,columns:['Core','Long Range','Performance','Signature'],prices:['$41,900','$52,400','$63,900','$78,500'],rows:[{icon:'battery',name:'Battery capacity',values:['62 kWh','84 kWh','96 kWh','108 kWh']},{icon:'range',name:'Range (WLTP)',values:['412 km','548 km','571 km','612 km']},{icon:'bolt',name:'Peak power',values:['210 kW','290 kW','440 kW','570 kW']},{icon:'speed',name:'0 – 100 km/h',values:['6.8 s','5.4 s','3.6 s','3.1 s']},{icon:'charge',name:'DC charge 10→80%',values:['31 min','26 min','21 min','18 min']},{icon:'shield',name:'Battery warranty',values:['6 yrs','8 yrs','8 yrs','10 yrs']}],visible:true}),
-    render(p){ const acc=blockAccent(p); const star=acc.star; const head=p.columns.map((c,i)=>`<th class="px-5 py-5 text-left ${i+1===+p.highlight?star+' '+acc.text:''}">${i+1===+p.highlight?`<span class="mb-1.5 inline-block rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.16em]">Top model</span><br>`:''}<span class="text-[15px] font-extrabold">${esc(c)}</span><span class="mt-1 block text-[12px] font-medium ${i+1===+p.highlight?acc.text:'text-mist-400'}">${esc(p.prices[i]||'')}</span></th>`).join(''); const body=p.rows.map(r=>`<tr class="border-b border-white/6 last:border-0 hover:bg-white/[.04]"><th scope="row" class="px-6 py-4 text-left text-[13px] font-semibold text-mist-200"><span class="flex items-center gap-3"><span class="grid h-8 w-8 place-items-center ${glassRadius()} border border-white/10 bg-white/5 ${acc.text}">${svg(r.icon)}</span>${esc(r.name)}</span></th>${r.values.map((v,j)=>`<td class="px-5 py-4 text-[13.5px] text-mist-200 ${j+1===+p.highlight?star+' font-bold '+acc.text:''}">${esc(v)}</td>`).join('')}</tr>`).join(''); return `<section class="glass ${glassRadius()} overflow-hidden ${revealClass()}"><div class="px-6 pt-6"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.subtitle)}</p><h2 class="nova-section-title mt-1.5 text-[26px] font-black tracking-tight">${esc(p.title)}</h2></div><div class="nova-table-shell mt-5 overflow-x-auto"><table class="w-full min-w-[760px] border-collapse"><thead><tr class="border-b border-white/10"><th class="w-[26%] px-6 py-5 text-left text-[11px] font-bold uppercase tracking-[.18em] text-mist-400">Specification</th>${head}</tr></thead><tbody>${body}</tbody></table></div></section>`; },
+    render(p){
+      const acc=blockAccent(p); const star=acc.star; const hl=+p.highlight;
+      const head=p.columns.map((c,i)=>`<th class="px-5 py-5 text-left ${i+1===hl?star+' '+acc.text:''}">${i+1===hl?`<span class="mb-1.5 inline-block rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.16em]">Top model</span><br>`:''}<span class="text-[15px] font-extrabold">${esc(c)}</span><span class="mt-1 block text-[12px] font-medium ${i+1===hl?acc.text:'text-mist-400'}">${esc(p.prices[i]||'')}</span></th>`).join('');
+      const body=p.rows.map(r=>`<tr class="border-b border-white/6 last:border-0 hover:bg-white/[.04]"><th scope="row" class="px-6 py-4 text-left text-[13px] font-semibold text-mist-200"><span class="flex items-center gap-3"><span class="grid h-8 w-8 place-items-center ${glassRadius()} border border-white/10 bg-white/5 ${acc.text}">${svg(r.icon)}</span>${esc(r.name)}</span></th>${r.values.map((v,j)=>`<td class="px-5 py-4 text-[13.5px] text-mist-200 ${j+1===hl?star+' font-bold '+acc.text:''}">${esc(v)}</td>`).join('')}</tr>`).join('');
+      const desktop=`<div class="nova-table-desktop nova-table-shell mt-5 overflow-x-auto"><table class="w-full min-w-[760px] border-collapse"><thead><tr class="border-b border-white/10"><th class="w-[26%] px-6 py-5 text-left text-[11px] font-bold uppercase tracking-[.18em] text-mist-400">Specification</th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+      const cards=p.columns.map((col,i)=>{
+        const isHl=i+1===hl;
+        const specs=p.rows.map(r=>`<div class="nova-table-spec flex items-center justify-between gap-2 border-b border-white/6 py-2.5 last:border-0"><span class="flex min-w-0 items-center gap-2 text-[11px] text-mist-400"><span class="grid h-6 w-6 shrink-0 place-items-center ${glassRadius()} border border-white/10 bg-white/5 ${acc.text}">${svg(r.icon,'h-3 w-3')}</span><span class="truncate">${esc(r.name)}</span></span><span class="shrink-0 text-[12px] font-semibold ${isHl?acc.text+' font-bold':'text-mist-100'}">${esc(r.values[i]||'')}</span></div>`).join('');
+        return `<div class="nova-table-card glass-soft ${glassRadius()} p-4 ${isHl?star+' ring-1 ring-volt-400/35':''}">${isHl?`<span class="mb-2 inline-block rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${acc.text}">Top model</span>`:''}<h4 class="text-[15px] font-extrabold leading-tight">${esc(col)}</h4><p class="mt-0.5 text-[12px] font-semibold ${isHl?acc.text:'text-mist-400'}">${esc(p.prices[i]||'')}</p><div class="mt-2">${specs}</div></div>`;
+      }).join('');
+      const mobile=`<div class="nova-table-mobile nova-table-cards mt-5">${cards}</div>`;
+      return `<section class="glass ${glassRadius()} overflow-hidden ${revealClass()}"><div class="px-4 pt-5 sm:px-6 sm:pt-6"><p class="text-[11px] font-semibold uppercase tracking-[.2em] ${acc.text}">${esc(p.subtitle)}</p><h2 class="nova-section-title mt-1.5 text-[26px] font-black tracking-tight">${esc(p.title)}</h2></div>${desktop}${mobile}</section>`;
+    },
     fields(p){ return [f('text','title','Heading',p.title),f('text','subtitle','Eyebrow',p.subtitle),f('select','accent','Accent',p.accent,ACCENT_OPTS),f('select','highlight','Highlighted column',p.highlight,p.columns.map((c,i)=>[i+1,c])),f('list','columns','Column titles',p.columns),f('list','prices','Column prices',p.prices),f('rows','rows','Specification rows',p.rows)]; }
   },
   hero:{
@@ -1113,7 +1135,7 @@ function act(action,id){
 
 function exportThemeCSS(){
   const t=theme(); const f=FONT_MAP[t.font]||FONT_MAP.inter; const r=RADIUS_MAP[t.radius]||RADIUS_MAP.md;
-  const responsive=`.nova-hero-grid{display:grid;gap:2rem;align-items:center;grid-template-columns:1fr}.nova-pricing-grid{display:grid;gap:1rem;grid-template-columns:1fr}.nova-stats-grid{display:grid;gap:.75rem;grid-template-columns:repeat(2,1fr)}.nova-testimonial-band{display:flex;flex-direction:column;gap:1.25rem}.nova-badge-grid{display:grid;gap:.75rem;grid-template-columns:repeat(2,1fr)}@media(min-width:560px){.nova-pricing-grid{grid-template-columns:repeat(2,1fr)}.nova-hero-grid{grid-template-columns:repeat(2,1fr)}.nova-testimonial-band{flex-direction:row;align-items:center}}@media(min-width:900px){.nova-pricing-grid{grid-template-columns:repeat(3,1fr)}.nova-stats-grid{grid-template-columns:repeat(4,1fr)}.nova-badge-grid{grid-template-columns:repeat(var(--nova-cols,4),1fr)}}@media(max-width:559px){.nova-pricing-price{font-size:1.65rem!important}.nova-cta-band{flex-direction:column!important;align-items:flex-start!important}.nova-cta-band a{width:100%;text-align:center}}`;
+  const responsive=`.nova-hero-grid{display:grid;gap:2rem;align-items:center;grid-template-columns:1fr}.nova-pricing-grid{display:grid;gap:1rem;grid-template-columns:1fr}.nova-stats-grid{display:grid;gap:.75rem;grid-template-columns:repeat(2,1fr)}.nova-testimonial-band{display:flex;flex-direction:column;gap:1.25rem}.nova-badge-grid{display:grid;gap:.75rem;grid-template-columns:repeat(2,1fr)}.nova-table-desktop{display:none}.nova-table-mobile{display:block}.nova-table-cards{display:flex;flex-direction:column;gap:.75rem}@media(min-width:560px){.nova-pricing-grid{grid-template-columns:repeat(2,1fr)}.nova-hero-grid{grid-template-columns:repeat(2,1fr)}.nova-testimonial-band{flex-direction:row;align-items:center}.nova-table-cards{display:grid;grid-template-columns:repeat(2,1fr)}}@media(min-width:900px){.nova-pricing-grid{grid-template-columns:repeat(3,1fr)}.nova-stats-grid{grid-template-columns:repeat(4,1fr)}.nova-badge-grid{grid-template-columns:repeat(var(--nova-cols,4),1fr)}.nova-table-desktop{display:block}.nova-table-mobile{display:none}}@media(max-width:559px){.nova-pricing-price{font-size:1.65rem!important}.nova-cta-band{flex-direction:column!important;align-items:flex-start!important}.nova-cta-band a{width:100%;text-align:center}}`;
   return `:root{--nova-radius:${r};--nova-font:${f}}body{background:#05070f;color:#e8edf9;font-family:${f}}.glass{background:rgba(13,19,36,.66);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.08)}.glass-soft{background:rgba(19,27,50,.55);border:1px solid rgba(255,255,255,.07)}.col-star{background:linear-gradient(180deg,rgba(15,211,182,.16),rgba(15,211,182,.05))}.col-star-gold{background:linear-gradient(180deg,rgba(245,196,82,.18),rgba(245,196,82,.05))}.col-star-rose{background:linear-gradient(180deg,rgba(255,107,157,.18),rgba(255,107,157,.05))}.col-star-indigo{background:linear-gradient(180deg,rgba(129,140,248,.18),rgba(129,140,248,.05))}.text-mist-200{color:#c3cde6}.text-mist-300{color:#93a1c4}.text-mist-400{color:#6b7aa1}.text-volt-300{color:#7ff3e4}.text-gold-300{color:#ffdf95}.text-rose-300{color:#ffb4c8}.text-indigo-300{color:#a5b4fc}.from-volt-400{--tw-gradient-from:#35e2c8}.to-volt-600{--tw-gradient-to:#06a892}.from-gold-300{--tw-gradient-from:#ffdf95}.to-gold-500{--tw-gradient-to:#e0a92c}.from-rose-300{--tw-gradient-from:#ffb4c8}.to-rose-500{--tw-gradient-to:#e8437a}.from-indigo-300{--tw-gradient-from:#a5b4fc}.to-indigo-500{--tw-gradient-to:#6366f1}.text-ink-900{color:#05070f}.reveal-ready{opacity:0;transform:translateY(28px)}.reveal-in{animation:revealUp .7s ease forwards}@keyframes revealUp{to{opacity:1;transform:none}}${responsive}`;
 }
 
