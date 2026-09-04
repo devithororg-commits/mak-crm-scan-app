@@ -1,9 +1,11 @@
 /* Aurora Studio — offline cache for core assets */
-const CACHE = 'aurora-pro-v9';
+const CACHE = 'aurora-pro-v10';
 const ASSETS = [
   './',
   './obsidian.html',
   './index.html',
+  './aurora-ppt.html',
+  './aurora-ppt/index.html',
   './studio.html',
   './showcase.html',
   './assets/aurora-pro.css',
