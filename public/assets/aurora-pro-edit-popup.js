@@ -208,10 +208,22 @@
     popup.style.bottom = '';
   }
 
+  function isInteracting() {
+    if (dragging || editingText) return true;
+    if (!popup) return false;
+    var ae = document.activeElement;
+    if (ae && popup.contains(ae)) {
+      var tag = ae.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON') return true;
+    }
+    return false;
+  }
+
   function startDrag(clientX, clientY, e) {
     if (!popup || isSheetLayout() || isLandscapeMobile()) return;
     var handle = e.target.closest('.pro-edit-drag-handle');
-    if (!handle || e.target.closest('button')) return;
+    if (!handle) return;
+    if (e.target.closest('button, input, textarea, select')) return;
     dragging = true;
     userPositioned = true;
     pinned = true;
@@ -221,6 +233,9 @@
     dragOriginT = parseFloat(popup.style.top) || 0;
     popup.classList.add('is-dragging');
     document.body.style.userSelect = 'none';
+    if (e.pointerId !== undefined && handle.setPointerCapture) {
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+    }
     e.preventDefault();
   }
 
@@ -229,39 +244,53 @@
     applyPosition(dragOriginL + (clientX - dragStartX), dragOriginT + (clientY - dragStartY));
   }
 
-  function endDrag() {
+  function endDrag(e) {
     if (!dragging) return;
     dragging = false;
     if (popup) popup.classList.remove('is-dragging');
     document.body.style.userSelect = '';
+    if (e && e.pointerId !== undefined) {
+      var handle = popup.querySelector('.pro-edit-drag-handle');
+      if (handle && handle.releasePointerCapture) {
+        try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+      }
+    }
   }
 
   function bindDrag() {
-    if (!popup || popup._dragBound) return;
-    popup._dragBound = true;
+    if (!popup) return;
+    var handle = popup.querySelector('.pro-edit-drag-handle');
+    if (!handle || handle._pepDragBound) return;
+    handle._pepDragBound = true;
 
-    popup.addEventListener('mousedown', function (e) {
+    function onPointerDown(e) {
+      if (e.button !== undefined && e.button !== 0) return;
       startDrag(e.clientX, e.clientY, e);
-    });
+    }
 
-    popup.addEventListener('touchstart', function (e) {
-      if (e.touches.length !== 1) return;
-      startDrag(e.touches[0].clientX, e.touches[0].clientY, e);
-    }, { passive: false });
-
-    document.addEventListener('mousemove', function (e) {
+    function onPointerMove(e) {
+      if (!dragging) return;
       moveDrag(e.clientX, e.clientY);
-    });
-
-    document.addEventListener('touchmove', function (e) {
-      if (!dragging || e.touches.length !== 1) return;
-      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
       e.preventDefault();
-    }, { passive: false });
+    }
 
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchend', endDrag);
-    document.addEventListener('touchcancel', endDrag);
+    handle.addEventListener('pointerdown', onPointerDown);
+
+    if (!popup._pepDocDragBound) {
+      popup._pepDocDragBound = true;
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', endDrag);
+      document.addEventListener('pointercancel', endDrag);
+
+      if (!window.PointerEvent) {
+        document.addEventListener('mousemove', onPointerMove);
+        document.addEventListener('mouseup', endDrag);
+      }
+    }
+
+    if (!window.PointerEvent) {
+      handle.addEventListener('mousedown', onPointerDown);
+    }
   }
 
   function hide() {
@@ -543,7 +572,12 @@
     }
 
     if (repositionOnly && o === lastObj && el.classList.contains('is-visible')) {
-      if (!userPositioned) positionPopup(o, true);
+      if (!userPositioned && !dragging) positionPopup(o, true);
+      return;
+    }
+
+    /* Keep popup stable while user drags it or edits controls inside */
+    if (o === lastObj && el.classList.contains('is-visible') && isInteracting()) {
       return;
     }
 
@@ -593,15 +627,17 @@
     el.querySelector('#pepClose')?.addEventListener('click', forceHide);
 
     bindControls(o);
+    bindDrag();
   }
 
   function bindCanvas() {
     if (!canvas || canvas._editPopupBound) return;
     canvas._editPopupBound = true;
 
-    ['selection:created', 'selection:updated', 'object:modified'].forEach(function (ev) {
-      canvas.on(ev, function () { update(false); });
+    ['selection:created', 'selection:updated'].forEach(function (ev) {
+      canvas.on(ev, function () { update(isInteracting()); });
     });
+    canvas.on('object:modified', function () { update(true); });
     ['object:moving', 'object:scaling', 'object:rotating'].forEach(function (ev) {
       canvas.on(ev, function () { update(true); });
     });
