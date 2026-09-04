@@ -6,6 +6,8 @@ on:
     paths:
       - 'public/index.html'
       - 'public/.htaccess'
+      - 'public/aurora-ppt/**'
+      - 'public/aurora-ppt.html'
       - '.github/scripts/deploy-hotfix.py'
   workflow_dispatch:
 

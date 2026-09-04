@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx --yes serve public -l 5173",
-    "build": "npm run build:static --prefix aurora-ppt && node scripts/build-static.mjs",
+    "build": "node scripts/build-static.mjs",
     "preview": "npx --yes serve dist -l 4173",
     "deploy:apptesting": "npm run build && python .github/scripts/deploy-apptesting.py"
   }
