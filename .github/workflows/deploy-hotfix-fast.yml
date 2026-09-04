@@ -5,9 +5,12 @@ on:
     branches: [master]
     paths:
       - 'public/index.html'
+      - 'public/sw.js'
       - 'public/.htaccess'
       - 'public/aurora-ppt.html'
       - 'public/aurora-ppt/index.html'
+      - 'public/assets/aurora-home.*'
+      - 'public/assets/aurora-toolhub.*'
       - 'public/assets/aurora-ppt-spa.*'
       - 'public/assets/editorial-botanical-Bu_MnSHi.jpg'
       - '.github/scripts/deploy-hotfix.py'

@@ -83,8 +83,8 @@ jobs:
       - name: Verify homepage and builder
         run: |
           home=$(curl -sS --max-time 25 "https://apptesting.in/" || true)
-          if echo "$home" | grep -q "f8fafc\|--bg:"; then
-            echo "✅ Light theme landing page is live on apptesting.in"
+          if echo "$home" | grep -q "aurora-home\|Creative Operating System"; then
+            echo "✅ Aurora Noir product hub is live on apptesting.in"
           else
             echo "⚠️ Homepage may still be cached or FTP pending"
           fi

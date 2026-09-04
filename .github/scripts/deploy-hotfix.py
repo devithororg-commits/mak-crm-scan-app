@@ -13,11 +13,16 @@ DIST = ROOT / "dist"
 # Flat files only — fast FTP upload (no recursive directory walk)
 HOTFIX_FILES = (
     "index.html",
+    "sw.js",
     "builder.html",
     "nova-builder.html",
     "aurora-ppt.html",
     ".htaccess",
     "aurora-ppt/index.html",
+    "assets/aurora-home.css",
+    "assets/aurora-home.js",
+    "assets/aurora-toolhub.css",
+    "assets/aurora-toolhub.js",
     "assets/aurora-ppt-spa.js",
     "assets/aurora-ppt-spa.css",
     "assets/editorial-botanical-Bu_MnSHi.jpg",
