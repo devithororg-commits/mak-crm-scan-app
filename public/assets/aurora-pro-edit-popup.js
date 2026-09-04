@@ -6,6 +6,7 @@
 
   var popup = null;
   var contentEl = null;
+  var backdrop = null;
   var pinned = false;
   var editingText = false;
   var lastObj = null;
@@ -15,7 +16,57 @@
   var dragStartY = 0;
   var dragOriginL = 0;
   var dragOriginT = 0;
+  var lastLayoutMode = '';
   var PANEL_W = 268;
+
+  function viewport() {
+    var vv = window.visualViewport;
+    return {
+      w: vv ? vv.width : window.innerWidth,
+      h: vv ? vv.height : window.innerHeight,
+      left: vv ? vv.offsetLeft : 0,
+      top: vv ? vv.offsetTop : 0
+    };
+  }
+
+  function getLayoutMode() {
+    var vw = viewport().w;
+    if (vw < 480) return 'mobile-sm';
+    if (vw < 768) return 'mobile';
+    if (vw < 1024) return 'tablet';
+    return 'desktop';
+  }
+
+  function isLandscapeMobile() {
+    var mode = getLayoutMode();
+    return (mode === 'mobile' || mode === 'mobile-sm') &&
+      window.innerHeight <= 500 && window.innerWidth > window.innerHeight;
+  }
+
+  function isSheetLayout() {
+    var mode = getLayoutMode();
+    if (mode === 'mobile' || mode === 'mobile-sm') return !isLandscapeMobile();
+    return false;
+  }
+
+  function applyLayoutClass() {
+    if (!popup) return getLayoutMode();
+    var mode = getLayoutMode();
+    popup.classList.remove('is-layout-mobile-sm', 'is-layout-mobile', 'is-layout-tablet', 'is-layout-desktop');
+    popup.classList.add('is-layout-' + mode);
+    if (mode !== lastLayoutMode) {
+      if (mode === 'mobile' || mode === 'mobile-sm' || mode === 'tablet') userPositioned = false;
+      lastLayoutMode = mode;
+    }
+    return mode;
+  }
+
+  function syncBackdrop(visible) {
+    if (!backdrop) return;
+    var show = visible && (getLayoutMode() === 'mobile' || getLayoutMode() === 'mobile-sm' || getLayoutMode() === 'tablet');
+    backdrop.classList.toggle('is-visible', show);
+    backdrop.classList.toggle('hidden', !show);
+  }
 
   function fontOptions(selected) {
     if (typeof FONTS === 'undefined') return '<option>Inter</option>';
@@ -59,8 +110,13 @@
 
   function ensurePopup() {
     if (popup) return popup;
-    var host = document.querySelector('main');
-    if (!host) return null;
+    backdrop = document.createElement('div');
+    backdrop.id = 'proEditBackdrop';
+    backdrop.className = 'pro-edit-backdrop hidden';
+    backdrop.setAttribute('aria-hidden', 'true');
+    backdrop.addEventListener('click', forceHide);
+    document.body.appendChild(backdrop);
+
     popup = document.createElement('div');
     popup.id = 'proEditPopup';
     popup.className = 'pro-edit-popup glass hidden';
@@ -69,18 +125,23 @@
     popup.innerHTML =
       '<div class="pro-edit-aura"></div>' +
       '<div class="pro-edit-shine"></div>' +
-      '<div class="pro-edit-content"></div>';
+      '<div class="pro-edit-content">' +
+      '<div class="pro-edit-sheet-bar" aria-hidden="true"></div>' +
+      '</div>';
     contentEl = popup.querySelector('.pro-edit-content');
-    host.appendChild(popup);
+    document.body.appendChild(popup);
     popup.addEventListener('mousedown', function (e) { e.stopPropagation(); });
     popup.addEventListener('click', function (e) { e.stopPropagation(); });
+    applyLayoutClass();
     bindDrag();
     return popup;
   }
 
   function showAnimated() {
     if (!popup) return;
+    applyLayoutClass();
     popup.classList.remove('hidden', 'is-exiting');
+    syncBackdrop(true);
     requestAnimationFrame(function () {
       popup.classList.add('is-visible');
     });
@@ -88,11 +149,13 @@
 
   function hideAnimated(done) {
     if (!popup || popup.classList.contains('hidden')) {
+      syncBackdrop(false);
       if (done) done();
       return;
     }
     popup.classList.remove('is-visible');
     popup.classList.add('is-exiting');
+    syncBackdrop(false);
     clearTimeout(popup._hideT);
     popup._hideT = setTimeout(function () {
       popup.classList.add('hidden');
@@ -102,20 +165,33 @@
   }
 
   function clampPosition(left, top) {
-    var main = document.querySelector('main');
-    if (!main || !popup) return { left: left, top: top };
-    var w = main.clientWidth;
-    var h = main.clientHeight;
+    if (!popup || isSheetLayout()) return { left: 0, top: 0 };
+    var vp = viewport();
+    var pad = 8;
     var pw = popup.offsetWidth || PANEL_W;
     var ph = popup.offsetHeight || 200;
     return {
-      left: Math.max(4, Math.min(w - pw - 4, left)),
-      top: Math.max(4, Math.min(h - ph - 4, top))
+      left: Math.max(vp.left + pad, Math.min(vp.left + vp.w - pw - pad, left)),
+      top: Math.max(vp.top + pad, Math.min(vp.top + vp.h - ph - pad, top))
     };
   }
 
   function applyPosition(left, top, animate) {
     if (!popup) return;
+    if (isLandscapeMobile()) {
+      popup.style.left = '';
+      popup.style.top = '0';
+      popup.style.right = '0';
+      popup.style.bottom = '0';
+      return;
+    }
+    if (isSheetLayout()) {
+      popup.style.left = '';
+      popup.style.top = '';
+      popup.style.right = '';
+      popup.style.bottom = '0';
+      return;
+    }
     if (animate && !dragging) {
       popup.classList.add('is-animated-move');
       clearTimeout(popup._moveT);
@@ -128,6 +204,36 @@
     var p = clampPosition(left, top);
     popup.style.left = p.left + 'px';
     popup.style.top = p.top + 'px';
+    popup.style.right = '';
+    popup.style.bottom = '';
+  }
+
+  function startDrag(clientX, clientY, e) {
+    if (!popup || isSheetLayout() || isLandscapeMobile()) return;
+    var handle = e.target.closest('.pro-edit-drag-handle');
+    if (!handle || e.target.closest('button')) return;
+    dragging = true;
+    userPositioned = true;
+    pinned = true;
+    dragStartX = clientX;
+    dragStartY = clientY;
+    dragOriginL = parseFloat(popup.style.left) || 0;
+    dragOriginT = parseFloat(popup.style.top) || 0;
+    popup.classList.add('is-dragging');
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  }
+
+  function moveDrag(clientX, clientY) {
+    if (!dragging || !popup) return;
+    applyPosition(dragOriginL + (clientX - dragStartX), dragOriginT + (clientY - dragStartY));
+  }
+
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    if (popup) popup.classList.remove('is-dragging');
+    document.body.style.userSelect = '';
   }
 
   function bindDrag() {
@@ -135,33 +241,27 @@
     popup._dragBound = true;
 
     popup.addEventListener('mousedown', function (e) {
-      var handle = e.target.closest('.pro-edit-drag-handle');
-      if (!handle || e.target.closest('button')) return;
-      dragging = true;
-      userPositioned = true;
-      pinned = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      dragOriginL = parseFloat(popup.style.left) || 0;
-      dragOriginT = parseFloat(popup.style.top) || 0;
-      popup.classList.add('is-dragging');
-      document.body.style.userSelect = 'none';
-      e.preventDefault();
+      startDrag(e.clientX, e.clientY, e);
     });
+
+    popup.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 1) return;
+      startDrag(e.touches[0].clientX, e.touches[0].clientY, e);
+    }, { passive: false });
 
     document.addEventListener('mousemove', function (e) {
-      if (!dragging || !popup) return;
-      var dx = e.clientX - dragStartX;
-      var dy = e.clientY - dragStartY;
-      applyPosition(dragOriginL + dx, dragOriginT + dy);
+      moveDrag(e.clientX, e.clientY);
     });
 
-    document.addEventListener('mouseup', function () {
-      if (!dragging) return;
-      dragging = false;
-      if (popup) popup.classList.remove('is-dragging');
-      document.body.style.userSelect = '';
-    });
+    document.addEventListener('touchmove', function (e) {
+      if (!dragging || e.touches.length !== 1) return;
+      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+    document.addEventListener('touchcancel', endDrag);
   }
 
   function hide() {
@@ -266,27 +366,43 @@
 
   function positionPopup(o, animate) {
     if (!popup || !o || userPositioned || dragging) return;
-    var r = o.getBoundingRect(true, true);
-    var main = document.querySelector('main');
-    var wrap = document.getElementById('stageWrap');
-    if (!main || !wrap) return;
-    var mainRect = main.getBoundingClientRect();
-    var canvRect = canvas.getElement().getBoundingClientRect();
-    var scrollL = wrap.scrollLeft || 0;
-    var scrollT = wrap.scrollTop || 0;
+    applyLayoutClass();
 
-    var selLeft = canvRect.left - mainRect.left + r.left;
-    var selTop = canvRect.top - mainRect.top + r.top;
+    if (isSheetLayout() || isLandscapeMobile()) {
+      applyPosition(0, 0, animate);
+      return;
+    }
+
+    var r = o.getBoundingRect(true, true);
+    var canvRect = canvas.getElement().getBoundingClientRect();
+    var vp = viewport();
+    var pw = popup.offsetWidth || PANEL_W;
+    var ph = popup.offsetHeight || 240;
+    var pad = 8;
+    var gap = 12;
+    var mode = getLayoutMode();
+
+    var selLeft = canvRect.left + r.left;
+    var selTop = canvRect.top + r.top;
     var selRight = selLeft + r.width;
     var selBottom = selTop + r.height;
 
-    var left = selRight + 14;
+    var left = selRight + gap;
     var top = selTop;
-    if (left + PANEL_W > mainRect.width - 8) {
-      left = selLeft - PANEL_W - 14;
+
+    if (mode === 'tablet') {
+      if (left + pw > vp.left + vp.w - pad || selBottom + ph > vp.top + vp.h - pad) {
+        left = vp.left + (vp.w - pw) / 2;
+        top = Math.min(selBottom + gap, vp.top + vp.h - ph - pad);
+      }
+    } else {
+      if (left + pw > vp.left + vp.w - pad) left = selLeft - pw - gap;
+      if (left < vp.left + pad) left = vp.left + pad;
     }
-    if (left < 8) left = 8;
-    top = Math.max(8, Math.min(mainRect.height - popup.offsetHeight - 8, top));
+
+    if (top + ph > vp.top + vp.h - pad) top = vp.top + vp.h - ph - pad;
+    if (top < vp.top + pad) top = vp.top + pad;
+
     applyPosition(left, top, !!animate);
   }
 
@@ -432,7 +548,8 @@
     var body = renderBody(o);
     var hasSelection = o.isEditing && o.selectionStart !== o.selectionEnd;
     var target = contentEl || el;
-    target.innerHTML =
+    var sheetBar = '<div class="pro-edit-sheet-bar" aria-hidden="true"></div>';
+    target.innerHTML = sheetBar +
       '<div class="pro-edit-head pro-edit-drag-handle" title="Drag to move anywhere">' +
       '<span class="pro-edit-grip" aria-hidden="true">⠿</span>' +
       '<div class="pro-edit-head-left">' +
@@ -448,7 +565,9 @@
       '<div class="pro-edit-body">' + body.html + '</div>';
 
     el.classList.remove('hidden');
+    applyLayoutClass();
     if (wasHidden || isNewObject) showAnimated();
+    else syncBackdrop(true);
     if (!userPositioned) positionPopup(o, wasHidden || isNewObject);
 
     el.querySelector('#pepSnap')?.addEventListener('click', function () {
@@ -499,7 +618,14 @@
 
     var wrap = document.getElementById('stageWrap');
     if (wrap) wrap.addEventListener('scroll', function () { update(true); });
-    window.addEventListener('resize', function () { update(true); });
+    window.addEventListener('resize', function () {
+      applyLayoutClass();
+      update(true);
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', function () { update(true); });
+      window.visualViewport.addEventListener('scroll', function () { update(true); });
+    }
   }
 
   function patchCtx() {
