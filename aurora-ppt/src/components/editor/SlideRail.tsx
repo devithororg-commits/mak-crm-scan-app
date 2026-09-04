@@ -14,6 +14,7 @@ export function SlideRail() {
   const selection = useEditor((s) => s.selection);
   const tab = useEditor((s) => s.railTab);
   const setTab = useEditor((s) => s.setRailTab);
+  const railWide = tab === "templates";
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [overIdx, setOverIdx] = useState<number | null>(null);
   const [layerQuery, setLayerQuery] = useState("");
@@ -34,7 +35,7 @@ export function SlideRail() {
   }, [slide.blocks, layerQuery]);
 
   return (
-    <aside className="panel flex h-full w-[260px] shrink-0 flex-col border-r">
+    <aside className={`panel flex h-full shrink-0 flex-col border-r transition-[width] ${railWide ? "w-[300px]" : "w-[260px]"}`}>
       <div className="grid grid-cols-3 gap-1 px-3 pt-3">
         <button
           className="rounded-sm py-2 text-[9px] font-semibold uppercase tracking-wide data-[active=true]:bg-accent data-[active=true]:text-accent-foreground text-muted-foreground"

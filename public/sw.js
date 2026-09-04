@@ -1,6 +1,6 @@
 /* Aurora Studio — offline cache for core assets */
 
-const CACHE = 'aurora-pro-v18';
+const CACHE = 'aurora-pro-v19';
 
 const PPT_ASSETS = [
 

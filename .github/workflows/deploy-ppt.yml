@@ -55,8 +55,8 @@ jobs:
             echo "$body" | head -5
             exit 1
           fi
-          if echo "$js" | grep -q "Editorial Pitch"; then
-            echo "✅ PPT JS bundle includes templates"
+          if echo "$js" | grep -q "Monthly Newsletter"; then
+            echo "✅ PPT JS bundle includes premium template library"
           else
             echo "❌ PPT JS bundle is stale (templates missing)"
             exit 1

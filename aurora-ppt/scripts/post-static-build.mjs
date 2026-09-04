@@ -2,7 +2,7 @@ import { copyFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const PPT_VERSION = "18";
+const PPT_VERSION = "19";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const appRoot = join(root, "../..");
