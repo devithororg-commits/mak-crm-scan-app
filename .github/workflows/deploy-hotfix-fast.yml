@@ -6,8 +6,10 @@ on:
     paths:
       - 'public/index.html'
       - 'public/.htaccess'
-      - 'public/aurora-ppt/**'
       - 'public/aurora-ppt.html'
+      - 'public/aurora-ppt/index.html'
+      - 'public/assets/aurora-ppt-spa.*'
+      - 'public/assets/editorial-botanical-Bu_MnSHi.jpg'
       - '.github/scripts/deploy-hotfix.py'
   workflow_dispatch:
 
@@ -39,13 +41,12 @@ jobs:
           HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
         run: python3 .github/scripts/deploy-hotfix.py
 
-      - name: Verify light theme live
+      - name: Verify PPT editor live
         run: |
-          sleep 5
-          home=$(curl -sS --max-time 25 "https://apptesting.in/?t=$(date +%s)" || true)
-          if echo "$home" | grep -q "f8fafc"; then
-            echo "✅ Light theme confirmed on apptesting.in"
+          body=$(curl -sS --max-time 25 "https://apptesting.in/aurora-ppt.html?t=$(date +%s)" || true)
+          if echo "$body" | grep -q "aurora-ppt-spa.js"; then
+            echo "✅ aurora-ppt.html SPA entry is live"
             exit 0
           fi
-          echo "⚠️ Still serving old page — CDN may need a minute"
+          echo "⚠️ PPT page not updated yet"
           exit 0
