@@ -1,0 +1,177 @@
+/* Contextual edit popup — beside selection */
+
+#ctxBar { display: none !important; }
+
+.pro-edit-popup {
+  position: absolute;
+  z-index: 45;
+  width: 268px;
+  max-height: min(78vh, 640px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  padding: .65rem;
+  pointer-events: auto;
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, .65), 0 0 0 1px rgba(34, 211, 238, .18);
+  animation: proEditIn .22s cubic-bezier(.22, 1, .36, 1);
+}
+
+.pro-edit-popup.hidden { display: none !important; }
+
+@keyframes proEditIn {
+  from { opacity: 0; transform: translateX(8px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.pro-edit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-bottom: .4rem;
+}
+
+.pro-edit-head-left {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  min-width: 0;
+}
+
+.pro-edit-type {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #22d3ee;
+}
+
+.pro-edit-hint {
+  font-size: 9px;
+  color: #fbbf24;
+  white-space: nowrap;
+}
+
+.pro-edit-head-actions {
+  display: flex;
+  gap: .25rem;
+  flex-shrink: 0;
+}
+
+.pro-edit-head-actions .chip {
+  padding: .2rem .45rem;
+  font-size: 11px;
+}
+
+.pep-pin.on {
+  background: rgba(34, 211, 238, .2);
+  border-color: rgba(34, 211, 238, .5);
+  color: #67e8f9;
+}
+
+.pro-edit-name {
+  font-size: 11px;
+  margin-bottom: .45rem;
+}
+
+.pro-edit-body {
+  overflow-y: auto;
+  max-height: calc(min(78vh, 640px) - 4.5rem);
+  padding-right: .15rem;
+}
+
+.pro-edit-section {
+  margin-bottom: .55rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.pro-edit-section:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.pro-edit-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: .35rem;
+}
+
+.pro-edit-textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.pro-edit-row {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+.pro-edit-btns {
+  display: flex;
+  gap: .25rem;
+  flex: 1;
+}
+
+.pro-edit-btns .chip,
+.pro-edit-align .chip {
+  padding: .25rem .4rem;
+  font-size: 11px;
+  min-width: 1.75rem;
+}
+
+.pro-edit-align {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .25rem;
+}
+
+.pro-edit-mini {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  font-size: 10px;
+  color: #94a3b8;
+  width: 100%;
+}
+
+.pro-edit-mini input[type="range"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.pro-edit-color {
+  width: 2rem;
+  height: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: .4rem;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pro-edit-color::-webkit-color-swatch-wrapper { padding: 2px; }
+.pro-edit-color::-webkit-color-swatch { border-radius: 4px; border: none; }
+
+.chip.on {
+  background: rgba(34, 211, 238, .18);
+  border-color: rgba(34, 211, 238, .45);
+  color: #e2e8f0;
+}
+
+@media (max-width: 900px) {
+  .pro-edit-popup {
+    width: min(268px, calc(100vw - 1.5rem));
+    max-height: 50vh;
+  }
+}
