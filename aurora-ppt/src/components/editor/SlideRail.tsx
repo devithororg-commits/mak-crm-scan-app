@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Copy, Eye, EyeOff, Layers, LayoutTemplate, Plus, Search, Trash2 } from "lucide-react";
+import { Copy, Eye, EyeOff, Plus, Search, Trash2 } from "lucide-react";
 import { useEditor } from "@/lib/editor/store";
 import { blockLabel } from "@/lib/editor/blockLabel";
 import { SlideStage } from "./canvas/SlideStage";
@@ -8,12 +8,15 @@ import { TemplatesPanel } from "./TemplatesPanel";
 const THUMB_W = 196;
 const THUMB_H = Math.round((THUMB_W * 9) / 16);
 
-type RailTab = "slides" | "layers" | "templates";
-
 export function SlideRail() {
   const deck = useEditor((s) => s.deck);
   const slideId = useEditor((s) => s.slideId);
   const selection = useEditor((s) => s.selection);
+  const tab = useEditor((s) => s.railTab);
+  const setTab = useEditor((s) => s.setRailTab);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [overIdx, setOverIdx] = useState<number | null>(null);
+  const [layerQuery, setLayerQuery] = useState("");
   const setSlide = useEditor((s) => s.setSlide);
   const addSlide = useEditor((s) => s.addSlide);
   const duplicateSlide = useEditor((s) => s.duplicateSlide);
@@ -21,10 +24,6 @@ export function SlideRail() {
   const moveSlide = useEditor((s) => s.moveSlide);
   const select = useEditor((s) => s.select);
   const toggleLock = useEditor((s) => s.toggleLock);
-  const [tab, setTab] = useState<RailTab>("slides");
-  const [dragIdx, setDragIdx] = useState<number | null>(null);
-  const [overIdx, setOverIdx] = useState<number | null>(null);
-  const [layerQuery, setLayerQuery] = useState("");
 
   const slide = deck.slides.find((s) => s.id === slideId) ?? deck.slides[0]!;
   const layers = useMemo(() => {
@@ -35,29 +34,28 @@ export function SlideRail() {
   }, [slide.blocks, layerQuery]);
 
   return (
-    <aside className="panel flex h-full w-[248px] shrink-0 flex-col border-r">
-      <div className="flex gap-1 px-3 pt-3">
+    <aside className="panel flex h-full w-[260px] shrink-0 flex-col border-r">
+      <div className="grid grid-cols-3 gap-1 px-3 pt-3">
         <button
-          className="flex flex-1 items-center justify-center gap-1 rounded-sm py-1.5 text-[10px] font-semibold uppercase tracking-wider data-[active=true]:bg-secondary data-[active=true]:text-foreground text-muted-foreground"
+          className="rounded-sm py-2 text-[9px] font-semibold uppercase tracking-wide data-[active=true]:bg-accent data-[active=true]:text-accent-foreground text-muted-foreground"
           data-active={tab === "slides"}
           onClick={() => setTab("slides")}
         >
           Slides
         </button>
         <button
-          className="flex flex-1 items-center justify-center gap-1 rounded-sm py-1.5 text-[10px] font-semibold uppercase tracking-wider data-[active=true]:bg-secondary data-[active=true]:text-foreground text-muted-foreground"
+          className="rounded-sm py-2 text-[9px] font-semibold uppercase tracking-wide data-[active=true]:bg-accent data-[active=true]:text-accent-foreground text-muted-foreground"
           data-active={tab === "layers"}
           onClick={() => setTab("layers")}
         >
-          <Layers className="!h-3 !w-3" />
+          Layers
         </button>
         <button
-          className="flex flex-1 items-center justify-center gap-1 rounded-sm py-1.5 text-[10px] font-semibold uppercase tracking-wider data-[active=true]:bg-secondary data-[active=true]:text-foreground text-muted-foreground"
+          className="rounded-sm py-2 text-[9px] font-semibold uppercase tracking-wide data-[active=true]:bg-accent data-[active=true]:text-accent-foreground text-muted-foreground"
           data-active={tab === "templates"}
           onClick={() => setTab("templates")}
-          title="Templates"
         >
-          <LayoutTemplate className="!h-3 !w-3" />
+          Templates
         </button>
       </div>
 

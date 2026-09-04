@@ -1,4 +1,4 @@
-import { Circle, Heading1, Image as ImageIcon, Minus, Monitor, Play, Redo2, Smartphone, Square, Tag, Tablet, Type, Undo2, ZoomIn, ZoomOut } from "lucide-react";
+import { Circle, Heading1, Image as ImageIcon, LayoutTemplate, Minus, Monitor, Play, Redo2, Smartphone, Square, Tag, Tablet, Type, Undo2, ZoomIn, ZoomOut } from "lucide-react";
 import { defaultBlock } from "@/lib/ast/defaults";
 import { useEditor, type Viewport } from "@/lib/editor/store";
 import { VIEWPORT_DIMS } from "@/lib/editor/viewport";
@@ -23,6 +23,8 @@ export function Toolbar() {
   const setViewport = useEditor((s) => s.setViewport);
   const setPan = useEditor((s) => s.setPan);
   const setPresenting = useEditor((s) => s.setPresenting);
+  const setRailTab = useEditor((s) => s.setRailTab);
+  const railTab = useEditor((s) => s.railTab);
 
   const insertImage = () => {
     const url = window.prompt("Image URL");
@@ -70,6 +72,17 @@ export function Toolbar() {
       </button>
       <button className="tool-btn" title="Image" onClick={insertImage}>
         <ImageIcon />
+      </button>
+
+      <span className="mx-2 h-5 w-px bg-border" />
+
+      <button
+        className="tool-btn data-[active=true]:bg-accent/15 data-[active=true]:text-accent"
+        data-active={railTab === "templates"}
+        title="Open templates library"
+        onClick={() => setRailTab("templates")}
+      >
+        <LayoutTemplate /> <span className="hidden lg:inline">Templates</span>
       </button>
 
       <span className="mx-2 h-5 w-px bg-border" />

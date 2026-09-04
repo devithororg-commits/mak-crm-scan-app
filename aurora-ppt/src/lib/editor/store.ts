@@ -11,6 +11,7 @@ const HISTORY_LIMIT = 80;
 type Snapshot = { deck: Deck; slideId: string };
 
 export type Viewport = "desktop" | "tablet" | "mobile";
+export type RailTab = "slides" | "layers" | "templates";
 
 export type EditorState = {
   deck: Deck;
@@ -20,6 +21,7 @@ export type EditorState = {
   zoom: number; // 1 = fit
   pan: { x: number; y: number };
   viewport: Viewport;
+  railTab: RailTab;
   presenting: boolean;
   clipboard: Block[];
   past: Snapshot[];
@@ -40,6 +42,7 @@ export type EditorState = {
   setZoom: (z: number) => void;
   setPan: (p: { x: number; y: number }) => void;
   setViewport: (v: Viewport) => void;
+  setRailTab: (tab: RailTab) => void;
   setPresenting: (p: boolean) => void;
 
   // deck-level
@@ -106,6 +109,7 @@ export const useEditor = create<EditorState>()(
         zoom: 1,
         pan: { x: 0, y: 0 },
         viewport: "desktop",
+        railTab: "slides",
         presenting: false,
         clipboard: [],
         past: [],
@@ -139,6 +143,7 @@ export const useEditor = create<EditorState>()(
         setZoom: (z) => set({ zoom: Math.min(6, Math.max(0.1, z)) }),
         setPan: (pan) => set({ pan }),
         setViewport: (viewport) => set({ viewport }),
+        setRailTab: (railTab) => set({ railTab }),
         setPresenting: (p) => set({ presenting: p, editingId: null }),
 
         setTitle: (t) => mutateDeck((d) => ({ ...d, title: t }), false),

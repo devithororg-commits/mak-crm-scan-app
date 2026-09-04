@@ -8,6 +8,8 @@ on:
       - 'public/aurora-ppt/index.html'
       - 'public/assets/aurora-ppt-spa.*'
       - 'public/assets/editorial-botanical-Bu_MnSHi.jpg'
+      - 'public/sw.js'
+      - 'aurora-ppt/src/**'
       - '.github/scripts/deploy-ppt-only.py'
   workflow_dispatch:
 
@@ -26,6 +28,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Build PPT SPA from source
+        run: |
+          cd aurora-ppt
+          npm ci
+          npm run build:static
+
       - name: Build dist
         run: npm run build
 
@@ -39,9 +47,17 @@ jobs:
         run: |
           sleep 3
           body=$(curl -sS --max-time 20 "https://apptesting.in/aurora-ppt.html?t=$(date +%s)" || true)
+          js=$(curl -sS --max-time 30 "https://apptesting.in/assets/aurora-ppt-spa.js?t=$(date +%s)" || true)
           if echo "$body" | grep -q "aurora-ppt-spa.js"; then
             echo "✅ https://apptesting.in/aurora-ppt.html is live"
           else
             echo "⚠️ HTML not updated yet"
             echo "$body" | head -5
+            exit 1
+          fi
+          if echo "$js" | grep -q "Editorial Pitch"; then
+            echo "✅ PPT JS bundle includes templates"
+          else
+            echo "❌ PPT JS bundle is stale (templates missing)"
+            exit 1
           fi
