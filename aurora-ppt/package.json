@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:static": "vite build --config vite.static.config.ts && node -e \"require('fs').copyFileSync('../public/aurora-ppt/spa.html','../public/aurora-ppt/index.html')\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
