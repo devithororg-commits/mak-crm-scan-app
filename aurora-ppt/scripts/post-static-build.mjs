@@ -1,19 +1,32 @@
-import { copyFileSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const PPT_VERSION = "17";
+const PPT_VERSION = "18";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const appRoot = join(root, "../..");
 const pptDir = join(appRoot, "public/aurora-ppt");
 const assetsDir = join(pptDir, "assets");
 const flatAssetsDir = join(appRoot, "public/assets");
-const spaHtml = join(pptDir, "spa.html");
-const indexHtml = join(pptDir, "index.html");
 const rootHtml = join(appRoot, "public/aurora-ppt.html");
+const redirectHtml = join(pptDir, "index.html");
 
-copyFileSync(spaHtml, indexHtml);
+const redirect = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0;url=../aurora-ppt.html" />
+    <title>Redirecting — Aurora Studio PPT</title>
+    <script>location.replace("../aurora-ppt.html");</script>
+  </head>
+  <body style="margin:0;background:#0A0A0C;color:#F2EEE6;font-family:system-ui,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center">
+    <p>Redirecting to <a href="../aurora-ppt.html" style="color:#D4A373">Aurora Studio PPT</a>…</p>
+  </body>
+</html>
+`;
+
+writeFileSync(redirectHtml, redirect, "utf8");
 
 const loadingRoot = `<div id="root">
       <div style="display:flex;min-height:100vh;align-items:center;justify-content:center;background:#0A0A0C;color:#F2EEE6;font-family:Manrope,system-ui,sans-serif">
