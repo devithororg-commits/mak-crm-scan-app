@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { useEditor } from "@/lib/editor/store";
+import { viewportDims } from "@/lib/editor/viewport";
+import { useCloudSync } from "@/hooks/useCloudSync";
 import { EditorCanvas } from "./canvas/EditorCanvas";
 import { Inspector } from "./Inspector";
 import { Presenter } from "./Presenter";
@@ -13,6 +15,7 @@ function isTypingTarget(el: EventTarget | null) {
 
 export default function Editor() {
   const presenting = useEditor((s) => s.presenting);
+  const cloud = useCloudSync();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -91,7 +94,7 @@ export default function Editor() {
         <SlideRail />
         <main className="relative min-w-0 flex-1">
           <EditorCanvas />
-          <StatusBar />
+          <StatusBar cloudStatus={cloud.status} cloudSaved={cloud.lastSaved} />
         </main>
         <Inspector />
       </div>
@@ -100,18 +103,42 @@ export default function Editor() {
   );
 }
 
-function StatusBar() {
+function StatusBar({
+  cloudStatus,
+  cloudSaved,
+}: {
+  cloudStatus: "offline" | "idle" | "saving" | "saved" | "error";
+  cloudSaved: Date | null;
+}) {
   const index = useEditor((s) => s.deck.slides.findIndex((sl) => sl.id === s.slideId));
   const total = useEditor((s) => s.deck.slides.length);
   const selection = useEditor((s) => s.selection.length);
   const updatedAt = useEditor((s) => s.deck.updatedAt);
+  const viewport = useEditor((s) => s.viewport);
+  const vp = viewportDims(viewport);
+
+  const cloudLabel =
+    cloudStatus === "saving"
+      ? "Cloud · saving…"
+      : cloudStatus === "saved"
+        ? `Cloud · ${cloudSaved?.toLocaleTimeString() ?? "saved"}`
+        : cloudStatus === "error"
+          ? "Cloud · error"
+          : cloudStatus === "offline"
+            ? "Local only"
+            : "Cloud · pending";
+
   return (
     <div className="pointer-events-none absolute right-4 bottom-3 left-4 flex items-center justify-between font-mono text-[10px] tabular-nums text-muted-foreground">
       <span>
         {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         {selection > 0 && ` · ${selection} selected`}
+        <span className="mx-2 opacity-40">|</span>
+        Space+drag pan · scroll zoom
       </span>
-      <span>1920 × 1080 · saved {new Date(updatedAt).toLocaleTimeString()}</span>
+      <span>
+        {vp.w} × {vp.h} · {cloudLabel} · {new Date(updatedAt).toLocaleTimeString()}
+      </span>
     </div>
   );
 }

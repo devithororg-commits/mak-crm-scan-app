@@ -1,0 +1,2 @@
+# Aurora API — local secrets (never commit)
+config.local.php

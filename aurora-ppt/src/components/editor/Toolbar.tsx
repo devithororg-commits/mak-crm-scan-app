@@ -1,6 +1,13 @@
-import { Circle, Heading1, Image as ImageIcon, Minus, Play, Redo2, Square, Tag, Type, Undo2, ZoomIn, ZoomOut } from "lucide-react";
+import { Circle, Heading1, Image as ImageIcon, Minus, Monitor, Play, Redo2, Smartphone, Square, Tag, Tablet, Type, Undo2, ZoomIn, ZoomOut } from "lucide-react";
 import { defaultBlock } from "@/lib/ast/defaults";
-import { useEditor } from "@/lib/editor/store";
+import { useEditor, type Viewport } from "@/lib/editor/store";
+import { VIEWPORT_DIMS } from "@/lib/editor/viewport";
+
+const VIEWPORT_OPTIONS: { id: Viewport; icon: typeof Monitor; title: string }[] = [
+  { id: "desktop", icon: Monitor, title: VIEWPORT_DIMS.desktop.label },
+  { id: "tablet", icon: Tablet, title: VIEWPORT_DIMS.tablet.label },
+  { id: "mobile", icon: Smartphone, title: VIEWPORT_DIMS.mobile.label },
+];
 
 export function Toolbar() {
   const title = useEditor((s) => s.deck.title);
@@ -12,6 +19,9 @@ export function Toolbar() {
   const canRedo = useEditor((s) => s.future.length > 0);
   const zoom = useEditor((s) => s.zoom);
   const setZoom = useEditor((s) => s.setZoom);
+  const viewport = useEditor((s) => s.viewport);
+  const setViewport = useEditor((s) => s.setViewport);
+  const setPan = useEditor((s) => s.setPan);
   const setPresenting = useEditor((s) => s.setPresenting);
 
   const insertImage = () => {
@@ -72,6 +82,23 @@ export function Toolbar() {
       </button>
 
       <div className="ml-auto flex items-center gap-1">
+        <span className="eyebrow mr-1 hidden md:inline">Viewport</span>
+        {VIEWPORT_OPTIONS.map(({ id, icon: Icon, title: vpTitle }) => (
+          <button
+            key={id}
+            className="tool-btn data-[active=true]:bg-accent/15 data-[active=true]:text-accent"
+            data-active={viewport === id}
+            title={vpTitle}
+            onClick={() => {
+              setViewport(id);
+              setPan({ x: 0, y: 0 });
+              setZoom(1);
+            }}
+          >
+            <Icon className="!h-3.5 !w-3.5" />
+          </button>
+        ))}
+        <span className="mx-2 h-5 w-px bg-border" />
         <button className="tool-btn" onClick={() => setZoom(zoom / 1.2)} title="Zoom out">
           <ZoomOut />
         </button>
