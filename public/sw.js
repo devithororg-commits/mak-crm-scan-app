@@ -1,6 +1,6 @@
 /* Aurora Studio — offline cache for core assets */
 
-const CACHE = 'aurora-pro-v20';
+const CACHE = 'aurora-pro-v21';
 
 const PPT_ASSETS = [
 
@@ -102,6 +102,24 @@ function isPptAsset(url) {
 
 }
 
+function isHomeAsset(url) {
+  return /\/(index\.html)?(\?|$)/.test(url.replace(self.location.origin, '')) ||
+    url.indexOf('aurora-home.') !== -1 ||
+    url.indexOf('aurora-toolhub.') !== -1;
+}
+
+function networkFirst(request) {
+  return fetch(request).then(function (res) {
+    if (res && res.status === 200) {
+      var copy = res.clone();
+      caches.open(CACHE).then(function (c) { c.put(request, copy); });
+    }
+    return res;
+  }).catch(function () {
+    return caches.match(request);
+  });
+}
+
 
 
 self.addEventListener('install', function (e) {
@@ -143,6 +161,13 @@ self.addEventListener('fetch', function (e) {
   var url = e.request.url;
 
 
+
+  /* Homepage + hub assets: network first so redesigns show immediately */
+
+  if (isHomeAsset(url)) {
+    e.respondWith(networkFirst(e.request));
+    return;
+  }
 
   /* PPT editor: always fetch fresh JS/CSS from network first */
 
