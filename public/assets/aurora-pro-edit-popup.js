@@ -5,6 +5,7 @@
   if (!document.body.classList.contains('obsidian-app')) return;
 
   var popup = null;
+  var contentEl = null;
   var pinned = false;
   var editingText = false;
   var lastObj = null;
@@ -65,11 +66,39 @@
     popup.className = 'pro-edit-popup glass hidden';
     popup.setAttribute('role', 'dialog');
     popup.setAttribute('aria-label', 'Quick edit controls');
+    popup.innerHTML =
+      '<div class="pro-edit-aura"></div>' +
+      '<div class="pro-edit-shine"></div>' +
+      '<div class="pro-edit-content"></div>';
+    contentEl = popup.querySelector('.pro-edit-content');
     host.appendChild(popup);
     popup.addEventListener('mousedown', function (e) { e.stopPropagation(); });
     popup.addEventListener('click', function (e) { e.stopPropagation(); });
     bindDrag();
     return popup;
+  }
+
+  function showAnimated() {
+    if (!popup) return;
+    popup.classList.remove('hidden', 'is-exiting');
+    requestAnimationFrame(function () {
+      popup.classList.add('is-visible');
+    });
+  }
+
+  function hideAnimated(done) {
+    if (!popup || popup.classList.contains('hidden')) {
+      if (done) done();
+      return;
+    }
+    popup.classList.remove('is-visible');
+    popup.classList.add('is-exiting');
+    clearTimeout(popup._hideT);
+    popup._hideT = setTimeout(function () {
+      popup.classList.add('hidden');
+      popup.classList.remove('is-exiting');
+      if (done) done();
+    }, 320);
   }
 
   function clampPosition(left, top) {
@@ -85,12 +114,20 @@
     };
   }
 
-  function applyPosition(left, top) {
+  function applyPosition(left, top, animate) {
     if (!popup) return;
+    if (animate && !dragging) {
+      popup.classList.add('is-animated-move');
+      clearTimeout(popup._moveT);
+      popup._moveT = setTimeout(function () {
+        if (popup) popup.classList.remove('is-animated-move');
+      }, 540);
+    } else if (!dragging) {
+      popup.classList.remove('is-animated-move');
+    }
     var p = clampPosition(left, top);
     popup.style.left = p.left + 'px';
     popup.style.top = p.top + 'px';
-    popup.style.transform = 'none';
   }
 
   function bindDrag() {
@@ -130,7 +167,7 @@
   function hide() {
     if (!popup) return;
     if (pinned || editingText) return;
-    popup.classList.add('hidden');
+    hideAnimated();
   }
 
   function forceHide() {
@@ -138,7 +175,7 @@
     editingText = false;
     userPositioned = false;
     dragging = false;
-    if (popup) popup.classList.add('hidden');
+    hideAnimated();
     var bar = document.getElementById('ctxBar');
     if (bar) bar.classList.add('hidden');
   }
@@ -227,7 +264,7 @@
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function positionPopup(o) {
+  function positionPopup(o, animate) {
     if (!popup || !o || userPositioned || dragging) return;
     var r = o.getBoundingRect(true, true);
     var main = document.querySelector('main');
@@ -250,7 +287,7 @@
     }
     if (left < 8) left = 8;
     top = Math.max(8, Math.min(mainRect.height - popup.offsetHeight - 8, top));
-    applyPosition(left, top);
+    applyPosition(left, top, !!animate);
   }
 
   function bindControls(o) {
@@ -377,22 +414,25 @@
 
     if (!o) {
       lastObj = null;
-      if (!pinned && !editingText) el.classList.add('hidden');
+      if (!pinned && !editingText) hideAnimated();
       return;
     }
 
-    if (repositionOnly && o === lastObj && !el.classList.contains('hidden')) {
-      if (!userPositioned) positionPopup(o);
+    if (repositionOnly && o === lastObj && el.classList.contains('is-visible')) {
+      if (!userPositioned) positionPopup(o, true);
       return;
     }
 
     var prevObj = lastObj;
+    var isNewObject = o !== prevObj;
     lastObj = o;
-    if (o !== prevObj) userPositioned = false;
+    if (isNewObject) userPositioned = false;
 
+    var wasHidden = !el.classList.contains('is-visible');
     var body = renderBody(o);
     var hasSelection = o.isEditing && o.selectionStart !== o.selectionEnd;
-    el.innerHTML =
+    var target = contentEl || el;
+    target.innerHTML =
       '<div class="pro-edit-head pro-edit-drag-handle" title="Drag to move anywhere">' +
       '<span class="pro-edit-grip" aria-hidden="true">⠿</span>' +
       '<div class="pro-edit-head-left">' +
@@ -408,11 +448,15 @@
       '<div class="pro-edit-body">' + body.html + '</div>';
 
     el.classList.remove('hidden');
-    if (!userPositioned) positionPopup(o);
+    if (wasHidden || isNewObject) showAnimated();
+    if (!userPositioned) positionPopup(o, wasHidden || isNewObject);
 
     el.querySelector('#pepSnap')?.addEventListener('click', function () {
       userPositioned = false;
-      positionPopup(o);
+      el.classList.add('is-snapping');
+      clearTimeout(el._snapT);
+      el._snapT = setTimeout(function () { el.classList.remove('is-snapping'); }, 560);
+      positionPopup(o, true);
       toast('Popup snapped to selection');
     });
     el.querySelector('#pepPin')?.addEventListener('click', function () {
