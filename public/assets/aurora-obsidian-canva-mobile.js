@@ -4,12 +4,13 @@
   'use strict';
   if (!document.body.classList.contains('obsidian-app')) return;
 
-  var MQ = window.matchMedia('(max-width: 767px)');
+  var MQ = window.matchMedia('(max-width: 1023px)');
+  var COARSE_MQ = window.matchMedia('(hover: none) and (pointer: coarse)');
   var activePanel = null;
   var editMode = false;
   var miniRaf = null;
 
-  function isMobile() { return MQ.matches; }
+  function isMobile() { return MQ.matches || (COARSE_MQ.matches && window.innerWidth <= 1100); }
 
   function $(sel) { return document.querySelector(sel); }
 

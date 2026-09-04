@@ -4,7 +4,8 @@
   'use strict';
   if (!document.body.classList.contains('obsidian-app')) return;
 
-  var MOBILE_MQ = window.matchMedia('(max-width: 767px)');
+  var MOBILE_MQ = window.matchMedia('(max-width: 1023px)');
+  var COARSE_MQ = window.matchMedia('(hover: none) and (pointer: coarse)');
   var moreOpen = false;
   var fabOpen = false;
   var pinchDist = 0;
@@ -13,7 +14,7 @@
   var zoomPillTimer = null;
 
   function isMobile() {
-    return MOBILE_MQ.matches;
+    return MOBILE_MQ.matches || (COARSE_MQ.matches && window.innerWidth <= 1100);
   }
 
   function $(sel) { return document.querySelector(sel); }
@@ -472,6 +473,7 @@
 
     setTimeout(mobileFit, 600);
     setTimeout(mobileFit, 1800);
+    setTimeout(mobileFit, 3500);
     maybeShowMobileHints();
   }
 

@@ -1,6 +1,6 @@
 /* Obsidian Pro — Mobile Focus Mode */
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body.obsidian-app.obsidian-focus-mode {
     overflow: hidden;
   }
@@ -47,8 +47,25 @@
   body.obsidian-app.obsidian-focus-mode #btnProSave,
   body.obsidian-app.obsidian-focus-mode #btnMagicResize,
   body.obsidian-app.obsidian-focus-mode #btnAiPanel,
-  body.obsidian-app.obsidian-focus-mode .aurora-hub-trigger {
+  body.obsidian-app.obsidian-focus-mode .aurora-hub-trigger,
+  body.obsidian-app.obsidian-focus-mode #expFormat,
+  body.obsidian-app.obsidian-focus-mode #expScale,
+  body.obsidian-app.obsidian-focus-mode #expDpi,
+  body.obsidian-app.obsidian-focus-mode #btnProCollab,
+  body.obsidian-app.obsidian-focus-mode #proCollabBadge,
+  body.obsidian-app.obsidian-focus-mode #btnSocialBatch,
+  body.obsidian-app.obsidian-focus-mode #toggleRight,
+  body.obsidian-app.obsidian-focus-mode label.obsidian-hide-tablet,
+  body.obsidian-app.obsidian-focus-mode header.glass .ml-auto > div {
     display: none !important;
+  }
+
+  body.obsidian-app.obsidian-focus-mode #rightInspector {
+    display: none !important;
+  }
+
+  body.obsidian-app.obsidian-focus-mode.obsidian-panel-right #rightInspector {
+    display: flex !important;
   }
 
   body.obsidian-app.obsidian-focus-mode header.glass .ml-auto {
@@ -105,7 +122,7 @@
 
   body.obsidian-app.obsidian-focus-mode #stageWrap {
     flex: 1;
-    min-height: 52dvh;
+    min-height: 58dvh;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -140,7 +157,7 @@
   display: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body.obsidian-app.obsidian-focus-mode .obsidian-bottom-nav {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -268,7 +285,7 @@
   display: block;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   #btnObsidianMore,
   .obsidian-bottom-nav,
   .obsidian-more-menu,
@@ -287,7 +304,7 @@
   display: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body.obsidian-app.obsidian-focus-mode .obsidian-fab {
     display: flex;
     align-items: center;
@@ -445,7 +462,7 @@
 }
 
 /* Pinch-friendly canvas scroll */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body.obsidian-app.obsidian-focus-mode #stageWrap {
     touch-action: pan-x pan-y;
     overscroll-behavior: contain;
@@ -461,7 +478,7 @@
 }
 
 /* Landscape phone — maximize canvas */
-@media (max-width: 767px) and (orientation: landscape) {
+@media (max-width: 1023px) and (orientation: landscape) {
   body.obsidian-app.obsidian-focus-mode .obsidian-shell {
     padding: .3rem;
     padding-bottom: calc(3.15rem + env(safe-area-inset-bottom, 0px));
@@ -528,7 +545,7 @@
   display: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   body.obsidian-app.obsidian-focus-mode.obsidian-canva-edit #obsidianNavBar,
   body.obsidian-app.obsidian-focus-mode.obsidian-canva-edit .obsidian-bottom-nav {
     display: none !important;
