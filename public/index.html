@@ -1,584 +1,255 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#f8fafc">
+<html lang="en" style="background:#0a0a0c">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AURORA.STUDIO — Pro Creatives in 60 Seconds</title>
-  <meta name="description" content="Create high-quality social media creatives, PR assets, and brand designs in 30–60 seconds. 500+ industry-ready templates. PNG, JPEG, PDF export. Provided by Devithor.org." />
+  <title>AURORA.STUDIO — Creative Operating System</title>
+  <meta name="description" content="Design, present, and ship from one studio. Aurora Studio Pro, PPT, Canvas, NOVA Builder, and 176+ templates — browser-based, export-ready. Provided by Devithor.org." />
   <meta name="author" content="Devithor.org" />
+  <meta name="theme-color" content="#0a0a0c" />
   <link rel="icon" href="favicon.ico" />
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --cyan: #0891b2;
-      --cyan-light: #22d3ee;
-      --amber: #ea580c;
-      --violet: #7c3aed;
-      --border: rgba(15, 23, 42, .08);
-      --shadow: 0 4px 24px -4px rgba(15, 23, 42, .08), 0 12px 48px -12px rgba(15, 23, 42, .06);
-      --shadow-lg: 0 20px 60px -20px rgba(8, 145, 178, .18), 0 8px 24px -8px rgba(15, 23, 42, .1);
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: Inter, system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(34, 211, 238, .12), transparent 50%),
-        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(251, 146, 60, .1), transparent 45%),
-        radial-gradient(ellipse 50% 50% at 50% 100%, rgba(129, 140, 248, .08), transparent 50%);
-    }
-    .font-sora { font-family: Sora, Inter, sans-serif; }
-    .glass {
-      background: rgba(255, 255, 255, .72);
-      backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-    .card-light {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s, border-color .3s;
-    }
-    .card-light:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: rgba(8, 145, 178, .25);
-    }
-    .glow-cyan { box-shadow: 0 8px 32px -8px rgba(8, 145, 178, .45), 0 0 0 1px rgba(8, 145, 178, .1); }
-    .text-gradient {
-      background: linear-gradient(135deg, #0f172a 0%, #0891b2 40%, #ea580c 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      pointer-events: none;
-      animation: orbFloat 14s ease-in-out infinite;
-      opacity: .7;
-    }
-    @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(24px, -28px) scale(1.06); }
-    }
-    .hero-scene { perspective: 1200px; transform-style: preserve-3d; }
-    .hero-3d-wrap {
-      transform-style: preserve-3d;
-      animation: heroTilt 9s ease-in-out infinite;
-    }
-    @keyframes heroTilt {
-      0%, 100% { transform: rotateX(6deg) rotateY(-10deg); }
-      50% { transform: rotateX(4deg) rotateY(8deg); }
-    }
-    .float-card {
-      position: absolute;
-      transform-style: preserve-3d;
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, .8);
-      background: linear-gradient(145deg, #fff 0%, #f1f5f9 100%);
-      box-shadow: 0 20px 40px -12px rgba(15, 23, 42, .15), 0 0 0 1px rgba(15, 23, 42, .04);
-      animation: cardFloat 6s ease-in-out infinite;
-    }
-    .float-card-1 { width: 140px; height: 180px; top: 8%; left: 5%; animation-delay: 0s; }
-    .float-card-2 { width: 160px; height: 200px; top: 15%; right: 8%; animation-delay: -1.5s; }
-    .float-card-3 { width: 130px; height: 130px; bottom: 20%; left: 12%; animation-delay: -3s; border-radius: 50%; }
-    .float-card-4 { width: 150px; height: 190px; bottom: 12%; right: 5%; animation-delay: -2s; }
-    @keyframes cardFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-    .hero-main-card {
-      transform: translateZ(120px) rotateX(3deg);
-      animation: mainPulse 5s ease-in-out infinite;
-    }
-    @keyframes mainPulse {
-      0%, 100% { transform: translateZ(120px) rotateX(3deg) scale(1); }
-      50% { transform: translateZ(130px) rotateX(2deg) scale(1.02); }
-    }
-    .pulse-dot { animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .6; transform: scale(1.25); }
-    }
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
-    .reveal.visible { opacity: 1; transform: none; }
-    .marquee-track { animation: marquee 30s linear infinite; }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .cta-shine { position: relative; overflow: hidden; }
-    .cta-shine::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.5) 50%, transparent 60%);
-      transform: translateX(-120%);
-      animation: shine 3.5s ease-in-out infinite;
-    }
-    @keyframes shine {
-      0%, 70%, 100% { transform: translateX(-120%); }
-      85% { transform: translateX(120%); }
-    }
-    #mobileMenu { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
-    #mobileMenu.open { max-height: 420px; }
-    .nav-scrolled {
-      background: rgba(255, 255, 255, .88);
-      backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 4px 20px -8px rgba(15, 23, 42, .08);
-    }
-    .timer-digit { font-variant-numeric: tabular-nums; }
-    .section-alt { background: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%); }
-    .badge-live {
-      background: linear-gradient(135deg, #fff7ed, #ffedd5);
-      border: 1px solid rgba(234, 88, 12, .2);
-      color: #c2410c;
-    }
-    .chip {
-      background: #fff;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 8px -2px rgba(15, 23, 42, .06);
-      color: #334155;
-    }
-    .stat-icon-cyan { background: linear-gradient(135deg, #ecfeff, #cffafe); color: #0891b2; }
-    .stat-icon-amber { background: linear-gradient(135deg, #fff7ed, #ffedd5); color: #ea580c; }
-    .stat-icon-violet { background: linear-gradient(135deg, #f5f3ff, #ede9fe); color: #7c3aed; }
-    .hero-preview-inner {
-      background: linear-gradient(145deg, #f0fdfa 0%, #ecfeff 40%, #f8fafc 100%);
-      border: 1px solid rgba(8, 145, 178, .12);
-    }
-    .mesh-bg {
-      background-image:
-        radial-gradient(at 40% 20%, rgba(34, 211, 238, .08) 0, transparent 50%),
-        radial-gradient(at 80% 0%, rgba(251, 146, 60, .06) 0, transparent 50%),
-        radial-gradient(at 0% 50%, rgba(129, 140, 248, .06) 0, transparent 50%);
-    }
-  </style>
-  <link rel="stylesheet" href="assets/aurora-responsive.css" />
-  <link rel="stylesheet" href="assets/aurora-controls.css" />
-  <script src="assets/aurora-controls.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=20" />
+  <link rel="stylesheet" href="assets/aurora-home.css?v=20" />
 </head>
-<body class="relative" style="background:#f8fafc;color:#0f172a">
-  <header id="siteHeader" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-      <a href="#" class="font-sora text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
-        AURORA<span class="text-cyan-600">.</span>STUDIO
-      </a>
-      <nav class="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
-        <a href="#speed" class="transition hover:text-cyan-600">60-Second Magic</a>
-        <a href="#templates" class="transition hover:text-cyan-600">Templates</a>
-        <a href="#formats" class="transition hover:text-cyan-600">Export</a>
-        <a href="#industries" class="transition hover:text-cyan-600">Industries</a>
-        <a href="#tools" class="transition hover:text-cyan-600">Studios</a>
-        <a href="#proof" class="transition hover:text-cyan-600">Proof</a>
-      </nav>
-      <div class="hidden items-center gap-3 md:flex">
-        <a href="https://devithor.org" class="text-xs text-slate-500 hover:text-cyan-600" rel="noopener">Devithor.org</a>
-        <a href="obsidian.html" class="cta-shine rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-shadow">Start Free →</a>
+<body class="aurora-home">
+
+  <nav class="site-nav" id="siteNav" aria-label="Main">
+    <div class="wrap nav-inner">
+      <a href="/" class="logo">AURORA<span>.</span>STUDIO</a>
+      <div class="nav-links">
+        <a href="#products">Products</a>
+        <a href="aurora-ppt.html">Presentations</a>
+        <a href="showcase.html">Templates</a>
+        <a href="#platform">Platform</a>
       </div>
-      <button id="menuBtn" type="button" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden" aria-label="Menu">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
-    </div>
-    <div id="mobileMenu" class="glass mx-4 mb-3 rounded-2xl md:hidden">
-      <nav class="flex flex-col gap-1 p-4 text-sm">
-        <a href="#speed" class="rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50">60-Second Magic</a>
-        <a href="#templates" class="rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50">Templates</a>
-        <a href="#formats" class="rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50">Export</a>
-        <a href="#industries" class="rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50">Industries</a>
-        <a href="#tools" class="rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50">Studios</a>
-        <a href="#proof" class="rounded-lg px-3 py-2.5 text-slate-600 hover:bg-slate-50">Proof</a>
-        <a href="obsidian.html" class="mt-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-4 py-3 text-center font-bold text-white">Start Creating Free</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- §1 HERO -->
-  <section class="relative z-10 min-h-screen overflow-hidden pt-24 pb-16 mesh-bg sm:pt-28 lg:pt-32">
-    <div class="orb h-80 w-80 bg-cyan-300/40 -left-24 top-16"></div>
-    <div class="orb h-96 w-96 bg-orange-200/50 right-0 top-1/4" style="animation-delay:-5s"></div>
-    <div class="orb h-72 w-72 bg-violet-200/40 bottom-0 left-1/3" style="animation-delay:-8s"></div>
-
-    <div class="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
-      <div class="reveal">
-        <div class="badge-live mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
-          <span class="pulse-dot h-2 w-2 rounded-full bg-orange-500"></span>
-          <span id="liveCount" aria-live="polite" aria-atomic="true">2,847</span> creatives published in the last hour
-        </div>
-        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600">Provided by Devithor.org</p>
-        <h1 class="font-sora text-4xl font-extrabold leading-[1.08] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-          <span class="text-gradient">Pro creatives</span><br />
-          in under <span class="text-cyan-600">60 seconds</span>
-        </h1>
-        <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Stop losing hours in complicated tools. Pick a template, customize in seconds, and ship scroll-stopping posts for Instagram, LinkedIn, PR, and print — before your competitor hits publish.
-        </p>
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a href="obsidian.html" class="cta-shine glow-cyan inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-8 py-4 text-center text-sm font-bold text-white sm:text-base">
-            Create My First Design — Free
-          </a>
-          <a href="#templates" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-cyan-300 hover:text-cyan-700">
-            Browse 500+ Templates
-          </a>
-        </div>
-        <p class="mt-4 text-xs text-slate-500">No credit card · Works in browser · Export PNG, JPEG, PDF instantly</p>
-      </div>
-
-      <div class="hero-scene relative mx-auto h-[380px] w-full max-w-lg sm:h-[440px] lg:mx-0">
-        <div class="hero-3d-wrap relative mx-auto h-full w-full max-w-md">
-          <div class="float-card float-card-1 p-3">
-            <div class="h-full rounded-lg bg-gradient-to-br from-rose-400 to-orange-400 p-2.5 shadow-inner">
-              <p class="text-[9px] font-bold uppercase text-white/90">Instagram</p>
-              <p class="mt-1 text-[11px] font-bold text-white">Summer Sale</p>
-            </div>
-          </div>
-          <div class="float-card float-card-2 p-3">
-            <div class="h-full rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 p-2.5">
-              <p class="text-[9px] font-bold uppercase text-white/90">LinkedIn</p>
-              <p class="mt-1 text-[11px] font-bold text-white">We&apos;re Hiring</p>
-            </div>
-          </div>
-          <div class="float-card float-card-3 grid place-items-center bg-gradient-to-br from-violet-400 to-fuchsia-400">
-            <span class="text-2xl text-white">✦</span>
-          </div>
-          <div class="float-card float-card-4 p-3">
-            <div class="h-full rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 p-2.5">
-              <p class="text-[9px] font-bold uppercase text-white/90">PR Kit</p>
-              <p class="mt-1 text-[11px] font-bold text-white">Press Release</p>
-            </div>
-          </div>
-          <div class="hero-main-card absolute left-1/2 top-1/2 w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-cyan-200/80 bg-white p-4 sm:w-[260px]" style="box-shadow: var(--shadow-lg)">
-            <div class="mb-3 flex items-center justify-between">
-              <span class="rounded-full bg-cyan-50 px-2.5 py-0.5 text-[10px] font-bold text-cyan-700 ring-1 ring-cyan-200">LIVE PREVIEW</span>
-              <span class="text-[10px] font-medium text-slate-400">00:47</span>
-            </div>
-            <div class="hero-preview-inner aspect-[4/5] rounded-xl p-4">
-              <p class="text-[10px] font-bold uppercase tracking-widest text-cyan-600">Your Brand</p>
-              <p class="mt-2 font-sora text-lg font-black leading-tight text-slate-900">Launch faster.<br />Look premium.</p>
-              <div class="mt-4 h-2 w-16 rounded-full bg-gradient-to-r from-cyan-400 to-cyan-600"></div>
-            </div>
-            <p class="mt-3 text-center text-[11px] font-semibold text-emerald-600">✓ Ready to export</p>
-          </div>
-        </div>
+      <div class="nav-actions" id="navActions">
+        <button type="button" class="btn-ghost" id="openPalette" title="Open command palette">
+          Search tools <kbd>Ctrl+K</kbd>
+        </button>
+        <a href="obsidian.html" class="btn-primary">Open Studio</a>
+        <button type="button" class="menu-toggle" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
       </div>
     </div>
-  </section>
+  </nav>
 
-  <!-- §2 SPEED -->
-  <section id="speed" class="relative z-10 section-alt border-y border-slate-200/80 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal mx-auto max-w-3xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Speed</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">
-          From blank screen to <span class="text-cyan-600">publish-ready</span> in 30–60 seconds
-        </h2>
-        <p class="mt-4 text-slate-600">While others are still opening Photoshop, you&apos;re already posting. That&apos;s the unfair advantage.</p>
-      </div>
-      <div class="mt-14 grid gap-6 sm:grid-cols-3">
-        <div class="reveal card-light rounded-2xl p-8 text-center">
-          <div class="stat-icon-cyan mx-auto grid h-14 w-14 place-items-center rounded-2xl font-sora text-2xl font-black">30s</div>
-          <p class="mt-4 font-semibold text-slate-900">Quick edits</p>
-          <p class="mt-2 text-sm text-slate-500">Swap text, colors, logos — done before your coffee cools.</p>
-        </div>
-        <div class="reveal card-light rounded-2xl p-8 text-center">
-          <div class="stat-icon-amber mx-auto grid h-14 w-14 place-items-center rounded-2xl font-sora text-2xl font-black">60s</div>
-          <p class="mt-4 font-semibold text-slate-900">Full creative</p>
-          <p class="mt-2 text-sm text-slate-500">Template → customize → export. Daily social content on autopilot.</p>
-        </div>
-        <div class="reveal card-light rounded-2xl p-8 text-center">
-          <div class="stat-icon-violet mx-auto grid h-14 w-14 place-items-center rounded-2xl font-sora text-2xl font-black">4K</div>
-          <p class="mt-4 font-semibold text-slate-900">Print quality</p>
-          <p class="mt-2 text-sm text-slate-500">Crystal-clear exports for screens, posters, and professional PR kits.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+    <a href="#products">Products</a>
+    <a href="aurora-ppt.html">Presentations</a>
+    <a href="showcase.html">Templates</a>
+    <a href="obsidian.html">Open Studio</a>
+    <a href="https://devithor.org" target="_blank" rel="noopener">Devithor.org</a>
+  </div>
 
-  <!-- §3 TEMPLATES -->
-  <section id="templates" class="relative z-10 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+  <main>
+    <section class="hero wrap reveal">
+      <p class="eyebrow">Creative Operating System</p>
+      <h1>Design, present, and <em>ship</em> — from one studio.</h1>
+      <p class="hero-lead">
+        Every Aurora tool in one place. Pick a workspace, start from 176+ templates,
+        export PNG, PDF, or share — no install, no credit card.
+      </p>
+      <div class="hero-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/>
+        </svg>
+        <input type="search" id="heroSearch" readonly placeholder="Search tools — Ctrl+K" aria-label="Search Aurora tools" />
+      </div>
+      <p class="hero-meta">Provided by Devithor.org · Works in browser · Offline PWA</p>
+    </section>
+
+    <section class="hub wrap" id="products">
+      <div class="hub-header reveal">
         <div>
-          <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Templates</p>
-          <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">
-            <span class="text-cyan-600">500+</span> industry-ready templates
-          </h2>
-          <p class="mt-4 max-w-xl text-slate-600">Every template is built for conversion — not just pretty pixels. Your audience won&apos;t know you made it in under a minute.</p>
+          <h2>Product Hub</h2>
+          <p>Live tools today. Roadmap items stay visible so you always know what’s next.</p>
         </div>
-        <div class="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 px-5 py-4 shadow-sm">
-          <p class="text-sm font-bold text-amber-800">⚡ New templates added weekly</p>
-          <p class="text-xs text-amber-700/70">Early adopters get access first — don&apos;t fall behind.</p>
+        <div class="filter-tabs" role="tablist" aria-label="Filter products">
+          <button type="button" class="filter-tab active" data-filter="all" role="tab">All</button>
+          <button type="button" class="filter-tab" data-filter="live" role="tab">Live</button>
+          <button type="button" class="filter-tab" data-filter="soon" role="tab">Coming Soon</button>
         </div>
       </div>
-      <div class="mt-12 overflow-hidden rounded-2xl border border-slate-100 bg-white/50 py-4">
-        <div class="marquee-track flex w-max gap-4 px-4">
-          <div class="flex gap-4">
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Sales Promo</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Product Launch</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Hiring Post</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Event Flyer</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Quote Card</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Story Reel</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">PR Announcement</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Menu Design</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Real Estate</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Fitness Promo</span>
+
+      <div class="product-grid">
+        <a href="obsidian.html" class="product-card featured reveal" data-category="live">
+          <div class="product-icon" aria-hidden="true">◆</div>
+          <div class="product-body">
+            <div class="product-top">
+              <h3>Aurora Studio Pro</h3>
+              <span class="badge badge-live">Live</span>
+            </div>
+            <p>Full design workspace — Auto Layout, Boolean ops, stock library, Magic Resize, and offline PWA. Your primary creative command center.</p>
+            <span class="arrow">Launch Pro →</span>
           </div>
-          <div class="flex gap-4" aria-hidden="true">
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Sales Promo</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Product Launch</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Hiring Post</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Event Flyer</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Quote Card</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Story Reel</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">PR Announcement</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Menu Design</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Real Estate</span>
-            <span class="chip shrink-0 rounded-xl px-5 py-3 text-sm font-semibold">Fitness Promo</span>
+        </a>
+
+        <a href="aurora-ppt.html" class="product-card reveal" data-category="live">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">▣</div>
+            <span class="badge badge-new">New</span>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- §4 EXPORT -->
-  <section id="formats" class="relative z-10 section-alt border-y border-slate-200/80 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal mx-auto max-w-3xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Export</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">Any platform. Any format. One click.</h2>
-        <p class="mt-4 text-slate-600">Stop resizing manually. Export exactly what each platform needs — instantly.</p>
-      </div>
-      <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="reveal card-light rounded-2xl p-6 text-center">
-          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-50 text-2xl">📱</div>
-          <p class="mt-4 font-bold text-slate-900">All Social Media</p>
-          <p class="mt-2 text-sm text-slate-500">Instagram, Facebook, LinkedIn, X, TikTok, YouTube</p>
-        </div>
-        <div class="reveal card-light rounded-2xl p-6 text-center">
-          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-50 text-2xl">🖼️</div>
-          <p class="mt-4 font-bold text-slate-900">PNG & JPEG</p>
-          <p class="mt-2 text-sm text-slate-500">Crisp graphics with transparent backgrounds</p>
-        </div>
-        <div class="reveal card-light rounded-2xl p-6 text-center">
-          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-50 text-2xl">📄</div>
-          <p class="mt-4 font-bold text-slate-900">PDF Export</p>
-          <p class="mt-2 text-sm text-slate-500">Print-ready decks, flyers, and PR documents</p>
-        </div>
-        <div class="reveal card-light rounded-2xl p-6 text-center">
-          <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-slate-50 text-2xl">⚡</div>
-          <p class="mt-4 font-bold text-slate-900">Instant Download</p>
-          <p class="mt-2 text-sm text-slate-500">No waiting. No watermarks. Ship it now.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- §5 INDUSTRIES -->
-  <section id="industries" class="relative z-10 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal mx-auto max-w-3xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Industries</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">Built for every industry. Ready on day one.</h2>
-        <p class="mt-4 text-slate-600">Startup, agency, restaurant, or enterprise — your daily social & PR creatives are already waiting.</p>
-      </div>
-      <div class="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="reveal card-light rounded-2xl p-6"><p class="font-bold text-cyan-700">E-Commerce & Retail</p><p class="mt-2 text-sm text-slate-500">Sale banners, product drops, seasonal campaigns</p></div>
-        <div class="reveal card-light rounded-2xl p-6"><p class="font-bold text-cyan-700">SaaS & Tech</p><p class="mt-2 text-sm text-slate-500">Feature launches, changelog graphics, hiring posts</p></div>
-        <div class="reveal card-light rounded-2xl p-6"><p class="font-bold text-cyan-700">Real Estate</p><p class="mt-2 text-sm text-slate-500">Listings, open house flyers, agent branding</p></div>
-        <div class="reveal card-light rounded-2xl p-6"><p class="font-bold text-cyan-700">Food & Hospitality</p><p class="mt-2 text-sm text-slate-500">Menus, daily specials, delivery promos</p></div>
-        <div class="reveal card-light rounded-2xl p-6"><p class="font-bold text-cyan-700">Health & Fitness</p><p class="mt-2 text-sm text-slate-500">Class schedules, transformation posts, wellness tips</p></div>
-        <div class="reveal card-light rounded-2xl p-6"><p class="font-bold text-cyan-700">Corporate PR</p><p class="mt-2 text-sm text-slate-500">Press releases, investor updates, employer branding</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- §6 STUDIOS -->
-  <section id="tools" class="relative z-10 section-alt border-y border-slate-200/80 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal mx-auto max-w-3xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Workspaces</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">Five pro studios. One ecosystem.</h2>
-        <p class="mt-4 text-slate-600">From quick social posts to full presentation decks — pick your workspace.</p>
-      </div>
-      <div class="mt-14 grid gap-5 sm:grid-cols-2">
-        <a href="obsidian.html" class="reveal card-light group relative overflow-hidden rounded-2xl p-6 sm:col-span-2 sm:p-8">
-          <span class="absolute right-0 top-0 rounded-bl-2xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-1.5 text-xs font-bold uppercase text-white shadow-sm">Most Popular</span>
-          <h3 class="font-sora text-xl font-bold text-slate-900 sm:text-2xl">AURORA.STUDIO Pro</h3>
-          <p class="mt-2 max-w-xl text-sm text-slate-600">Full pro workspace — live Auto Layout, Boolean shapes, Magic Resize, stock photos, multi-page, print PDF, and offline PWA.</p>
-          <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 group-hover:gap-3 transition-all">Launch Pro →</span>
+          <h3>Aurora Studio PPT</h3>
+          <p>Canvas-native slides with 176+ deck templates, Konva 60fps, presenter mode, and cloud sync.</p>
+          <span class="arrow">Open PPT →</span>
         </a>
-        <a href="aurora-ppt.html" class="reveal card-light group relative rounded-2xl p-6 sm:col-span-2 border-2 border-cyan-200/80 bg-gradient-to-br from-white to-cyan-50/40">
-          <span class="absolute right-0 top-0 rounded-bl-2xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-4 py-1.5 text-xs font-bold uppercase text-white shadow-sm">New</span>
-          <h3 class="font-sora text-lg font-bold text-slate-900 sm:text-xl">Aurora Studio PPT</h3>
-          <p class="mt-2 text-sm text-slate-600">Canvas-native slide editor — Konva 60fps, typed AST, 3 editorial themes, fullscreen presenter, undo/redo, group &amp; align tools.</p>
-          <span class="mt-4 inline-block text-sm font-medium text-cyan-600">Open PPT Editor →</span>
-        </a>
-        <a href="studio.html" class="reveal card-light group rounded-2xl p-6">
-          <h3 class="font-sora text-lg font-bold text-slate-900">AURORA.STUDIO Canvas</h3>
-          <p class="mt-2 text-sm text-slate-600">Classic poster studio — templates, typography, brand tools, 4K export.</p>
-          <span class="mt-4 inline-block text-sm font-medium text-cyan-600">Open Canvas →</span>
-        </a>
-        <a href="builder.html" class="reveal card-light group rounded-2xl p-6">
-          <h3 class="font-sora text-lg font-bold text-slate-900">NOVA Builder</h3>
-          <p class="mt-2 text-sm text-slate-600">Drag-and-drop decks, landing pages, and presentations.</p>
-          <span class="mt-4 inline-block text-sm font-medium text-cyan-600">Launch Builder →</span>
-        </a>
-        <a href="showcase.html" class="reveal card-light group rounded-2xl p-6 sm:col-span-2">
-          <h3 class="font-sora text-lg font-bold text-slate-900">Template Gallery</h3>
-          <p class="mt-2 text-sm text-slate-600">Browse 16+ professional templates — social, marketing, reports, and business.</p>
-          <span class="mt-4 inline-block text-sm font-medium text-cyan-600">View Showcase →</span>
-        </a>
-      </div>
-    </div>
-  </section>
 
-  <!-- §7 HOW IT WORKS -->
-  <section id="how" class="relative z-10 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal mx-auto max-w-3xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Process</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">3 steps. 60 seconds. Done.</h2>
-      </div>
-      <div class="mt-14 grid gap-8 md:grid-cols-3">
-        <div class="reveal text-center">
-          <div class="stat-icon-cyan mx-auto grid h-16 w-16 place-items-center rounded-2xl font-sora text-2xl font-black">1</div>
-          <h3 class="mt-5 font-bold text-slate-900">Pick a template</h3>
-          <p class="mt-2 text-sm text-slate-500">500+ designs sorted by industry, platform, and goal.</p>
-        </div>
-        <div class="reveal text-center">
-          <div class="stat-icon-amber mx-auto grid h-16 w-16 place-items-center rounded-2xl font-sora text-2xl font-black">2</div>
-          <h3 class="mt-5 font-bold text-slate-900">Customize in seconds</h3>
-          <p class="mt-2 text-sm text-slate-500">Edit text, swap images, apply your brand — no design degree needed.</p>
-        </div>
-        <div class="reveal text-center">
-          <div class="stat-icon-violet mx-auto grid h-16 w-16 place-items-center rounded-2xl font-sora text-2xl font-black">3</div>
-          <h3 class="mt-5 font-bold text-slate-900">Export & publish</h3>
-          <p class="mt-2 text-sm text-slate-500">Download PNG, JPEG, or PDF — post before the trend fades.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- §8 PROOF -->
-  <section id="proof" class="relative z-10 section-alt border-y border-slate-200/80 py-20 sm:py-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="reveal mx-auto max-w-3xl text-center">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-cyan-600">Proof</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">Teams ship faster. Results speak.</h2>
-        <p class="mt-4 text-slate-600">Join thousands who stopped overthinking design and started publishing daily.</p>
-      </div>
-      <div class="mt-14 grid gap-6 md:grid-cols-3">
-        <blockquote class="reveal card-light rounded-2xl p-6">
-          <p class="text-sm leading-relaxed text-slate-600">&ldquo;We went from 2 posts a week to daily content. Our engagement jumped 3× in the first month.&rdquo;</p>
-          <footer class="mt-4 text-xs font-semibold text-cyan-600">— Marketing Lead, SaaS Startup</footer>
-        </blockquote>
-        <blockquote class="reveal card-light rounded-2xl p-6 ring-2 ring-cyan-200/60">
-          <p class="text-sm leading-relaxed text-slate-600">&ldquo;PR kits that used to take 2 days now take 60 seconds. Clients think we hired a design team.&rdquo;</p>
-          <footer class="mt-4 text-xs font-semibold text-cyan-600">— Agency Founder</footer>
-        </blockquote>
-        <blockquote class="reveal card-light rounded-2xl p-6">
-          <p class="text-sm leading-relaxed text-slate-600">&ldquo;Sales, HR, and founders all create on-brand graphics themselves. Game changer.&rdquo;</p>
-          <footer class="mt-4 text-xs font-semibold text-cyan-600">— COO, E-Commerce Brand</footer>
-        </blockquote>
-      </div>
-    </div>
-  </section>
-
-  <!-- §9 CTA -->
-  <section id="cta" class="relative z-10 overflow-hidden py-20 sm:py-28">
-    <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 via-white to-orange-50"></div>
-    <div class="orb h-96 w-96 bg-cyan-200/50 left-1/2 top-0 -translate-x-1/2"></div>
-    <div class="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
-      <div class="reveal">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-orange-600">Don&apos;t Wait</p>
-        <h2 class="font-sora mt-3 text-3xl font-extrabold text-slate-900 sm:text-5xl">
-          Your competitors are already posting.<br />
-          <span class="text-cyan-600">Are you?</span>
-        </h2>
-        <p class="mx-auto mt-6 max-w-2xl text-slate-600">
-          Every day without on-brand creatives is a day you lose attention, trust, and sales. Look world-class in under 60 seconds.
-        </p>
-        <div class="mt-8 inline-flex flex-wrap items-center justify-center gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-md">
-          <div class="text-left">
-            <p class="text-xs text-slate-500">Offer refreshes in</p>
-            <p class="timer-digit font-sora text-2xl font-black text-orange-600" id="countdown" role="timer" aria-label="Limited offer countdown">14:59:42</p>
+        <a href="studio.html" class="product-card reveal" data-category="live">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">▤</div>
+            <span class="badge badge-live">Live</span>
           </div>
-          <div class="h-10 w-px bg-slate-200"></div>
-          <div class="text-left">
-            <p class="text-xs text-slate-500">Free access</p>
-            <p class="font-sora text-lg font-bold text-slate-900">No credit card</p>
-          </div>
-        </div>
-        <a href="obsidian.html" class="cta-shine glow-cyan mt-10 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-10 py-5 text-base font-bold text-white">
-          Start Creating Free — Takes 60 Seconds →
+          <h3>Aurora Canvas</h3>
+          <p>Classic poster studio — templates, typography, brand tools, and 4K export for social and print.</p>
+          <span class="arrow">Open Canvas →</span>
         </a>
-        <p class="mt-4 text-xs text-slate-500">Provided by <a href="https://devithor.org" class="text-cyan-600 hover:text-cyan-700" rel="noopener">Devithor.org</a> · Trusted by teams worldwide</p>
-      </div>
-    </div>
-  </section>
 
-  <footer class="relative z-10 border-t border-slate-200 bg-white py-10">
-    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-center sm:flex-row sm:text-left sm:px-6 lg:px-8">
-      <p class="font-sora text-sm font-bold text-slate-900">AURORA<span class="text-cyan-600">.</span>STUDIO</p>
-      <p class="text-xs text-slate-500">© 2026 AURORA.STUDIO · <a href="https://devithor.org" class="text-cyan-600 hover:text-cyan-700" rel="noopener">Provided by Devithor.org</a></p>
-      <div class="flex gap-4 text-xs text-slate-500">
-        <a href="studio.html" class="hover:text-cyan-600">Canvas</a>
-        <a href="aurora-ppt.html" class="hover:text-cyan-600">PPT</a>
-        <a href="builder.html" class="hover:text-cyan-600">Builder</a>
-        <a href="showcase.html" class="hover:text-cyan-600">Showcase</a>
+        <a href="builder.html" class="product-card reveal" data-category="live">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◇</div>
+            <span class="badge badge-live">Live</span>
+          </div>
+          <h3>NOVA Builder</h3>
+          <p>Drag-and-drop decks, landing pages, and multi-page presentations with live preview.</p>
+          <span class="arrow">Open Builder →</span>
+        </a>
+
+        <a href="showcase.html" class="product-card reveal" data-category="live">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◎</div>
+            <span class="badge badge-live">Live</span>
+          </div>
+          <h3>Template Gallery</h3>
+          <p>Browse professional templates for social, marketing, reports, and business use cases.</p>
+          <span class="arrow">Browse →</span>
+        </a>
+
+        <div class="product-card soon reveal" data-category="soon">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">✦</div>
+            <span class="badge badge-soon">Soon</span>
+          </div>
+          <h3>AI Text-to-Deck</h3>
+          <p>Prompt → full presentation with brand-aware layouts and smart slide structure.</p>
+        </div>
+
+        <div class="product-card soon reveal" data-category="soon">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◈</div>
+            <span class="badge badge-soon">Soon</span>
+          </div>
+          <h3>Brand Kits</h3>
+          <p>Company-wide colors, fonts, logos, and reusable asset libraries across all tools.</p>
+        </div>
+
+        <div class="product-card soon reveal" data-category="soon">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◉</div>
+            <span class="badge badge-soon">Soon</span>
+          </div>
+          <h3>Live Collaboration</h3>
+          <p>Real-time cursors, comments, and team workspaces — Figma-class, Aurora-native.</p>
+        </div>
+
+        <div class="product-card soon reveal" data-category="soon">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◫</div>
+            <span class="badge badge-soon">Soon</span>
+          </div>
+          <h3>PPTX Export</h3>
+          <p>Lossless PowerPoint export with embedded vector fonts and editable shapes.</p>
+        </div>
+
+        <div class="product-card soon reveal" data-category="soon">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◧</div>
+            <span class="badge badge-soon">Soon</span>
+          </div>
+          <h3>Viewer Analytics</h3>
+          <p>Slide heatmaps, completion rates, and share insights for every deck you publish.</p>
+        </div>
+
+        <div class="product-card soon reveal" data-category="soon">
+          <div class="product-top">
+            <div class="product-icon" aria-hidden="true">◰</div>
+            <span class="badge badge-soon">Soon</span>
+          </div>
+          <h3>Magic Resize</h3>
+          <p>One-click adapt from desktop to mobile, Instagram, LinkedIn, and print formats.</p>
+        </div>
       </div>
+    </section>
+
+    <section class="wrap stats reveal" aria-label="Platform stats">
+      <div class="stat">
+        <strong>176+</strong>
+        <span>Deck templates</span>
+      </div>
+      <div class="stat">
+        <strong>5</strong>
+        <span>Live tools</span>
+      </div>
+      <div class="stat">
+        <strong>60fps</strong>
+        <span>Canvas engine</span>
+      </div>
+      <div class="stat">
+        <strong>0</strong>
+        <span>Install required</span>
+      </div>
+    </section>
+
+    <section class="features wrap" id="platform">
+      <p class="section-label reveal">Why Aurora</p>
+      <h2 class="reveal">Built for professionals who ship fast.</h2>
+      <div class="feature-grid">
+        <article class="feature-card reveal">
+          <h3>⌘ Command palette</h3>
+          <p>Press <strong>Ctrl+K</strong> anywhere on this page to jump to any tool — current or upcoming. No hunting through menus.</p>
+        </article>
+        <article class="feature-card reveal">
+          <h3>Unified design language</h3>
+          <p>Aurora Noir — dark luxury aesthetic across Pro, PPT, and Canvas. Consistent typography, spacing, and export quality.</p>
+        </article>
+        <article class="feature-card reveal">
+          <h3>Browser-first, offline-ready</h3>
+          <p>PWA support, local saves, and instant PNG/JPEG/PDF export. Works on any device with a modern browser.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap cta-band reveal">
+      <h2>Start with Aurora Studio Pro</h2>
+      <p>The full creative workspace — or open Presentations for slide-first workflows with 176+ templates.</p>
+      <div class="cta-actions">
+        <a href="obsidian.html" class="btn-primary">Open Studio Pro</a>
+        <a href="aurora-ppt.html" class="btn-outline">Aurora Studio PPT</a>
+        <button type="button" class="btn-outline" onclick="AuroraToolHub && AuroraToolHub.openPalette()">All tools (Ctrl+K)</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>© 2026 AURORA.STUDIO · Provided by <a href="https://devithor.org" target="_blank" rel="noopener">Devithor.org</a></span>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="obsidian.html">Pro</a>
+        <a href="aurora-ppt.html">PPT</a>
+        <a href="studio.html">Canvas</a>
+        <a href="builder.html">Builder</a>
+        <a href="showcase.html">Templates</a>
+      </nav>
     </div>
   </footer>
 
+  <script src="assets/aurora-toolhub.js?v=20"></script>
+  <script src="assets/aurora-home.js?v=20"></script>
   <script>
-    const header = document.getElementById('siteHeader');
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn.setAttribute('aria-controls', 'mobileMenu');
-    menuBtn.setAttribute('aria-expanded', 'false');
-    window.addEventListener('scroll', () => header.classList.toggle('nav-scrolled', window.scrollY > 20), { passive: true });
-    const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-    const liveEl = document.getElementById('liveCount');
-    setInterval(() => { liveEl.textContent = (2800 + Math.floor(Math.random() * 120)).toLocaleString(); }, 4000);
-    const cdEl = document.getElementById('countdown');
-    let secs = 14 * 3600 + 59 * 60 + 42;
-    setInterval(() => {
-      secs = secs > 0 ? secs - 1 : 14 * 3600 + 59 * 60 + 42;
-      cdEl.textContent = [Math.floor(secs/3600), Math.floor((secs%3600)/60), secs%60].map(n => String(n).padStart(2,'0')).join(':');
-    }, 1000);
-    document.querySelector('.hero-scene')?.addEventListener('mousemove', e => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      const wrap = e.currentTarget.querySelector('.hero-3d-wrap');
-      if (wrap) wrap.style.transform = `rotateX(${6 - y * 10}deg) rotateY(${-10 + x * 18}deg)`;
-    });
-    document.querySelector('.hero-scene')?.addEventListener('mouseleave', e => {
-      const wrap = e.currentTarget.querySelector('.hero-3d-wrap');
-      if (wrap) wrap.style.transform = '';
-    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    }
   </script>
 </body>
 </html>
