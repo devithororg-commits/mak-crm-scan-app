@@ -179,6 +179,17 @@ body.aurora-panel-open .aurora-panel-overlay {
   body.obsidian-app #stagePad { padding: 1rem !important; }
 }
 
+@media (max-width: 767px) {
+  body.obsidian-app.obsidian-focus-mode {
+    overflow: hidden;
+  }
+  body.obsidian-app.obsidian-focus-mode .obsidian-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+}
+
 /* ── VOLTA Showcase ── */
 @media (max-width: 767px) {
   .showcase-mobile-only { display: grid !important; }
