@@ -12,6 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Sora:wght@400;600;700;800&family=Manrope:wght@400;600;800&family=Poppins:wght@400;600;800&family=Montserrat:wght@400;600;800&family=Raleway:wght@400;600;800&family=Outfit:wght@400;600;800&family=Urbanist:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;600;700&family=Work+Sans:wght@400;600;800&family=Figtree:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;600;800&family=Rubik:wght@400;600;800&family=Barlow:wght@400;600;800&family=Archivo:wght@400;600;800&family=Chivo:wght@400;700&family=Lexend:wght@400;600;800&family=Epilogue:wght@400;600;800&family=Syne:wght@400;700;800&family=Bebas+Neue&family=Anton&family=Oswald:wght@400;600;700&family=Teko:wght@400;600&family=Playfair+Display:wght@400;600;800&family=Cormorant+Garamond:wght@400;600;700&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;600;700&family=Merriweather:wght@400;700&family=EB+Garamond:wght@400;600&family=Crimson+Pro:wght@400;600&family=Bitter:wght@400;700&family=Spectral:wght@400;600&family=Source+Serif+4:wght@400;600&family=Fraunces:wght@400;700&family=DM+Serif+Display&family=Abril+Fatface&family=Instrument+Serif&family=Marcellus&family=Cinzel:wght@400;700&family=Italiana&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Pacifico&family=Sacramento&family=Parisienne&family=Allura&family=Satisfy&family=Caveat:wght@400;700&family=Kalam:wght@400;700&family=Courgette&family=Yellowtail&family=Lobster&family=Cookie&family=Petit+Formal+Script&family=JetBrains+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -61,6 +62,9 @@
 <link rel="stylesheet" href="assets/aurora-pro-phase2.css" />
 <link rel="stylesheet" href="assets/aurora-pro-pathfinder.css" />
 <link rel="stylesheet" href="assets/aurora-pro-edit-popup.css" />
+<link rel="stylesheet" href="assets/aurora-pro-collab.css" />
+<link rel="stylesheet" href="assets/aurora-pro-social-batch.css" />
+<link rel="stylesheet" href="assets/aurora-pro-fonts.css" />
 <link rel="stylesheet" href="assets/aurora-obsidian-mobile.css" />
 <script src="assets/aurora-controls.js"></script>
 <script src="assets/aurora-toolhub.js"></script>
@@ -2565,10 +2569,25 @@ document.addEventListener('keydown',e=>{
 
 /* ═══════════════════════════ BOOT — starter composition ═══════════════════════════ */
 function boot(){
+  const tplSizes={
+    'ig-post':[1080,1080],'ig-story':[1080,1920],'linkedin':[1584,396],'youtube':[1280,720],
+    'sale':[1080,1350],'launch':[1080,1350],'newsletter':[1200,600],'annual':[1080,1350],
+    'kpi':[1920,1080],'impact':[1080,1350],'profile':[1080,1350],'pitch':[1920,1080],
+    'job':[1080,1350],'event':[1080,1920],'quote':[1080,1080],'minimal':[1080,1350]
+  };
+  const tplKey=new URLSearchParams(location.search).get('tpl');
+  const fromGallery=tplKey&&tplSizes[tplKey];
+  if(fromGallery){ STATE.W=fromGallery[0]; STATE.H=fromGallery[1]; }
+
   ENGINE.resize(STATE.W, STATE.H);
   canvas.setBackgroundColor(new fabric.Gradient({type:'linear',coords:{x1:0,y1:0,x2:STATE.W,y2:STATE.H},
     colorStops:[{offset:0,color:'#0b1220'},{offset:1,color:'#020617'}]}),()=>canvas.requestRenderAll());
 
+  if(fromGallery){
+    FACTORY.text('Your headline here',{fontSize:Math.min(96,STATE.W*0.09),top:STATE.H*0.12,left:STATE.W*0.08,width:STATE.W*0.84});
+    FACTORY.text('Edit this template — add images, charts, and brand elements.',{fontSize:28,fontWeight:'500',fill:'#94a3b8',top:STATE.H*0.28,left:STATE.W*0.08,width:STATE.W*0.84});
+    toast('Template: '+tplKey.replace(/-/g,' '));
+  } else {
   const glow = new fabric.Circle({radius:330,left:STATE.W*0.86,top:STATE.H*0.16,originX:'center',originY:'center',
     fill:new fabric.Gradient({type:'radial',coords:{x1:330,y1:330,r1:0,x2:330,y2:330,r2:330},
       colorStops:[{offset:0,color:'rgba(34,211,238,.55)'},{offset:1,color:'rgba(34,211,238,0)'}]}),
@@ -2590,6 +2609,7 @@ function boot(){
   const foot = new fabric.Textbox('aurora.studio',{left:100,top:1230,width:600,fontSize:26,fontFamily:'JetBrains Mono',
     fill:'#64748b',objectName:'Footer'});
   [kicker,head,sub,rule,card,cardT,foot].forEach(o=>canvas.add(o));
+  }
 
   canvas.requestRenderAll();
   ENGINE.snapshot();
@@ -2640,6 +2660,9 @@ AuroraToolHub.init({
 <script src="assets/aurora-pro-phase2.js"></script>
 <script src="assets/aurora-pro-pathfinder.js"></script>
 <script src="assets/aurora-pro-edit-popup.js"></script>
+<script src="assets/aurora-pro-collab.js"></script>
+<script src="assets/aurora-pro-social-batch.js"></script>
+<script src="assets/aurora-pro-fonts.js"></script>
 <script src="assets/aurora-obsidian-mobile.js"></script>
 <script src="assets/aurora-responsive.js"></script>
 </body>

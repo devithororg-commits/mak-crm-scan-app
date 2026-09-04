@@ -277,14 +277,214 @@
   }
 }
 
+/* ── FAB quick-add ── */
+.obsidian-fab {
+  display: none;
+}
+
+.obsidian-fab-backdrop,
+.obsidian-fab-sheet {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: calc(.65rem + env(safe-area-inset-right, 0px));
+    bottom: calc(5.1rem + env(safe-area-inset-bottom, 0px));
+    z-index: 85;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #fb923c, #f97316);
+    color: #0f172a;
+    box-shadow:
+      0 8px 28px -6px rgba(251, 146, 60, .65),
+      0 0 0 1px rgba(255, 255, 255, .12) inset;
+    transition: transform .22s cubic-bezier(.22, 1, .36, 1), box-shadow .22s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab .obs-fab-plus {
+    font-size: 1.65rem;
+    font-weight: 300;
+    line-height: 1;
+    transition: transform .28s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab.open .obs-fab-plus {
+    transform: rotate(45deg);
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab:active {
+    transform: scale(0.94);
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab.open {
+    background: linear-gradient(145deg, #22d3ee, #06b6d4);
+    box-shadow: 0 8px 28px -6px rgba(34, 211, 238, .55);
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 82;
+    background: rgba(2, 6, 23, .45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease, visibility .25s;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab-sheet {
+    display: block;
+    position: fixed;
+    left: .55rem;
+    right: .55rem;
+    bottom: calc(4.85rem + env(safe-area-inset-bottom, 0px));
+    z-index: 84;
+    padding: .85rem .75rem 1rem;
+    border-radius: 1.15rem;
+    background: rgba(15, 23, 42, .96);
+    border: 1px solid rgba(34, 211, 238, .2);
+    box-shadow: 0 24px 60px -16px rgba(0, 0, 0, .85);
+    transform: translateY(110%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform .32s cubic-bezier(.22, 1, .36, 1), opacity .25s ease, visibility .25s;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab-sheet.open {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .obs-fab-title {
+    margin: 0 0 .65rem;
+    padding: 0 .15rem;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+
+  .obs-fab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .45rem;
+  }
+
+  .obs-fab-grid button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
+    min-height: 4.25rem;
+    padding: .5rem .35rem;
+    border: 1px solid rgba(148, 163, 184, .14);
+    border-radius: .75rem;
+    background: rgba(148, 163, 184, .06);
+    color: #e2e8f0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    transition: background .18s ease, border-color .18s ease, transform .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .obs-fab-grid button .obs-fab-ico {
+    font-size: 1.35rem;
+    line-height: 1;
+    color: #67e8f9;
+  }
+
+  .obs-fab-grid button:active {
+    transform: scale(0.96);
+    background: rgba(34, 211, 238, .12);
+    border-color: rgba(34, 211, 238, .35);
+  }
+}
+
+/* ── Zoom pill (pinch feedback) ── */
+.obsidian-zoom-pill {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 90;
+  transform: translate(-50%, -50%) scale(0.9);
+  padding: .55rem 1rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .88);
+  border: 1px solid rgba(34, 211, 238, .35);
+  color: #67e8f9;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, transform .22s cubic-bezier(.22, 1, .36, 1), visibility .2s;
+}
+
+.obsidian-zoom-pill.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Pinch-friendly canvas scroll */
+@media (max-width: 767px) {
+  body.obsidian-app.obsidian-focus-mode #stageWrap {
+    touch-action: pan-x pan-y;
+    overscroll-behavior: contain;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-rail {
+    display: none !important;
+  }
+
+  body.obsidian-app.obsidian-focus-mode #toggleLeft {
+    display: inline-flex !important;
+  }
+}
+
 /* Landscape phone — maximize canvas */
 @media (max-width: 767px) and (orientation: landscape) {
   body.obsidian-app.obsidian-focus-mode .obsidian-shell {
-    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+    padding: .3rem;
+    padding-bottom: calc(3.15rem + env(safe-area-inset-bottom, 0px));
+    gap: .3rem;
+  }
+
+  body.obsidian-app.obsidian-focus-mode header.glass {
+    padding: .3rem .45rem;
+  }
+
+  body.obsidian-app.obsidian-focus-mode header.glass .leading-tight {
+    display: none;
   }
 
   body.obsidian-app.obsidian-focus-mode #stageWrap {
-    min-height: 68dvh;
+    min-height: 72dvh;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-bottom-nav {
+    left: .3rem;
+    right: .3rem;
+    bottom: calc(.3rem + env(safe-area-inset-bottom, 0px));
+    padding: .25rem .15rem;
   }
 
   body.obsidian-app.obsidian-focus-mode .obsidian-bottom-nav button span:not(.obs-nav-icon) {
@@ -292,6 +492,27 @@
   }
 
   body.obsidian-app.obsidian-focus-mode .obsidian-bottom-nav button {
-    min-height: 2.35rem;
+    min-height: 2.2rem;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab {
+    width: 2.85rem;
+    height: 2.85rem;
+    bottom: calc(3.65rem + env(safe-area-inset-bottom, 0px));
+    right: calc(.45rem + env(safe-area-inset-right, 0px));
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obsidian-fab-sheet {
+    bottom: calc(3.35rem + env(safe-area-inset-bottom, 0px));
+    padding: .65rem .6rem .75rem;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .obs-fab-grid button {
+    min-height: 3.5rem;
+    font-size: 9px;
+  }
+
+  body.obsidian-app.obsidian-focus-mode .glass-2.pointer-events-none.absolute.bottom-3 {
+    display: none;
   }
 }

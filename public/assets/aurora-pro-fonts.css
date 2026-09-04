@@ -1,0 +1,44 @@
+/* Aurora Pro — Custom font upload */
+
+.pro-font-upload-zone {
+  border: 1px dashed rgba(148, 163, 184, .28);
+  border-radius: .75rem;
+  padding: .85rem;
+  text-align: center;
+  background: rgba(2, 6, 23, .35);
+  transition: border-color .18s ease, background .18s ease;
+  cursor: pointer;
+}
+
+.pro-font-upload-zone:hover,
+.pro-font-upload-zone.drag {
+  border-color: rgba(34, 211, 238, .55);
+  background: rgba(34, 211, 238, .06);
+}
+
+.pro-font-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: .45rem .55rem;
+  border-radius: .55rem;
+  border: 1px solid rgba(148, 163, 184, .14);
+  background: rgba(148, 163, 184, .06);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pro-font-chip button {
+  border: none;
+  background: transparent;
+  color: #f87171;
+  font-size: 11px;
+  cursor: pointer;
+  padding: .15rem .35rem;
+  border-radius: .35rem;
+}
+
+.pro-font-chip button:hover {
+  background: rgba(248, 113, 113, .12);
+}
