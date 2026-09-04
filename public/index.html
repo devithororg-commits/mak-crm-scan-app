@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=21" />
-  <link rel="stylesheet" href="assets/aurora-home.css?v=21" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=22" />
+  <link rel="stylesheet" href="assets/aurora-home.css?v=22" />
 </head>
 <body class="aurora-home">
 
@@ -44,20 +44,58 @@
   </div>
 
   <main>
-    <section class="hero wrap reveal">
-      <p class="eyebrow">Creative Operating System</p>
-      <h1>Design, present, and <em>ship</em> — from one studio.</h1>
-      <p class="hero-lead">
-        Every Aurora tool in one place. Pick a workspace, start from 176+ templates,
-        export PNG, PDF, or share — no install, no credit card.
-      </p>
-      <div class="hero-search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/>
-        </svg>
-        <input type="search" id="heroSearch" readonly placeholder="Search tools — Ctrl+K" aria-label="Search Aurora tools" />
+    <section class="hero wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Creative Operating System</p>
+          <h1>Design, present, and <em>ship</em> — from one studio.</h1>
+          <p class="hero-lead">
+            Five live workspaces, 176+ presentation templates, and every future tool
+            one <kbd>Ctrl+K</kbd> away. Browser-based — no install, no credit card.
+          </p>
+          <div class="hero-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/>
+            </svg>
+            <input type="search" id="heroSearch" readonly placeholder="Search all tools — Ctrl+K" aria-label="Search Aurora tools" />
+          </div>
+          <div class="hero-cta-row">
+            <a href="obsidian.html" class="btn-primary">Open Studio Pro</a>
+            <a href="aurora-ppt.html" class="btn-outline">Aurora Studio PPT</a>
+          </div>
+          <p class="hero-meta">Provided by Devithor.org · Works in browser · Offline PWA</p>
+        </div>
+
+        <div class="hero-preview" aria-hidden="true">
+          <div class="preview-chrome">
+            <span class="preview-dot accent"></span>
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+            Aurora Studio — Live
+          </div>
+          <div class="preview-body">
+            <div class="preview-slide">
+              <h4>Launch faster.<br>Look premium.</h4>
+              <p>Pro workspace · PPT · Canvas · Builder · Templates</p>
+            </div>
+            <div class="preview-tags">
+              <span class="preview-tag hot">176+ Decks</span>
+              <span class="preview-tag">60fps Canvas</span>
+              <span class="preview-tag">PNG · PDF</span>
+              <span class="preview-tag">PWA Offline</span>
+            </div>
+          </div>
+          <div class="preview-float">✓ 5 tools live</div>
+        </div>
       </div>
-      <p class="hero-meta">Provided by Devithor.org · Works in browser · Offline PWA</p>
+
+      <nav class="quick-launch" aria-label="Quick launch tools">
+        <a href="obsidian.html" class="quick-btn"><span class="ico">◆</span>Studio Pro</a>
+        <a href="aurora-ppt.html" class="quick-btn"><span class="ico">▣</span>PPT</a>
+        <a href="studio.html" class="quick-btn"><span class="ico">▤</span>Canvas</a>
+        <a href="builder.html" class="quick-btn"><span class="ico">◇</span>Builder</a>
+        <a href="showcase.html" class="quick-btn"><span class="ico">◎</span>Templates</a>
+      </nav>
     </section>
 
     <section class="hub wrap" id="products">
@@ -244,8 +282,8 @@
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=21"></script>
-  <script src="assets/aurora-home.js?v=21"></script>
+  <script src="assets/aurora-toolhub.js?v=22"></script>
+  <script src="assets/aurora-home.js?v=22"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(function () {});

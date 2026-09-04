@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  document.documentElement.classList.add('js-reveal');
+
   var TOOLS = [
     {
       id: 'obsidian',
@@ -150,13 +152,10 @@
     });
   }
 
-  /* Reveal on scroll */
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  /* All sections visible on load — no hidden content */
+  document.querySelectorAll('.reveal').forEach(function (el) {
+    el.classList.add('visible');
+  });
 
   /* Product filter */
   var filterTabs = document.querySelectorAll('.filter-tab');
@@ -197,7 +196,6 @@
   if (window.AuroraToolHub) {
     AuroraToolHub.init({
       app: 'home',
-      headerAnchor: '#navActions',
       dock: ['obsidian', 'ppt', 'canvas'],
       commands: hubCommands(),
       shortcuts: [
