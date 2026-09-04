@@ -1,0 +1,47 @@
+name: Deploy PPT to apptesting.in
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'public/aurora-ppt.html'
+      - 'public/aurora-ppt/index.html'
+      - 'public/assets/aurora-ppt-spa.*'
+      - 'public/assets/editorial-botanical-Bu_MnSHi.jpg'
+      - '.github/scripts/deploy-ppt-only.py'
+  workflow_dispatch:
+
+concurrency:
+  group: apptesting-ppt
+  cancel-in-progress: true
+
+jobs:
+  ppt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Upload PPT files via FTP
+        env:
+          APPTESTING_FTP_PASS: ${{ secrets.APPTESTING_FTP_PASS }}
+          HOSTINGER_PASS: ${{ secrets.HOSTINGER_PASS }}
+        run: python3 .github/scripts/deploy-ppt-only.py
+
+      - name: Verify PPT live
+        run: |
+          sleep 3
+          body=$(curl -sS --max-time 20 "https://apptesting.in/aurora-ppt.html?t=$(date +%s)" || true)
+          if echo "$body" | grep -q "aurora-ppt-spa.js"; then
+            echo "✅ https://apptesting.in/aurora-ppt.html is live"
+          else
+            echo "⚠️ HTML not updated yet"
+            echo "$body" | head -5
+          fi
