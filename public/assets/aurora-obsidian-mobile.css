@@ -516,3 +516,299 @@
     display: none;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Canva-style contextual bottom toolbar (Phase 3)
+   ══════════════════════════════════════════════════════════════ */
+
+.obsidian-canva-bar,
+.obsidian-canva-panel,
+.obsidian-mini-bar,
+.obsidian-page-dots {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body.obsidian-app.obsidian-focus-mode.obsidian-canva-edit #obsidianNavBar,
+  body.obsidian-app.obsidian-focus-mode.obsidian-canva-edit .obsidian-bottom-nav {
+    display: none !important;
+  }
+
+  body.obsidian-app.obsidian-focus-mode.obsidian-canva-edit .obsidian-fab {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.85);
+  }
+
+  body.obsidian-app.obsidian-focus-mode.obsidian-canva-edit .obsidian-canva-bar {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 88;
+    padding: .4rem .35rem calc(.45rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, .97);
+    border-top: 1px solid rgba(15, 23, 42, .08);
+    box-shadow: 0 -12px 40px -12px rgba(0, 0, 0, .25);
+    animation: canvaBarUp .32s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  @keyframes canvaBarUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
+  .canva-bar-scroll {
+    display: flex;
+    align-items: stretch;
+    gap: .15rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-right: .25rem;
+  }
+
+  .canva-bar-scroll::-webkit-scrollbar { display: none; }
+
+  .obsidian-canva-bar button {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .2rem;
+    min-width: 3.5rem;
+    min-height: 3.25rem;
+    padding: .35rem .45rem;
+    border: none;
+    border-radius: .65rem;
+    background: transparent;
+    color: #334155;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .obsidian-canva-bar button .cico {
+    font-size: 1.15rem;
+    line-height: 1;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .obsidian-canva-bar button:active {
+    background: rgba(34, 211, 238, .12);
+  }
+
+  .obsidian-canva-bar button.canva-done {
+    margin-left: auto;
+    min-width: 3rem;
+    min-height: 3rem;
+    border-radius: 50%;
+    background: #0f172a;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 300;
+    box-shadow: 0 4px 16px -4px rgba(15, 23, 42, .5);
+    align-self: center;
+  }
+
+  /* Sub-panel */
+  body.obsidian-app.obsidian-canva-panel-open .obsidian-canva-panel {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 89;
+    max-height: 52dvh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: #fff;
+    border-radius: 1.1rem 1.1rem 0 0;
+    box-shadow: 0 -20px 50px -16px rgba(0, 0, 0, .3);
+    transform: translateY(105%);
+    transition: transform .34s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  body.obsidian-app.obsidian-canva-panel-open .obsidian-canva-panel.open {
+    transform: none;
+  }
+
+  .canva-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem .5rem;
+    border-bottom: 1px solid rgba(15, 23, 42, .08);
+    font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .canva-panel-head button {
+    border: none;
+    background: rgba(15, 23, 42, .06);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .canva-panel-body {
+    padding: .85rem 1rem 1.25rem;
+    overflow-y: auto;
+    max-height: calc(52dvh - 3rem);
+  }
+
+  .canva-font-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .4rem;
+  }
+
+  .canva-font-pick,
+  .canva-style-btn {
+    padding: .65rem .5rem;
+    border: 1px solid rgba(15, 23, 42, .1);
+    border-radius: .6rem;
+    background: #f8fafc;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0f172a;
+    text-align: left;
+  }
+
+  .canva-range {
+    width: 100%;
+    margin: .5rem 0;
+  }
+
+  .canva-range-val {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .canva-color {
+    width: 100%;
+    height: 2.75rem;
+    border: none;
+    border-radius: .65rem;
+    margin-bottom: .65rem;
+  }
+
+  .canva-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+  }
+
+  .canva-swatch {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 2px solid rgba(15, 23, 42, .12);
+    padding: 0;
+  }
+
+  /* Floating mini bar above selection */
+  .obsidian-mini-bar {
+    position: fixed;
+    z-index: 87;
+    display: flex;
+    gap: .25rem;
+    padding: .3rem .4rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid rgba(15, 23, 42, .1);
+    box-shadow: 0 8px 28px -8px rgba(0, 0, 0, .35);
+    transform: translate(-50%, 0) scale(0.92);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease, transform .22s cubic-bezier(.22, 1, .36, 1), visibility .2s;
+    pointer-events: none;
+  }
+
+  .obsidian-mini-bar.show {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0) scale(1);
+    pointer-events: auto;
+  }
+
+  .obsidian-mini-bar button {
+    width: 2.35rem;
+    height: 2.35rem;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    font-size: 14px;
+    color: #334155;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .obsidian-mini-bar button:active {
+    background: rgba(34, 211, 238, .15);
+  }
+
+  .obsidian-mini-bar button[data-mini="del"] {
+    color: #ef4444;
+  }
+
+  /* Page dots */
+  .obsidian-page-dots {
+    position: fixed;
+    left: 50%;
+    bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
+    z-index: 75;
+    transform: translateX(-50%);
+    display: flex;
+    gap: .35rem;
+    padding: .25rem .5rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .55);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease, visibility .2s;
+  }
+
+  .obsidian-page-dots.show {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  body.obsidian-app.obsidian-canva-edit .obsidian-page-dots {
+    bottom: calc(4.2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .obsidian-page-dots .page-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: rgba(255, 255, 255, .35);
+  }
+
+  .obsidian-page-dots .page-dot.on {
+    background: #22d3ee;
+    width: 18px;
+    border-radius: 99px;
+  }
+
+  /* Hide legacy edit popup sheet on mobile — Canva bar replaces it */
+  body.obsidian-app.obsidian-canva-edit #proEditPopup {
+    display: none !important;
+  }
+
+  body.obsidian-app.obsidian-canva-panel-open .obsidian-shell {
+    padding-bottom: calc(9rem + env(safe-area-inset-bottom, 0px));
+  }
+}

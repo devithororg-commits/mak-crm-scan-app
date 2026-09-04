@@ -524,6 +524,14 @@
     var el = ensurePopup();
     if (!el || typeof canvas === 'undefined') return;
 
+    /* Canva mobile toolbar handles editing on phones */
+    if (getLayoutMode() === 'mobile' || getLayoutMode() === 'mobile-sm') {
+      if (window.ObsidianCanvaMobile && ObsidianCanvaMobile.isEditMode()) {
+        hideAnimated();
+        return;
+      }
+    }
+
     var o = canvas.getActiveObject();
     var bar = document.getElementById('ctxBar');
     if (bar) bar.classList.add('hidden');

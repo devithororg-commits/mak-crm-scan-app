@@ -479,10 +479,11 @@
     if (!isMobile() || localStorage.getItem('obsidian-m2-hint')) return;
     setTimeout(function () {
       if (typeof toast === 'function') {
-        toast('Pinch to zoom · Double-tap fit · Swipe screen edges for panels');
+        toast('Select object to edit · Pinch zoom · Bottom toolbar like Canva');
         try { localStorage.setItem('obsidian-m2-hint', '1'); } catch (e) {}
       }
     }, 2200);
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
