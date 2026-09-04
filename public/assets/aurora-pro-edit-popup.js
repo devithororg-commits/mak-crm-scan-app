@@ -8,6 +8,12 @@
   var pinned = false;
   var editingText = false;
   var lastObj = null;
+  var userPositioned = false;
+  var dragging = false;
+  var dragStartX = 0;
+  var dragStartY = 0;
+  var dragOriginL = 0;
+  var dragOriginT = 0;
   var PANEL_W = 268;
 
   function fontOptions(selected) {
@@ -62,7 +68,63 @@
     host.appendChild(popup);
     popup.addEventListener('mousedown', function (e) { e.stopPropagation(); });
     popup.addEventListener('click', function (e) { e.stopPropagation(); });
+    bindDrag();
     return popup;
+  }
+
+  function clampPosition(left, top) {
+    var main = document.querySelector('main');
+    if (!main || !popup) return { left: left, top: top };
+    var w = main.clientWidth;
+    var h = main.clientHeight;
+    var pw = popup.offsetWidth || PANEL_W;
+    var ph = popup.offsetHeight || 200;
+    return {
+      left: Math.max(4, Math.min(w - pw - 4, left)),
+      top: Math.max(4, Math.min(h - ph - 4, top))
+    };
+  }
+
+  function applyPosition(left, top) {
+    if (!popup) return;
+    var p = clampPosition(left, top);
+    popup.style.left = p.left + 'px';
+    popup.style.top = p.top + 'px';
+    popup.style.transform = 'none';
+  }
+
+  function bindDrag() {
+    if (!popup || popup._dragBound) return;
+    popup._dragBound = true;
+
+    popup.addEventListener('mousedown', function (e) {
+      var handle = e.target.closest('.pro-edit-drag-handle');
+      if (!handle || e.target.closest('button')) return;
+      dragging = true;
+      userPositioned = true;
+      pinned = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragOriginL = parseFloat(popup.style.left) || 0;
+      dragOriginT = parseFloat(popup.style.top) || 0;
+      popup.classList.add('is-dragging');
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging || !popup) return;
+      var dx = e.clientX - dragStartX;
+      var dy = e.clientY - dragStartY;
+      applyPosition(dragOriginL + dx, dragOriginT + dy);
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!dragging) return;
+      dragging = false;
+      if (popup) popup.classList.remove('is-dragging');
+      document.body.style.userSelect = '';
+    });
   }
 
   function hide() {
@@ -74,6 +136,8 @@
   function forceHide() {
     pinned = false;
     editingText = false;
+    userPositioned = false;
+    dragging = false;
     if (popup) popup.classList.add('hidden');
     var bar = document.getElementById('ctxBar');
     if (bar) bar.classList.add('hidden');
@@ -164,7 +228,7 @@
   }
 
   function positionPopup(o) {
-    if (!popup || !o) return;
+    if (!popup || !o || userPositioned || dragging) return;
     var r = o.getBoundingRect(true, true);
     var main = document.querySelector('main');
     var wrap = document.getElementById('stageWrap');
@@ -186,9 +250,7 @@
     }
     if (left < 8) left = 8;
     top = Math.max(8, Math.min(mainRect.height - popup.offsetHeight - 8, top));
-    popup.style.left = left + 'px';
-    popup.style.top = top + 'px';
-    popup.style.transform = 'none';
+    applyPosition(left, top);
   }
 
   function bindControls(o) {
@@ -320,21 +382,25 @@
     }
 
     if (repositionOnly && o === lastObj && !el.classList.contains('hidden')) {
-      positionPopup(o);
+      if (!userPositioned) positionPopup(o);
       return;
     }
 
+    var prevObj = lastObj;
     lastObj = o;
+    if (o !== prevObj) userPositioned = false;
 
     var body = renderBody(o);
     var hasSelection = o.isEditing && o.selectionStart !== o.selectionEnd;
     el.innerHTML =
-      '<div class="pro-edit-head">' +
+      '<div class="pro-edit-head pro-edit-drag-handle" title="Drag to move anywhere">' +
+      '<span class="pro-edit-grip" aria-hidden="true">⠿</span>' +
       '<div class="pro-edit-head-left">' +
       '<span class="pro-edit-type">' + body.type + '</span>' +
       (hasSelection ? '<span class="pro-edit-hint">· word selected</span>' : '') +
       '</div>' +
       '<div class="pro-edit-head-actions">' +
+      '<button type="button" id="pepSnap" class="chip tr pep-snap" title="Snap beside selection">⌖</button>' +
       '<button type="button" id="pepPin" class="chip tr pep-pin' + (pinned ? ' on' : '') + '" title="Pin popup">📌</button>' +
       '<button type="button" id="pepClose" class="chip tr" title="Close">✕</button>' +
       '</div></div>' +
@@ -342,8 +408,13 @@
       '<div class="pro-edit-body">' + body.html + '</div>';
 
     el.classList.remove('hidden');
-    positionPopup(o);
+    if (!userPositioned) positionPopup(o);
 
+    el.querySelector('#pepSnap')?.addEventListener('click', function () {
+      userPositioned = false;
+      positionPopup(o);
+      toast('Popup snapped to selection');
+    });
     el.querySelector('#pepPin')?.addEventListener('click', function () {
       pinned = !pinned;
       el.querySelector('#pepPin')?.classList.toggle('on', pinned);

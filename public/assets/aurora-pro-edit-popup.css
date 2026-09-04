@@ -28,8 +28,41 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: .5rem;
+  gap: .35rem;
   margin-bottom: .4rem;
+  padding: .15rem .1rem;
+  border-radius: .55rem;
+  cursor: grab;
+  touch-action: none;
+}
+
+.pro-edit-head.is-dragging,
+.pro-edit-popup.is-dragging .pro-edit-head {
+  cursor: grabbing;
+}
+
+.pro-edit-grip {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: #64748b;
+  opacity: .85;
+  padding: 0 .1rem;
+  user-select: none;
+}
+
+.pro-edit-drag-handle:hover .pro-edit-grip {
+  color: #22d3ee;
+}
+
+.pro-edit-popup.is-dragging {
+  box-shadow: 0 28px 60px -18px rgba(0, 0, 0, .75), 0 0 0 1px rgba(34, 211, 238, .35);
+  transition: none;
+}
+
+.pep-snap:hover {
+  border-color: rgba(34, 211, 238, .45);
+  color: #67e8f9;
 }
 
 .pro-edit-head-left {
