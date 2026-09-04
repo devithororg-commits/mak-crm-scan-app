@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { nanoid } from "nanoid";
 import { createSampleDeck, makeSlide } from "@/lib/ast/defaults";
+import { buildDeckFromTemplate, cloneSlide, getDeckTemplate, getSlideTemplate } from "@/lib/ast/templates";
 import { safeParseDeck, type Block, type Deck, type LeafBlock, type Slide, type Theme } from "@/lib/ast/schema";
 import { alignBlocks, distributeBlocks, explodeGroup, makeGroup, type AlignMode } from "./geometry";
 
@@ -46,6 +47,8 @@ export type EditorState = {
   setTheme: (theme: Theme) => void;
   replaceDeck: (deck: Deck) => void;
   resetDeck: () => void;
+  applyDeckTemplate: (templateId: string) => void;
+  insertSlideTemplate: (templateId: string) => void;
 
   // slides
   addSlide: () => void;
@@ -144,6 +147,24 @@ export const useEditor = create<EditorState>()(
         resetDeck: () => {
           const deck = createSampleDeck();
           set({ deck, slideId: deck.slides[0]!.id, selection: [], past: [], future: [] });
+        },
+        applyDeckTemplate: (templateId) => {
+          const t = getDeckTemplate(templateId);
+          if (!t) return;
+          const deck = buildDeckFromTemplate(t);
+          set({ deck, slideId: deck.slides[0]!.id, selection: [], editingId: null, past: [], future: [] });
+        },
+        insertSlideTemplate: (templateId) => {
+          const t = getSlideTemplate(templateId);
+          if (!t) return;
+          const sl = cloneSlide(t.build());
+          const idx = get().slideIndex();
+          mutateDeck((d) => {
+            const slides = [...d.slides];
+            slides.splice(idx + 1, 0, sl);
+            return { ...d, slides };
+          });
+          set({ slideId: sl.id, selection: [] });
         },
 
         addSlide: () => {
