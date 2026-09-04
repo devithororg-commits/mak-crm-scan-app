@@ -1,8 +1,6 @@
 (function () {
   'use strict';
 
-  document.documentElement.classList.add('js-reveal');
-
   var TOOLS = [
     {
       id: 'obsidian',
@@ -151,11 +149,6 @@
       });
     });
   }
-
-  /* All sections visible on load — no hidden content */
-  document.querySelectorAll('.reveal').forEach(function (el) {
-    el.classList.add('visible');
-  });
 
   /* Product filter */
   var filterTabs = document.querySelectorAll('.filter-tab');

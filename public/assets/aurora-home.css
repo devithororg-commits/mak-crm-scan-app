@@ -740,20 +740,8 @@ img { max-width: 100%; display: block; }
 }
 .footer-links a:hover { color: var(--accent); }
 
-/* Reveal — visible by default; JS adds .visible for subtle motion only */
-.reveal {
-  opacity: 1;
-  transform: none;
-}
-html.js-reveal .reveal:not(.visible) {
-  opacity: 0;
-  transform: translateY(12px);
-}
-html.js-reveal .reveal.visible {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
+/* Reveal disabled — content always visible */
+.reveal { opacity: 1; transform: none; }
 
 /* ToolHub overrides on home */
 body.aurora-home .aurora-hub-trigger {
