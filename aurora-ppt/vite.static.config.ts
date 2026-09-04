@@ -10,7 +10,7 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 /** Static SPA build for apptesting.in — no TanStack Start SSR required. */
 export default defineConfig({
   root,
-  base: "/aurora-ppt/",
+  base: "./",
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   build: {
     outDir: path.resolve(root, "../public/aurora-ppt"),
