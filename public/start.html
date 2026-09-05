@@ -27,7 +27,7 @@
   <link rel="icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
   <link href="https://fonts.cdnfonts.com/css/neue-montreal" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=27" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=28" />
   <style>
     :root {
       --bg: #0D1118;
@@ -616,7 +616,7 @@
 
     /* CTA */
     .cta-band {
-      margin: 2rem 0 4rem;
+      margin: 2rem 0 2.5rem;
       padding: 2.75rem 2rem;
       border-radius: calc(var(--radius) + 6px);
       border: 1px solid rgba(92, 156, 235, 0.2);
@@ -638,21 +638,99 @@
     .cta-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; justify-content: center; }
 
     /* Footer */
+    body.aurora-home { padding-bottom: 5.5rem; }
+
     .site-footer {
-      padding: 2rem 0 6rem;
+      margin-top: 1rem;
+      padding: 2.5rem 0 1.75rem;
       border-top: 1px solid var(--border-soft);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.2) 100%);
     }
-    .footer-inner {
+    .footer-top {
+      display: grid;
+      gap: 2rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    @media (min-width: 768px) {
+      .footer-top { grid-template-columns: 1.1fr 1fr; align-items: start; }
+    }
+    .footer-brand { display: flex; flex-direction: column; gap: 0.65rem; }
+    .footer-logo {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--text);
+    }
+    .footer-logo em { color: var(--green); font-style: normal; }
+    .footer-tagline {
+      margin: 0;
+      max-width: 32ch;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .footer-nav {
+      display: grid;
+      gap: 1.25rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 640px) { .footer-nav { grid-template-columns: repeat(3, 1fr); } }
+    .footer-col { display: flex; flex-direction: column; gap: 0.55rem; }
+    .footer-col-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .footer-col a,
+    .footer-col button.footer-col-link {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .footer-col a:hover,
+    .footer-col button.footer-col-link:hover { color: var(--green); }
+    .footer-bottom {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      font-size: 0.8125rem;
+      gap: 0.75rem 1.5rem;
+      padding-top: 1.25rem;
+      font-size: 0.75rem;
       color: var(--muted);
     }
-    .footer-links { display: flex; flex-wrap: wrap; gap: 1.25rem; }
-    .footer-links a:hover { color: var(--green); }
+    .footer-bottom a { color: var(--muted); }
+    .footer-bottom a:hover { color: var(--green); }
+    .footer-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: var(--pill);
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .footer-hint kbd {
+      font-size: 0.625rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-soft);
+      background: rgba(13, 17, 24, 0.8);
+      color: var(--text);
+    }
 
     body.aurora-home .aurora-hub-trigger {
       border-color: var(--border-soft);
@@ -672,7 +750,7 @@
       visibility: visible !important;
       transform: none !important;
     }
-    .hero { min-height: 70vh; }
+    .hero { min-height: auto; }
     .hero h1, .hero h1 span, .hero-lead, .tag { color: #fff !important; }
     .hero h1 span { color: var(--green) !important; -webkit-text-fill-color: var(--green) !important; background: none !important; }
   </style>
@@ -893,20 +971,42 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <span>© 2026 AURORA.STUDIO · <a href="https://devithor.org" target="_blank" rel="noopener">Devithor.org</a></span>
-      <nav class="footer-links">
-        <a href="obsidian.html">Pro</a>
-        <a href="aurora-ppt.html">PPT</a>
-        <a href="studio.html">Canvas</a>
-        <a href="builder.html">Builder</a>
-        <a href="showcase.html">Templates</a>
-      </nav>
+    <div class="wrap">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/start.html" class="footer-logo">AURORA<em>.</em>STUDIO</a>
+          <p class="footer-tagline">Design, present, and ship — five live tools, 176+ templates, one creative workspace.</p>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <div class="footer-col">
+            <span class="footer-col-label">Products</span>
+            <a href="obsidian.html">Studio Pro</a>
+            <a href="aurora-ppt.html">Presentations</a>
+            <a href="studio.html">Canvas</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-label">Build</span>
+            <a href="builder.html">Builder</a>
+            <a href="showcase.html">Templates</a>
+            <a href="#products">All products</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-col-label">Platform</span>
+            <a href="#platform">Why Aurora</a>
+            <a href="https://devithor.org" target="_blank" rel="noopener">Devithor.org</a>
+            <button type="button" class="footer-col-link" onclick="AuroraToolHub && AuroraToolHub.openPalette()">Command palette</button>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AURORA.STUDIO · <a href="https://devithor.org" target="_blank" rel="noopener">Devithor.org</a></span>
+        <span class="footer-hint">Quick access <kbd>Ctrl+K</kbd></span>
+      </div>
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=27"></script>
-  <script src="assets/aurora-home.js?v=27"></script>
+  <script src="assets/aurora-toolhub.js?v=28"></script>
+  <script src="assets/aurora-home.js?v=28"></script>
   <script>window.addEventListener('load', function () { window.scrollTo(0, 0); });</script>
 </body>
 </html>
