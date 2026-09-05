@@ -27,7 +27,7 @@
   <link rel="icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
   <link href="https://fonts.cdnfonts.com/css/neue-montreal" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=29" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=30" />
   <style>
     :root {
       --bg: #0D1118;
@@ -86,13 +86,14 @@
 
     main {
       width: 100%;
-      max-width: 100%;
+      max-width: 100vw;
       overflow-x: clip;
     }
-    main > section {
-      width: min(calc(100% - var(--gutter) * 2), var(--max));
+    .page-shell {
+      width: 100%;
       max-width: var(--max);
       margin-inline: auto;
+      padding-inline: var(--gutter);
       box-sizing: border-box;
     }
 
@@ -638,15 +639,18 @@
 
     /* CTA */
     .cta-section {
-      width: min(calc(100% - var(--gutter) * 2), var(--max));
-      max-width: var(--max);
-      margin-inline: auto;
+      width: 100%;
+      margin: 0;
       padding: 0;
     }
     .cta-band {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       margin: 2rem 0 2.5rem;
-      padding: 2.75rem 2rem;
+      padding: 2.75rem clamp(1.25rem, 4vw, 2.5rem);
       border-radius: calc(var(--radius) + 6px);
       border: 1px solid rgba(92, 156, 235, 0.2);
       background: linear-gradient(135deg, rgba(92, 156, 235, 0.12) 0%, rgba(0, 255, 161, 0.05) 100%);
@@ -658,14 +662,25 @@
       font-weight: 500;
       letter-spacing: -0.03em;
       margin: 0;
+      width: 100%;
+      text-align: center;
     }
     .cta-band p {
       margin: 0.75rem auto 1.5rem;
       max-width: 42ch;
+      width: 100%;
       font-size: 0.9375rem;
       color: var(--muted);
+      text-align: center;
     }
-    .cta-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; justify-content: center; }
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
 
     /* Footer */
     body.aurora-home { padding-bottom: 5.5rem; }
@@ -814,7 +829,8 @@
   </div>
 
   <main>
-    <section class="hero wrap">
+    <div class="page-shell">
+    <section class="hero">
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="tag">Creative Operating System</div>
@@ -864,7 +880,7 @@
       </nav>
     </section>
 
-    <section class="hub wrap" id="products">
+    <section class="hub" id="products">
       <div class="section-head">
         <div>
           <h2>Product Hub</h2>
@@ -963,14 +979,14 @@
       </div>
     </section>
 
-    <section class="wrap stats">
+    <section class="stats">
       <div class="stat"><strong>176+</strong><span>Deck templates</span></div>
       <div class="stat"><strong>5</strong><span>Live tools</span></div>
       <div class="stat"><strong>60fps</strong><span>Canvas engine</span></div>
       <div class="stat"><strong>0</strong><span>Install required</span></div>
     </section>
 
-    <section class="features wrap" id="platform">
+    <section class="features" id="platform">
       <p class="label">Why Aurora</p>
       <h2>Built for professionals who ship fast.</h2>
       <div class="feature-grid">
@@ -1000,6 +1016,7 @@
         </div>
       </div>
     </section>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -1037,8 +1054,8 @@
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=29"></script>
-  <script src="assets/aurora-home.js?v=29"></script>
+  <script src="assets/aurora-toolhub.js?v=30"></script>
+  <script src="assets/aurora-home.js?v=30"></script>
   <script>window.addEventListener('load', function () { window.scrollTo(0, 0); });</script>
 </body>
 </html>
