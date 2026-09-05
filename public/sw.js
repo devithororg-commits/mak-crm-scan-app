@@ -1,228 +1,54 @@
-/* Aurora Studio — offline cache for core assets */
+/* Aurora Studio SW v24 — PPT assets only; homepage never cached */
 
-const CACHE = 'aurora-pro-v23';
+const PPT_PATTERNS = ['aurora-ppt.html', 'aurora-ppt-spa.js', 'aurora-ppt-spa.css'];
 
-const PPT_ASSETS = [
-
-  './aurora-ppt.html',
-
-  './assets/aurora-ppt-spa.js',
-
-  './assets/aurora-ppt-spa.css',
-
-];
-
-
-
-const ASSETS = [
-
-  './',
-
-  './obsidian.html',
-
-  './index.html',
-
-  './aurora-ppt.html',
-
-  './aurora-ppt/index.html',
-
-  './studio.html',
-
-  './showcase.html',
-
-  './assets/aurora-pro.css',
-
-  './assets/aurora-pro.js',
-
-  './assets/aurora-pro-suite.css',
-
-  './assets/aurora-pro-suite.js',
-
-  './assets/aurora-pro-extras.css',
-
-  './assets/aurora-pro-extras.js',
-
-  './assets/aurora-pro-phase2.css',
-
-  './assets/aurora-pro-phase2.js',
-
-  './assets/aurora-pro-pathfinder.css',
-
-  './assets/aurora-pro-pathfinder.js',
-
-  './assets/aurora-pro-edit-popup.css',
-
-  './assets/aurora-pro-edit-popup.js',
-
-  './assets/aurora-pro-collab.css',
-
-  './assets/aurora-pro-collab.js',
-
-  './assets/aurora-pro-social-batch.css',
-
-  './assets/aurora-pro-social-batch.js',
-
-  './assets/aurora-pro-fonts.css',
-
-  './assets/aurora-pro-fonts.js',
-
-  './assets/aurora-obsidian-mobile.css',
-
-  './assets/aurora-obsidian-mobile.js',
-
-  './assets/aurora-obsidian-canva-mobile.js',
-
-  './assets/studio-phase2.js',
-
-  './assets/aurora-responsive.css',
-
-  './assets/aurora-responsive.js',
-
-  './assets/aurora-controls.css',
-
-  './assets/aurora-controls.js',
-
-  './assets/aurora-toolhub.css',
-
-  './assets/aurora-toolhub.js',
-
-  './assets/aurora-home.css',
-
-  './assets/aurora-home.js',
-
-  './manifest.json',
-
-];
-
-
-
-function isPptAsset(url) {
-
-  return PPT_ASSETS.some(function (p) { return url.indexOf(p.replace('./', '')) !== -1; });
-
+function isPpt(url) {
+  return PPT_PATTERNS.some(function (p) { return url.indexOf(p) !== -1; });
 }
 
-function isHomeAsset(url) {
-  return /\/(index\.html)?(\?|$)/.test(url.replace(self.location.origin, '')) ||
-    url.indexOf('aurora-home.') !== -1 ||
-    url.indexOf('aurora-toolhub.') !== -1;
+function isHomepage(url) {
+  var path = url.replace(self.location.origin, '');
+  return path === '/' || path === '' || path.indexOf('/index.html') !== -1 ||
+    path.indexOf('aurora-home.') !== -1;
 }
-
-function networkFirst(request) {
-  return fetch(request).then(function (res) {
-    if (res && res.status === 200) {
-      var copy = res.clone();
-      caches.open(CACHE).then(function (c) { c.put(request, copy); });
-    }
-    return res;
-  }).catch(function () {
-    return caches.match(request);
-  });
-}
-
-
 
 self.addEventListener('install', function (e) {
-
-  e.waitUntil(
-
-    caches.open(CACHE).then(function (cache) {
-
-      return cache.addAll(ASSETS).catch(function () { /* partial cache ok */ });
-
-    }).then(function () { return self.skipWaiting(); })
-
-  );
-
+  e.waitUntil(self.skipWaiting());
 });
-
-
 
 self.addEventListener('activate', function (e) {
-
   e.waitUntil(
-
     caches.keys().then(function (keys) {
-
-      return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
-
+      return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+    }).then(function () {
+      return self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    }).then(function (clients) {
+      clients.forEach(function (client) {
+        var u = client.url.split('#')[0];
+        if (u.indexOf('apptesting.in') >= 0 && (u.endsWith('/') || u.indexOf('index.html') >= 0)) {
+          client.navigate(u.split('?')[0] + '?v=24');
+        }
+      });
     }).then(function () { return self.clients.claim(); })
-
   );
-
 });
-
-
 
 self.addEventListener('fetch', function (e) {
-
   if (e.request.method !== 'GET') return;
-
   var url = e.request.url;
 
-
-
-  /* Homepage + hub assets: network first so redesigns show immediately */
-
-  if (isHomeAsset(url)) {
-    e.respondWith(networkFirst(e.request));
+  if (isHomepage(url)) {
+    e.respondWith(fetch(e.request));
     return;
   }
 
-  /* PPT editor: always fetch fresh JS/CSS from network first */
-
-  if (isPptAsset(url)) {
-
+  if (isPpt(url)) {
     e.respondWith(
-
       fetch(e.request).then(function (res) {
-
-        if (res && res.status === 200) {
-
-          var copy = res.clone();
-
-          caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
-
-        }
-
         return res;
-
       }).catch(function () {
-
         return caches.match(e.request);
-
       })
-
     );
-
-    return;
-
   }
-
-
-
-  e.respondWith(
-
-    caches.match(e.request).then(function (cached) {
-
-      return cached || fetch(e.request).then(function (res) {
-
-        if (res && res.status === 200 && url.indexOf(self.location.origin) === 0) {
-
-          var copy = res.clone();
-
-          caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
-
-        }
-
-        return res;
-
-      }).catch(function () { return cached; });
-
-    })
-
-  );
-
 });
-
-

@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" style="background:#0a0a0c">
 <head>
+  <script>
+    (function () {
+      try {
+        history.scrollRestoration = 'manual';
+        if (location.hash) { history.replaceState(null, '', location.pathname + location.search); }
+        window.scrollTo(0, 0);
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function (regs) {
+            regs.forEach(function (r) { r.unregister(); });
+          });
+        }
+        if (window.caches) {
+          caches.keys().then(function (keys) { keys.forEach(function (k) { caches.delete(k); }); });
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AURORA.STUDIO — Creative Operating System</title>
@@ -11,34 +28,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style id="aurora-critical">
-    /* Inline critical — works even if cached CSS is stale */
-    .reveal, .hero, .hub, .product-card, .stats, .feature-card, .cta-band { opacity: 1 !important; transform: none !important; visibility: visible !important; }
-    body.aurora-home { margin: 0; background: #0a0a0c; color: #f2eee6; font-family: Manrope, system-ui, sans-serif; }
-    .wrap { width: min(100% - 2rem, 1180px); margin-inline: auto; position: relative; z-index: 1; }
-    .hero { padding: calc(64px + 2.5rem) 0 1.5rem; }
-    .hero-grid { display: grid; gap: 2.5rem; align-items: center; }
-    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 1fr; } }
-    .hero h1 { font-family: Fraunces, Georgia, serif; font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 300; line-height: 1.1; margin: 0; max-width: 16ch; }
-    .hero h1 em { font-style: italic; color: #d4a373; }
-    .eyebrow { color: #d4a373; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
-    .hero-lead { color: #9a9aa3; margin-top: 1rem; max-width: 44ch; line-height: 1.65; }
-    .hero-preview { min-height: 280px; border-radius: 16px; border: 1px solid rgba(242,238,230,.14); background: linear-gradient(160deg,#1a1816,#16161a); position: relative; overflow: hidden; }
-    .quick-launch { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.5rem; margin-top: 1.75rem; padding: 1rem; border-radius: 12px; border: 1px solid rgba(242,238,230,.08); background: rgba(22,22,26,.65); }
-    @media (min-width: 640px) { .quick-launch { grid-template-columns: repeat(5,1fr); } }
-    .quick-btn { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; padding: 0.75rem; border-radius: 10px; color: #f2eee6; text-decoration: none; font-size: 0.6875rem; font-weight: 600; }
-    .quick-btn:hover { background: rgba(255,255,255,.04); color: #d4a373; }
-    .product-grid { display: grid; gap: 0.75rem; }
-    @media (min-width: 640px) { .product-grid { grid-template-columns: repeat(2,1fr); } }
-    @media (min-width: 960px) { .product-grid { grid-template-columns: repeat(3,1fr); } }
-    .product-card { display: flex; flex-direction: column; padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(242,238,230,.08); background: #16161a; min-height: 150px; text-decoration: none; color: inherit; }
-    .product-card.featured { grid-column: 1 / -1; flex-direction: row; gap: 1.25rem; align-items: center; border-color: rgba(212,163,115,.22); }
-    @media (min-width: 960px) { .product-card.featured { grid-column: span 2; } }
-    .btn-primary { display: inline-flex; padding: 0.55rem 1rem; border-radius: 8px; background: #d4a373; color: #0a0a0c; font-weight: 700; text-decoration: none; font-size: 0.8125rem; }
-    .btn-outline { display: inline-flex; padding: 0.55rem 1rem; border-radius: 8px; border: 1px solid rgba(242,238,230,.14); color: #f2eee6; text-decoration: none; font-size: 0.8125rem; }
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=24" />
+  <link rel="stylesheet" href="assets/aurora-home.css?v=24" />
+  <style id="aurora-override">
+    /* Loaded last — force all sections visible (beats stale cached CSS) */
+    main, main > section, .hero, .hub, .product-grid, .product-card,
+    .stats, .features, .cta-band, .quick-launch, .hero-grid, .hero-preview {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: none !important;
+      max-height: none !important;
+    }
+    .product-grid, .quick-launch, .stats, .feature-grid, .hero-grid { display: grid !important; }
+    .nav-inner, .hub-header, .footer-inner, .hero-cta-row, .cta-actions, .preview-tags { display: flex !important; }
+    .product-card, .quick-btn { display: flex !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
   </style>
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=23" />
-  <link rel="stylesheet" href="assets/aurora-home.css?v=23" />
 </head>
 <body class="aurora-home">
 
@@ -308,18 +314,15 @@
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=23"></script>
-  <script src="assets/aurora-home.js?v=23"></script>
+  <script src="assets/aurora-toolhub.js?v=24"></script>
+  <script src="assets/aurora-home.js?v=24"></script>
   <script>
-    /* Purge stale service worker so new homepage always loads */
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        regs.forEach(function (r) { r.unregister(); });
-      });
-      caches.keys().then(function (keys) {
-        keys.filter(function (k) { return k.indexOf('aurora-pro') >= 0; }).forEach(function (k) { caches.delete(k); });
-      });
-    }
+    window.addEventListener('load', function () {
+      window.scrollTo(0, 0);
+      if (location.search.indexOf('v=24') < 0) {
+        location.replace(location.pathname + '?v=24');
+      }
+    });
   </script>
 </body>
 </html>
