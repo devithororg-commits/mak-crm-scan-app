@@ -27,7 +27,7 @@
   <link rel="icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
   <link href="https://fonts.cdnfonts.com/css/neue-montreal" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=30" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=31" />
   <style>
     :root {
       --bg: #0D1118;
@@ -240,6 +240,10 @@
 
     /* —— Hero —— */
     .hero { padding: calc(var(--nav-h) + 2rem) 0 2rem; }
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+    }
     .hero-grid {
       display: grid;
       gap: 2.5rem;
@@ -273,17 +277,15 @@
     }
     .hero h1 {
       font-size: clamp(2.5rem, 5.5vw, 3.75rem);
-      font-weight: 500;
+      font-weight: 600;
       line-height: 1.05;
       letter-spacing: -0.04em;
       margin: 0;
-      max-width: 14ch;
+      max-width: 16ch;
+      color: #ffffff;
     }
     .hero h1 span {
-      background: linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      color: var(--green);
     }
     .hero-lead {
       margin: 1.25rem 0 0;
@@ -788,16 +790,44 @@
       color: var(--blue);
     }
 
-    /* Force all page sections visible — fixes scroll/cache hiding hero */
-    main, main > section, .hero, .hub, .hero-grid, .hero-copy, .hero-visual,
-    .quick-launch, .product-grid, .product-card, .stats, .stat {
+    /* Force all page sections visible */
+    .page-shell,
+    .page-shell > section,
+    .hero, .hub, .hero-grid, .hero-copy, .hero-visual,
+    .hero-copy .tag, .hero-copy h1, .hero-copy .hero-lead,
+    .hero-copy .hero-cta, .hero-copy .hero-meta,
+    .quick-launch, .product-grid, .product-card, .stats, .stat,
+    .features, .cta-section, .cta-band {
       opacity: 1 !important;
       visibility: visible !important;
-      transform: none !important;
     }
-    .hero { min-height: auto; }
-    .hero h1, .hero h1 span, .hero-lead, .tag { color: #fff !important; }
-    .hero h1 span { color: var(--green) !important; -webkit-text-fill-color: var(--green) !important; background: none !important; }
+    .hero-copy .tag {
+      display: inline-flex !important;
+      color: var(--blue) !important;
+      -webkit-text-fill-color: var(--blue) !important;
+    }
+    .hero-copy h1 {
+      display: block !important;
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      background: none !important;
+      -webkit-background-clip: unset !important;
+    }
+    .hero-copy h1 span {
+      color: var(--green) !important;
+      -webkit-text-fill-color: var(--green) !important;
+      background: none !important;
+    }
+    .hero-copy .hero-lead {
+      display: block !important;
+      color: var(--muted) !important;
+      -webkit-text-fill-color: var(--muted) !important;
+    }
+    .hero-copy .hero-cta,
+    .hero-copy .hero-meta {
+      display: flex !important;
+    }
+    .hero-copy .hero-meta { display: block !important; }
   </style>
 </head>
 <body class="aurora-home">
@@ -1054,8 +1084,8 @@
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=30"></script>
-  <script src="assets/aurora-home.js?v=30"></script>
+  <script src="assets/aurora-toolhub.js?v=31"></script>
+  <script src="assets/aurora-home.js?v=31"></script>
   <script>window.addEventListener('load', function () { window.scrollTo(0, 0); });</script>
 </body>
 </html>
