@@ -1,15 +1,18 @@
-/* Aurora Studio SW v24 — PPT assets only; homepage never cached */
+/* Aurora Studio SW v32 — homepage never cached */
 
 const PPT_PATTERNS = ['aurora-ppt.html', 'aurora-ppt-spa.js', 'aurora-ppt-spa.css'];
+const HOME_PATTERNS = ['/', '/index.html', '/start.html', '/hub.html', 'aurora-home.'];
 
 function isPpt(url) {
   return PPT_PATTERNS.some(function (p) { return url.indexOf(p) !== -1; });
 }
 
 function isHomepage(url) {
-  var path = url.replace(self.location.origin, '');
-  return path === '/' || path === '' || path.indexOf('/index.html') !== -1 ||
-    path.indexOf('aurora-home.') !== -1;
+  var path = url.replace(self.location.origin, '').split('?')[0].split('#')[0];
+  if (path === '' || path === '/') return true;
+  return HOME_PATTERNS.some(function (p) {
+    return path === p || path.endsWith(p) || path.indexOf(p) !== -1;
+  });
 }
 
 self.addEventListener('install', function (e) {
@@ -26,7 +29,7 @@ self.addEventListener('activate', function (e) {
       clients.forEach(function (client) {
         var u = client.url.split('#')[0];
         if (u.indexOf('apptesting.in') >= 0 && (u.endsWith('/') || u.indexOf('index.html') >= 0)) {
-          client.navigate(u.split('?')[0] + '?v=24');
+          client.navigate(u.split('?')[0] + '?v=32');
         }
       });
     }).then(function () { return self.clients.claim(); })

@@ -27,7 +27,7 @@
   <link rel="icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
   <link href="https://fonts.cdnfonts.com/css/neue-montreal" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=31" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=32" />
   <style>
     :root {
       --bg: #0D1118;
@@ -43,7 +43,7 @@
       --blue-glow: rgba(92, 156, 235, 0.4);
       --pill: 999px;
       --radius: 20px;
-      --font: "Neue Montreal", "DM Sans", system-ui, sans-serif;
+      --font: system-ui, -apple-system, "Segoe UI", "Neue Montreal", sans-serif;
       --max: 1180px;
       --nav-h: 76px;
       --gutter: clamp(1rem, 2.5vw, 1.5rem);
@@ -240,17 +240,20 @@
 
     /* —— Hero —— */
     .hero { padding: calc(var(--nav-h) + 2rem) 0 2rem; }
-    .hero-copy {
-      position: relative;
-      z-index: 2;
-    }
     .hero-grid {
       display: grid;
       gap: 2.5rem;
       align-items: center;
     }
     @media (min-width: 900px) {
-      .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 3rem; }
+      .hero-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    }
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      min-width: 0;
     }
     .tag {
       display: inline-flex;
@@ -276,17 +279,15 @@
       box-shadow: 0 0 10px var(--green);
     }
     .hero h1 {
-      font-size: clamp(2.5rem, 5.5vw, 3.75rem);
-      font-weight: 600;
-      line-height: 1.05;
-      letter-spacing: -0.04em;
-      margin: 0;
-      max-width: 16ch;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.25rem;
+      max-width: 18ch;
       color: #ffffff;
     }
-    .hero h1 span {
-      color: var(--green);
-    }
+    .hero h1 span { color: #00FFA1; }
     .hero-lead {
       margin: 1.25rem 0 0;
       max-width: 46ch;
@@ -463,7 +464,10 @@
     }
 
     /* Hub */
-    .hub { padding: 3.5rem 0 4rem; }
+    .hub { padding: 3.5rem 0 4rem; display: block; }
+    .section-head h2,
+    .features h2,
+    .cta-band h2 { color: #ffffff; }
     .section-head {
       display: flex;
       flex-wrap: wrap;
@@ -789,45 +793,6 @@
       border-color: rgba(92, 156, 235, 0.4);
       color: var(--blue);
     }
-
-    /* Force all page sections visible */
-    .page-shell,
-    .page-shell > section,
-    .hero, .hub, .hero-grid, .hero-copy, .hero-visual,
-    .hero-copy .tag, .hero-copy h1, .hero-copy .hero-lead,
-    .hero-copy .hero-cta, .hero-copy .hero-meta,
-    .quick-launch, .product-grid, .product-card, .stats, .stat,
-    .features, .cta-section, .cta-band {
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-    .hero-copy .tag {
-      display: inline-flex !important;
-      color: var(--blue) !important;
-      -webkit-text-fill-color: var(--blue) !important;
-    }
-    .hero-copy h1 {
-      display: block !important;
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
-      background: none !important;
-      -webkit-background-clip: unset !important;
-    }
-    .hero-copy h1 span {
-      color: var(--green) !important;
-      -webkit-text-fill-color: var(--green) !important;
-      background: none !important;
-    }
-    .hero-copy .hero-lead {
-      display: block !important;
-      color: var(--muted) !important;
-      -webkit-text-fill-color: var(--muted) !important;
-    }
-    .hero-copy .hero-cta,
-    .hero-copy .hero-meta {
-      display: flex !important;
-    }
-    .hero-copy .hero-meta { display: block !important; }
   </style>
 </head>
 <body class="aurora-home">
@@ -863,9 +828,9 @@
     <section class="hero">
       <div class="hero-grid">
         <div class="hero-copy">
-          <div class="tag">Creative Operating System</div>
-          <h1>Design, present, and <span>ship</span> — from one studio.</h1>
-          <p class="hero-lead">
+          <div class="tag" style="color:#5C9CEB;display:inline-flex;">Creative Operating System</div>
+          <h1 style="color:#fff;display:block;">Design, present, and <span style="color:#00FFA1;">ship</span> — from one studio.</h1>
+          <p class="hero-lead" style="color:#7D7F81;display:block;">
             Five live workspaces, 176+ presentation templates, and every future tool
             one <kbd>Ctrl+K</kbd> away. Browser-based — no install required.
           </p>
@@ -1084,8 +1049,8 @@
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=31"></script>
-  <script src="assets/aurora-home.js?v=31"></script>
+  <script src="assets/aurora-toolhub.js?v=32"></script>
+  <script src="assets/aurora-home.js?v=32"></script>
   <script>window.addEventListener('load', function () { window.scrollTo(0, 0); });</script>
 </body>
 </html>
