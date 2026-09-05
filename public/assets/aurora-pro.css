@@ -1,128 +1,255 @@
-/* Aurora Pro — visual enhancements */
-
-.pro-badge {
-  display: inline-block;
-  margin-left: .35rem;
-  padding: .1rem .35rem;
-  border-radius: .25rem;
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: .1em;
-  background: linear-gradient(135deg, rgba(34, 211, 238, .25), rgba(251, 146, 60, .2));
-  border: 1px solid rgba(34, 211, 238, .35);
-  color: #67e8f9;
-  vertical-align: middle;
-}
-
-#btnEyedropper.on,
-#btnProPen.on,
-.pro-view-btn.on {
-  border-color: rgba(34, 211, 238, .65) !important;
-  background: rgba(34, 211, 238, .15) !important;
-  color: #a5f3fc !important;
-  box-shadow: 0 0 16px -4px rgba(34, 211, 238, .6);
-}
-
-#proAlignExtra .chip:hover {
-  border-color: rgba(34, 211, 238, .45);
-}
-
-.pro-brand-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .35rem;
-  margin-top: .5rem;
-}
-.pro-brand-swatch {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: .4rem;
-  border: 1px solid rgba(255, 255, 255, .2);
-  cursor: pointer;
-  transition: transform .15s;
-}
-.pro-brand-swatch:hover { transform: scale(1.12); }
-
-/* Page strip */
-#proPageBar {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .35rem .75rem;
-  border-radius: 1rem;
-  flex-shrink: 0;
-}
-#proPageStrip {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: .35rem;
-  overflow-x: auto;
-}
-#proPageStrip button.on {
-  border-color: rgba(34, 211, 238, .7) !important;
-  background: rgba(34, 211, 238, .2) !important;
-  color: #a5f3fc !important;
-}
-
-/* View overlays */
-#proRulerTop,
-#proRulerLeft {
-  position: absolute;
-  z-index: 12;
-  pointer-events: none;
-  font-size: 9px;
-  color: rgba(148, 163, 184, .85);
-  background: rgba(15, 23, 42, .92);
-}
-#proRulerTop { top: 0; left: 24px; right: 0; height: 22px; border-bottom: 1px solid rgba(148, 163, 184, .2); }
-#proRulerLeft { top: 22px; left: 0; bottom: 0; width: 24px; border-right: 1px solid rgba(148, 163, 184, .2); }
-#proGridOverlay,
-#proBleedOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-}
-#proBleedOverlay {
-  border: 1px dashed rgba(34, 211, 238, .45);
-  box-shadow: inset 0 0 0 1px rgba(251, 146, 60, .25);
-}
-
-/* Designs modal */
-#proDesignsModal {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(2, 6, 23, .75);
-  backdrop-filter: blur(6px);
-}
-#proDesignsModal.open { display: flex; }
-#proDesignsModal .pro-dm-card {
-  transition: transform .15s, border-color .15s;
-}
-#proDesignsModal .pro-dm-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(34, 211, 238, .5);
-}
-
-.spin { animation: proSpin .8s linear infinite; }
-@keyframes proSpin { to { transform: rotate(360deg); } }
-
-.pro-view-tools {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .25rem;
-}
-.pro-view-btn {
-  min-width: 2rem;
-  padding: .25rem .45rem;
-  font-size: 10px;
-  font-weight: 700;
-}
-
+/* Aurora Pro — visual enhancements */
+
+
+
+.pro-badge {
+
+  display: inline-block;
+
+  margin-left: .35rem;
+
+  padding: .1rem .35rem;
+
+  border-radius: .25rem;
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: .1em;
+
+  background: linear-gradient(135deg, rgba(34, 211, 238, .25), rgba(251, 146, 60, .2));
+
+  border: 1px solid rgba(34, 211, 238, .35);
+
+  color: #67e8f9;
+
+  vertical-align: middle;
+
+}
+
+
+
+#btnEyedropper.on,
+
+#btnProPen.on,
+
+.pro-view-btn.on {
+
+  border-color: rgba(34, 211, 238, .65) !important;
+
+  background: rgba(34, 211, 238, .15) !important;
+
+  color: #a5f3fc !important;
+
+  box-shadow: 0 0 16px -4px rgba(34, 211, 238, .6);
+
+}
+
+
+
+#proAlignExtra .chip:hover {
+
+  border-color: rgba(34, 211, 238, .45);
+
+}
+
+
+
+.pro-brand-strip {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: .35rem;
+
+  margin-top: .5rem;
+
+}
+
+.pro-brand-swatch {
+
+  width: 1.5rem;
+
+  height: 1.5rem;
+
+  border-radius: .4rem;
+
+  border: 1px solid rgba(255, 255, 255, .2);
+
+  cursor: pointer;
+
+  transition: transform .15s;
+
+}
+
+.pro-brand-swatch:hover { transform: scale(1.12); }
+
+
+
+/* Page strip */
+
+#proPageBar {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: .5rem;
+
+  padding: .35rem .75rem;
+
+  border-radius: 1rem;
+
+  flex-shrink: 0;
+
+}
+
+#proPageStrip {
+
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+
+  gap: .35rem;
+
+  overflow-x: auto;
+
+}
+
+#proPageStrip button.on {
+
+  border-color: rgba(34, 211, 238, .7) !important;
+
+  background: rgba(34, 211, 238, .2) !important;
+
+  color: #a5f3fc !important;
+
+}
+
+
+
+/* View overlays */
+
+#proRulerTop,
+
+#proRulerLeft {
+
+  position: absolute;
+
+  z-index: 12;
+
+  pointer-events: none;
+
+  font-size: 9px;
+
+  color: rgba(148, 163, 184, .85);
+
+  background: rgba(15, 23, 42, .92);
+
+}
+
+#proRulerTop { top: 0; left: 24px; right: 0; height: 22px; border-bottom: 1px solid rgba(148, 163, 184, .2); }
+
+#proRulerLeft { top: 22px; left: 0; bottom: 0; width: 24px; border-right: 1px solid rgba(148, 163, 184, .2); }
+
+#proGridOverlay,
+
+#proBleedOverlay {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 5;
+
+  pointer-events: none;
+
+}
+
+#proBleedOverlay {
+
+  border: 1px dashed rgba(34, 211, 238, .45);
+
+  box-shadow: inset 0 0 0 1px rgba(251, 146, 60, .25);
+
+}
+
+
+
+/* Designs modal */
+
+#proDesignsModal {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 80;
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 1rem;
+
+  background: rgba(2, 6, 23, .75);
+
+  backdrop-filter: blur(6px);
+
+}
+
+#proDesignsModal.open { display: flex; }
+
+#proDesignsModal .pro-dm-card {
+
+  transition: transform .15s, border-color .15s;
+
+}
+
+#proDesignsModal .pro-dm-card:hover {
+
+  transform: translateY(-2px);
+
+  border-color: rgba(34, 211, 238, .5);
+
+}
+
+
+
+.spin { animation: proSpin .8s linear infinite; }
+
+@keyframes proSpin { to { transform: rotate(360deg); } }
+
+
+
+.pro-view-tools {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: .25rem;
+
+}
+
+.pro-view-btn {
+
+  min-width: 2rem;
+
+  padding: .25rem .45rem;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+}
+
+
