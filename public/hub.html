@@ -27,7 +27,7 @@
   <link rel="icon" href="favicon.ico" />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
   <link href="https://fonts.cdnfonts.com/css/neue-montreal" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=28" />
+  <link rel="stylesheet" href="assets/aurora-toolhub.css?v=29" />
   <style>
     :root {
       --bg: #0D1118;
@@ -46,6 +46,7 @@
       --font: "Neue Montreal", "DM Sans", system-ui, sans-serif;
       --max: 1180px;
       --nav-h: 76px;
+      --gutter: clamp(1rem, 2.5vw, 1.5rem);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -73,7 +74,27 @@
     }
 
     a { color: inherit; text-decoration: none; }
-    .wrap { position: relative; z-index: 1; width: min(100% - 2rem, var(--max)); margin-inline: auto; }
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(calc(100% - var(--gutter) * 2), var(--max));
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: 0;
+      box-sizing: border-box;
+    }
+
+    main {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: clip;
+    }
+    main > section {
+      width: min(calc(100% - var(--gutter) * 2), var(--max));
+      max-width: var(--max);
+      margin-inline: auto;
+      box-sizing: border-box;
+    }
 
     /* —— Nav —— */
     .site-nav {
@@ -583,7 +604,7 @@
     }
 
     /* Features */
-    .features { padding: 3rem 0; }
+    .features { padding: 3rem 0; text-align: center; }
     .label {
       font-size: 0.6875rem;
       font-weight: 600;
@@ -596,13 +617,14 @@
       font-size: clamp(1.75rem, 3vw, 2.25rem);
       font-weight: 500;
       letter-spacing: -0.03em;
-      margin: 0 0 2rem;
-      max-width: 18ch;
+      margin: 0 auto 2rem;
+      max-width: 22ch;
     }
     .feature-grid {
       display: grid;
       gap: 0.75rem;
       grid-template-columns: 1fr;
+      text-align: left;
     }
     @media (min-width: 768px) { .feature-grid { grid-template-columns: repeat(3, 1fr); } }
     .feature-card {
@@ -615,13 +637,21 @@
     .feature-card p { margin: 0; font-size: 0.8125rem; color: var(--muted); line-height: 1.6; }
 
     /* CTA */
+    .cta-section {
+      width: min(calc(100% - var(--gutter) * 2), var(--max));
+      max-width: var(--max);
+      margin-inline: auto;
+      padding: 0;
+    }
     .cta-band {
+      width: 100%;
       margin: 2rem 0 2.5rem;
       padding: 2.75rem 2rem;
       border-radius: calc(var(--radius) + 6px);
       border: 1px solid rgba(92, 156, 235, 0.2);
       background: linear-gradient(135deg, rgba(92, 156, 235, 0.12) 0%, rgba(0, 255, 161, 0.05) 100%);
       text-align: center;
+      box-sizing: border-box;
     }
     .cta-band h2 {
       font-size: clamp(1.5rem, 3vw, 2rem);
@@ -758,7 +788,7 @@
 <body class="aurora-home">
 
   <nav class="site-nav" id="siteNav">
-    <div class="wrap" style="width:min(100% - 1.5rem, var(--max))">
+    <div class="wrap">
       <div class="nav-pill">
         <a href="/start.html" class="logo">AURORA<em>.</em>STUDIO</a>
         <div class="nav-links">
@@ -959,13 +989,15 @@
       </div>
     </section>
 
-    <section class="wrap cta-band">
-      <h2>Start with Aurora Studio Pro</h2>
-      <p>The full creative workspace — or open Presentations for slide-first workflows with 176+ templates.</p>
-      <div class="cta-actions">
-        <a href="obsidian.html" class="btn-primary">Open Studio Pro</a>
-        <a href="aurora-ppt.html" class="btn-outline">Aurora Studio PPT</a>
-        <button type="button" class="btn-outline" onclick="AuroraToolHub && AuroraToolHub.openPalette()">All tools (Ctrl+K)</button>
+    <section class="cta-section">
+      <div class="cta-band">
+        <h2>Start with Aurora Studio Pro</h2>
+        <p>The full creative workspace — or open Presentations for slide-first workflows with 176+ templates.</p>
+        <div class="cta-actions">
+          <a href="obsidian.html" class="btn-primary">Open Studio Pro</a>
+          <a href="aurora-ppt.html" class="btn-outline">Aurora Studio PPT</a>
+          <button type="button" class="btn-outline" onclick="AuroraToolHub && AuroraToolHub.openPalette()">All tools (Ctrl+K)</button>
+        </div>
       </div>
     </section>
   </main>
@@ -1005,8 +1037,8 @@
     </div>
   </footer>
 
-  <script src="assets/aurora-toolhub.js?v=28"></script>
-  <script src="assets/aurora-home.js?v=28"></script>
+  <script src="assets/aurora-toolhub.js?v=29"></script>
+  <script src="assets/aurora-home.js?v=29"></script>
   <script>window.addEventListener('load', function () { window.scrollTo(0, 0); });</script>
 </body>
 </html>
