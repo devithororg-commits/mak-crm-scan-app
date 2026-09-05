@@ -83,10 +83,10 @@ jobs:
       - name: Verify homepage and builder
         run: |
           home=$(curl -sS --max-time 25 "https://apptesting.in/" || true)
-          if echo "$home" | grep -q "aurora-home\|Creative Operating System"; then
-            echo "✅ Aurora Noir product hub is live on apptesting.in"
-          else
-            echo "⚠️ Homepage may still be cached or FTP pending"
+          if echo "$home" | grep -q "00FFA1\|nav-pill\|Neue Montreal"; then
+            echo "✅ New blue/green hub design is live on apptesting.in"
+          elif echo "$home" | grep -q "aurora-home\|hub.html"; then
+            echo "⚠️ Homepage may still be old design or CDN pending"
           fi
           body=$(curl -sS --max-time 25 "https://apptesting.in/builder.html" || true)
           if echo "$body" | grep -q "const \$\$="; then

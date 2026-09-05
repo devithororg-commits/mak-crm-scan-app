@@ -2,7 +2,7 @@
   RewriteEngine On
   RewriteBase /
 
-  DirectoryIndex hub.html index.html
+  DirectoryIndex start.html hub.html index.html
 
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
