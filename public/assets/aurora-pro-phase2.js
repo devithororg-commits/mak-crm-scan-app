@@ -144,11 +144,14 @@
     });
   }
 
-  /* ── PWA registration ── */
+  /* ── PWA registration (PPT/offline only — skip on landing pages) ── */
   function registerPWA() {
     if (!('serviceWorker' in navigator)) return;
+    var path = location.pathname;
+    if (path.endsWith('/') || path.endsWith('index.html') ||
+        path.endsWith('start.html') || path.endsWith('hub.html')) return;
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').catch(function () { /* offline optional */ });
+      navigator.serviceWorker.register('sw.js?v=33').catch(function () {});
     });
   }
 

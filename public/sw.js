@@ -1,4 +1,4 @@
-/* Aurora Studio SW v32 — homepage never cached */
+/* Aurora Studio SW v33 — homepage never cached */
 
 const PPT_PATTERNS = ['aurora-ppt.html', 'aurora-ppt-spa.js', 'aurora-ppt-spa.css'];
 const HOME_PATTERNS = ['/', '/index.html', '/start.html', '/hub.html', 'aurora-home.'];
@@ -28,9 +28,11 @@ self.addEventListener('activate', function (e) {
     }).then(function (clients) {
       clients.forEach(function (client) {
         var u = client.url.split('#')[0];
-        if (u.indexOf('apptesting.in') >= 0 && (u.endsWith('/') || u.indexOf('index.html') >= 0)) {
-          client.navigate(u.split('?')[0] + '?v=32');
-        }
+        if (u.indexOf('apptesting.in') < 0) return;
+        var path = u.replace(self.location.origin, '').split('?')[0];
+        var isHome = path === '' || path === '/' || path.endsWith('/start.html') ||
+          path.endsWith('/hub.html') || path.indexOf('index.html') >= 0;
+        if (isHome) client.navigate(path + '?v=33');
       });
     }).then(function () { return self.clients.claim(); })
   );
