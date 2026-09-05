@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - 'public/index.html'
+      - 'public/hub.html'
       - 'public/sw.js'
       - 'public/.htaccess'
       - 'public/aurora-ppt.html'

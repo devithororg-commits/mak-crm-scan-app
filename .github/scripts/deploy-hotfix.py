@@ -13,6 +13,7 @@ DIST = ROOT / "dist"
 # Flat files only — fast FTP upload (no recursive directory walk)
 HOTFIX_FILES = (
     "index.html",
+    "hub.html",
     "sw.js",
     "builder.html",
     "nova-builder.html",

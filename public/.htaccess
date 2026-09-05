@@ -2,10 +2,12 @@
   RewriteEngine On
   RewriteBase /
 
+  DirectoryIndex hub.html index.html
+
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . /hub.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
